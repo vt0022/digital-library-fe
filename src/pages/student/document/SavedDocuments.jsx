@@ -46,14 +46,14 @@ const SavedDocument = () => {
                 setDocumentList(response.data.content);
                 setTotalPages(response.data.totalPages);
             } else {
-                navigate("/error-500");
+                // navigate("/error-500");
             }
         } catch (error) {
             navigate("/error-500");
         }
     };
 
-    const handleSave= async (slug) => {
+    const handleSave = async (slug) => {
         try {
             const response = await saveDocument(slug);
 
@@ -139,7 +139,7 @@ const SavedDocument = () => {
 
                     {documentList.length !== 0 && (
                         <div className="flex overflow-x-auto sm:justify-center mt-4">
-                            <Pagination previousLabel="Trước" nextLabel="Sau" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} showIcons />
+                            <Pagination previousLabel="" nextLabel="" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} showIcons />
                         </div>
                     )}
                 </div>

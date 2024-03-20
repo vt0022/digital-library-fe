@@ -6,6 +6,7 @@ import { Avatar, Button, Dropdown, Navbar } from "flowbite-react";
 import logo from "../../../assets/images/logo.png";
 const CustomNavbar = () => {
     const navigate = useNavigate();
+    
     const location = useLocation();
 
     const currentPath = location.pathname;
@@ -41,7 +42,7 @@ const CustomNavbar = () => {
                     )}
 
                     {!user && (
-                        <Button color="success" pill onClick={() => navigate("/login")}>
+                        <Button className="text-white bg-green-400 enabled:hover:bg-green-500 focus:ring-green-200 focus:ring-1" pill onClick={() => navigate("/login")}>
                             Đăng nhập
                         </Button>
                     )}

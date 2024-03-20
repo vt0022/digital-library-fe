@@ -46,7 +46,7 @@ const LikedDocument = () => {
                 setDocumentList(response.data.content);
                 setTotalPages(response.data.totalPages);
             } else {
-                navigate("/error-500");
+                // navigate("/error-500");
             }
         } catch (error) {
             navigate("/error-500");
@@ -75,7 +75,7 @@ const LikedDocument = () => {
                 }, 4000);
             }
         } catch (error) {
-            navigate("/error-500")
+            navigate("/error-500");
         }
     };
 
@@ -139,7 +139,7 @@ const LikedDocument = () => {
 
                     {documentList.length !== 0 && (
                         <div className="flex overflow-x-auto sm:justify-center mt-4">
-                            <Pagination previousLabel="Trước" nextLabel="Sau" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} showIcons />
+                            <Pagination previousLabel="" nextLabel="" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} showIcons />
                         </div>
                     )}
                 </div>

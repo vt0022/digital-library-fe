@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import Table from "../../../components/management/table/Table";
 import ActionButton from "../../../components/management/action-button/ActionButton";
+import Table from "../../../components/management/table/Table";
 
 import { Button, Label, Modal, Pagination, Spinner, TextInput, Toast } from "flowbite-react";
 import { HiDocumentRemove, HiOutlineCheck, HiX } from "react-icons/hi";
@@ -118,7 +118,7 @@ const PendingDocuments = () => {
             if (response.status === 200) {
                 setStatus(1);
 
-                if (approvedStatus) setMessage("Phê duyệt tài liệu thành công!");
+                if (approvedStatus) setMessage("Đã chấp nhận tài liệu!");
                 else setMessage("Đã từ chối tài liệu!");
 
                 setTimeout(() => {
@@ -152,7 +152,7 @@ const PendingDocuments = () => {
                             {isFetching && <Spinner aria-label="Default status example" className="flex items-center w-full mb-2 mt-2" style={{ color: "var(--main-color)" }} />}
 
                             <div className="flex overflow-x-auto sm:justify-center">
-                                <Pagination previousLabel="Trước" nextLabel="Sau" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} showIcons />
+                                <Pagination previousLabel="" nextLabel="" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} showIcons />
                             </div>
                         </div>
                     </div>
@@ -167,7 +167,7 @@ const PendingDocuments = () => {
                         <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Thao tác phê duyệt</h3>
                         <div className="flex justify-center gap-4">
                             <Button color="success" isProcessing={isLoading} onClick={() => approveDocument(docId, true)}>
-                                Phê duyệt
+                                Chấp nhận
                             </Button>
                             <Button
                                 color="warning"
@@ -196,7 +196,7 @@ const PendingDocuments = () => {
                             <div className="mb-2 block">
                                 <Label htmlFor="reason" value="Lý do" />
                             </div>
-                            <TextInput id="reason" placeholder="Tài liệu không đầy đủ" value={reason} onChange={(event) => setReason(event.target.value)} required />
+                            <TextInput id="reason" placeholder="Nhập lý do..." value={reason} onChange={(event) => setReason(event.target.value)} required />
                         </div>
                         <div className="flex justify-center gap-4">
                             <Button color="warning" isProcessing={isLoading} onClick={() => approveDocument(docId, false)}>
