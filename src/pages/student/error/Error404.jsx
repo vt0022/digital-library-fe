@@ -14,20 +14,20 @@ const Error404 = () => {
                 <CustomNavbar />
             </div>
 
-            <div class="flex-grow h-full w-full bg-[#f7fafc] grid place-items-center">
-                <div class="container flex flex-col md:flex-row items-center justify-center px-5 text-gray-700">
-                    <div class="w-2/5">
-                        <div class="text-7xl font-dark font-bold mb-4">404</div>
-                        <p class="text-2xl md:text-3xl font-light leading-normal mb-4">Sorry we couldn't find this page. </p>
-                        <p class="mb-8">But dont worry, you can find plenty of other things on our homepage.</p>
+            <div className="flex-grow h-full w-full bg-[#f7fafc] grid place-items-center">
+                <div className="container flex flex-col md:flex-row items-center justify-center px-5 text-gray-700">
+                    <div className="w-2/5">
+                        <div className="text-7xl font-dark font-bold mb-4">404</div>
+                        <p className="text-2xl md:text-3xl font-light leading-normal mb-4">Sorry we couldn't find this page. </p>
+                        <p className="mb-8">But dont worry, you can find plenty of other things on our homepage.</p>
 
                         <button
-                            class="px-4 rounded-full shadow-lg inline py-3 text-sm font-medium leading-5 shadow text-green-400 transition-colors duration-150 border border-transparent focus:outline-none focus:shadow-outline-green bg-white active:bg-green-500 hover:bg-green-400 hover:text-white"
+                            className="px-4 rounded-full shadow-lg inline py-3 text-sm font-medium leading-5 shadow text-green-400 transition-colors duration-150 border border-transparent focus:outline-none focus:shadow-outline-green bg-white active:bg-green-500 hover:bg-green-400 hover:text-white"
                             onClick={() => navigate("/home")}>
-                            Back to homepage
+                            Quay về trang chủ
                         </button>
                     </div>
-                    <div class="w-2/5">
+                    <div className="w-2/5">
                         <img src={icon404} alt="404" />
                     </div>
                 </div>

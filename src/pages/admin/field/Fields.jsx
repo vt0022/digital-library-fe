@@ -224,6 +224,12 @@ const Fields = () => {
         }
     };
 
+    const refreshFieldList = () => {
+        selectedPage = 0;
+        setCurrentPage(1);
+        getFieldList(1);
+    };
+
     return (
         <div className="w-4/5 m-auto">
             <h2 className="page-header">Lĩnh vực</h2>
@@ -308,7 +314,7 @@ const Fields = () => {
                 </Modal.Body>
             </Modal>
 
-            <FieldModal openFieldModal={openFieldModal} fieldId={fieldId} isCreatingNew={isCreatingNew} triggerModal={triggerModal} refreshFieldList={getFieldList} />
+            <FieldModal openFieldModal={openFieldModal} fieldId={fieldId} isCreatingNew={isCreatingNew} triggerModal={triggerModal} refreshFieldList={refreshFieldList} />
 
             {status === -1 && (
                 <Toast className="top-1/4 right-5 w-fit fixed z-50">

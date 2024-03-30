@@ -5,7 +5,7 @@ import Table from "../../../components/management/table/Table";
 import ActionButton from "../../../components/management/action-button/ActionButton";
 
 import { Badge, Button, Modal, Pagination, Spinner, Toast } from "flowbite-react";
-import { HiCheck, HiDocumentRemove, HiOutlineBadgeCheck, HiOutlineCheck, HiX } from "react-icons/hi";
+import { HiDocumentRemove, HiOutlineBadgeCheck, HiOutlineCheck, HiX } from "react-icons/hi";
 
 import { deleteAUser, getAllUsersByOrganization, getLatestUsersByOrganization } from "../../../api/main/userAPI";
 import usePrivateAxios from "../../../api/usePrivateAxios";
@@ -21,7 +21,6 @@ const ManagerUsers = () => {
     const roleList = {
         ROLE_ADMIN: "ADMIN",
         ROLE_STUDENT: "SINH VIÊN",
-        ROLE_LECTURER: "GIẢNG VIÊN",
         ROLE_MANAGER: "QUẢN LÝ",
     };
 
@@ -46,11 +45,6 @@ const ManagerUsers = () => {
             name: "Sinh viên",
             value: "ROLE_STUDENT",
             color: "green",
-        },
-        {
-            name: "Giảng viên",
-            value: "ROLE_LECTURER",
-            color: "indigo",
         },
         {
             name: "Quản lý",
@@ -116,7 +110,7 @@ const ManagerUsers = () => {
 
     const navigate = useNavigate();
 
-        const user = JSON.parse(sessionStorage.getItem("profile"));
+    const user = JSON.parse(sessionStorage.getItem("profile"));
 
     const handleDetail = (userId) => {
         navigate(`/manager/users/${userId}`);
@@ -168,6 +162,7 @@ const ManagerUsers = () => {
     }, [currentPage]);
 
     useEffect(() => {
+        setCurrentPage(1);
         if (isLatestRoute) getLatestUserList(currentPage);
         else getUserList(currentPage);
     }, [gender, deleted, role, search]);
@@ -176,6 +171,10 @@ const ManagerUsers = () => {
         setCurrentPage(page);
         selectedPage = page - 1;
     };
+
+    useEffect(() => {
+        selectedPage = currentPage - 1;
+    }, [currentPage]);
 
     const getUserList = async (page) => {
         try {

@@ -327,7 +327,7 @@ const Dashboard = () => {
                                           }
                                 }
                                 series={Object.values(documentsByOrganization)}
-                                type="donut"
+                                type="pie"
                                 height="300px"
                             />
                         </div>

@@ -470,7 +470,9 @@ const StudentProfile = () => {
 
                             <div className="flex flex-col items-center m-auto profile-info h-full">
                                 <div className="items-center mb-2 font-bold bg-red-200 rounded-full w-1/2 py-1">
-                                    <span className="text-center block text-base font-medium text-sky-500 dark:text-white">{user && user.totalDocuments} tài liệu</span>
+                                    <a href="/me/uploads" className="text-center block text-base font-medium text-sky-500 dark:text-white">
+                                        {user && user.totalDocuments} tài liệu
+                                    </a>
                                 </div>
 
                                 <div className="items-center mb-2 font-bold bg-red-200 rounded-full w-1/2 py-1">

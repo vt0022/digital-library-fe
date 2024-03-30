@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Pagination, Toast } from "flowbite-react";
 import { HiOutlineCheck, HiX } from "react-icons/hi";
 
-import { getLikedDocuments, likeDocument } from "../../../api/main/likeAPI";
+import { getLikedDocuments, likeDocument } from "../../../api/main/documentLikeAPI";
 import usePrivateAxios from "../../../api/usePrivateAxios";
 
 import DocumentCard from "../../../components/student/card/Card";

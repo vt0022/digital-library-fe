@@ -41,7 +41,7 @@ const ListFields = () => {
                 <div className="px-[10%]">
                     <div className="grid place-items-center mt-20 mb-20">
                         <img src={fieldImage} alt="" width="20%" height="20%" />
-                        <h2 class="text-3xl font-semibold text-gray-500 dark:text-white mt-10">Bạn muốn tìm lĩnh vực nào?</h2>
+                        <h2 className="text-3xl font-semibold text-gray-500 dark:text-white mt-10">Bạn muốn tìm lĩnh vực nào?</h2>
                     </div>
 
                     <div className="grid grid-cols-5 gap-8 mb-20 ">

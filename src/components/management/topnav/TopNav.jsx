@@ -99,12 +99,12 @@ const Topnav = () => {
     return (
         <div className="topnav">
             <div className="topnav__search">
-                {user && user.role && user.role.roleName === "ROLE_ADMIN" && (
+                {/* {user && user.role && user.role.roleName === "ROLE_ADMIN" && (
                     <>
                         <input className="search_input" type="text" placeholder="" />
                         <i className="bx bx-search"></i>
                     </>
-                )}
+                )} */}
                 {user && user.role && user.role.roleName === "ROLE_MANAGER" && (
                     <h1 className="text-xl font-extrabold text-gray-900 dark:text-white md:text-xl lg:text-2xl p-2 self-center">
                         <span className="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-green-400 self-center">{user && user.organization && user.organization.orgName}</span>

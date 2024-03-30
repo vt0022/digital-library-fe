@@ -224,6 +224,12 @@ const Organizations = () => {
         }
     };
 
+    const refreshOrganizationList = () => {
+        selectedPage = 0;
+        setCurrentPage(1);
+        getOrganizationList(1);
+    };
+
     return (
         <div className="w-4/5 m-auto">
             <h2 className="page-header">Danh mục</h2>
@@ -308,7 +314,7 @@ const Organizations = () => {
                 </Modal.Body>
             </Modal>
 
-            <OrganizationModal openOrganizationModal={openOrganizationModal} organizationId={organizationId} isCreatingNew={isCreatingNew} triggerModal={triggerModal} refreshOrganizationList={getOrganizationList} />
+            <OrganizationModal openOrganizationModal={openOrganizationModal} organizationId={organizationId} isCreatingNew={isCreatingNew} triggerModal={triggerModal} refreshOrganizationList={refreshOrganizationList} />
 
             {status === -1 && (
                 <Toast className="top-1/4 right-5 w-fit fixed z-50">

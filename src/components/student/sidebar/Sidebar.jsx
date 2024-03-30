@@ -29,7 +29,7 @@ const CustomSidebar = () => {
 
                 <p className="mb-6 text-base font-medium text-center">{!user && "Khách"}</p>
                 <Sidebar.ItemGroup>
-                    <Sidebar.Item as={Link} to="/me/uploads" icon={HiCollection} className={`gap-x-2 py-3 active:bg-green-300 active:text-white hover:text-green-400 hover:bg-green-100 ${currentPath === "/me/uploads" ? "text-green-400 bg-green-100" : ""}`}>
+                    <Sidebar.Item href="/me/uploads" icon={HiCollection} className={`gap-x-2 py-3 active:bg-green-300 active:text-white hover:text-green-400 hover:bg-green-100 ${currentPath === "/me/uploads" ? "text-green-400 bg-green-100" : ""}`}>
                         Tài liệu của tôi
                     </Sidebar.Item>
 
@@ -41,7 +41,7 @@ const CustomSidebar = () => {
                         Đã lưu
                     </Sidebar.Item>
 
-                    <Sidebar.Item as={Link} to="/me/recents" icon={HiDuplicate} className={`gap-x-2 py-3 active:bg-green-300 active:text-white hover:text-green-400 hover:bg-green-100 ${currentPath === "/currents" ? "text-green-400 bg-green-100" : ""}`}>
+                    <Sidebar.Item as={Link} to="/me/recents" icon={HiDuplicate} className={`gap-x-2 py-3 active:bg-green-300 active:text-white hover:text-green-400 hover:bg-green-100 ${currentPath === "/me/recents" ? "text-green-400 bg-green-100" : ""}`}>
                         Gần đây
                     </Sidebar.Item>
                 </Sidebar.ItemGroup>

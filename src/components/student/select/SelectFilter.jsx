@@ -3,7 +3,7 @@ import React from "react";
 const SelectFilter = (props) => {
     const { selectName, options, selectedValue, onChangeHandler, name, field, defaultName, defaultValue } = props;
     return (
-        <div className="mb-2 w-auto">
+        <div className="mb-2 w-52">
             <label htmlFor="hs-select-label" className="block text-sm font-medium mb-2 dark:text-white">
                 {selectName}
             </label>

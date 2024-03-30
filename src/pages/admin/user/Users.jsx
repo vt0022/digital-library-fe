@@ -22,7 +22,6 @@ const Users = () => {
     const roleList = {
         ROLE_ADMIN: "ADMIN",
         ROLE_STUDENT: "SINH VIÊN",
-        ROLE_LECTURER: "GIẢNG VIÊN",
         ROLE_MANAGER: "QUẢN LÝ",
     };
 
@@ -47,11 +46,6 @@ const Users = () => {
             name: "Sinh viên",
             value: "ROLE_STUDENT",
             color: "green",
-        },
-        {
-            name: "Giảng viên",
-            value: "ROLE_LECTURER",
-            color: "indigo",
         },
         {
             name: "Quản lý",
@@ -173,6 +167,7 @@ const Users = () => {
     }, [currentPage]);
 
     useEffect(() => {
+        setCurrentPage(1)
         if (isLatestRoute) getLatestUserList(currentPage);
         else getUserList(currentPage);
     }, [gender, deleted, role, search, organization]);
@@ -181,6 +176,10 @@ const Users = () => {
         setCurrentPage(page);
         selectedPage = page - 1;
     };
+
+        useEffect(() => {
+            selectedPage = currentPage - 1;
+        }, [currentPage]);
 
     const getOrganizationList = async () => {
         try {

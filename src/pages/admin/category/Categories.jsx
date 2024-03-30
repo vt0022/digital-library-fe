@@ -224,6 +224,12 @@ const Categories = () => {
         }
     };
 
+    const refreshCategoryList = () => {
+        selectedPage = 0;
+        setCurrentPage(1);
+        getCategoryList(1);
+    };
+
     return (
         <div className="w-4/5 m-auto">
             <h2 className="page-header">Danh mục</h2>
@@ -308,7 +314,7 @@ const Categories = () => {
                 </Modal.Body>
             </Modal>
 
-            <CategoryModal openCategoryModal={openCategoryModal} categoryId={categoryId} isCreatingNew={isCreatingNew} triggerModal={triggerModal} refreshCategoryList={getCategoryList} />
+            <CategoryModal openCategoryModal={openCategoryModal} categoryId={categoryId} isCreatingNew={isCreatingNew} triggerModal={triggerModal} refreshCategoryList={refreshCategoryList} />
 
             {status === -1 && (
                 <Toast className="top-1/4 right-5 w-fit fixed z-50">

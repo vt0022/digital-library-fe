@@ -7,7 +7,7 @@ import { HiHeart, HiOutlineBookmark, HiOutlineCalendar, HiOutlineCheck, HiOutlin
 import moment from "moment/moment";
 
 import { getADocument, getADocumentForGuest } from "../../../api/main/documentAPI";
-import { checkLikedStatus, likeDocument } from "../../../api/main/likeAPI";
+import { checkLikedStatus, likeDocument } from "../../../api/main/documentLikeAPI";
 import { checkSavedStatus, saveDocument } from "../../../api/main/saveAPI";
 
 import { addToRecentDocuments } from "../../../api/main/recencyAPI";
@@ -15,6 +15,10 @@ import { checkReviewedStatus, getReviewsOfDocument, postAReview } from "../../..
 import usePrivateAxios from "../../../api/usePrivateAxios";
 import ClickableStarRating from "../../../components/student/rating/ClickableStarRating";
 import StarRating from "../../../components/student/rating/StarRating";
+
+import { Document, Page, pdfjs } from "react-pdf";
+
+pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.js", import.meta.url).toString();
 
 const DetailDocument = () => {
     const { slug } = useParams();
@@ -34,6 +38,7 @@ const DetailDocument = () => {
     const [message, setMessage] = useState("Đã xảy ra lỗi! Vui lòng thử lại!");
     const [status, setStatus] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
+    const [pdf, setPdf] = useState(null);
 
     const user = JSON.parse(sessionStorage.getItem("profile"));
     const accessToken = localStorage.getItem("accessToken");
@@ -49,6 +54,14 @@ const DetailDocument = () => {
         }
     }, []);
 
+    const downloadPDF = async (u) => {
+        const response = await fetch(u);
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+
+        setPdf(url);
+    };
+
     const getDocumentBySlug = async () => {
         const accessToken = localStorage.getItem("accessToken");
         const user = JSON.parse(sessionStorage.getItem("profile"));
@@ -60,6 +73,7 @@ const DetailDocument = () => {
 
             if (response.status === 200) {
                 setDocument(response.data);
+                //downloadPDF(response.data.downloadUrl);
             } else {
                 navigate("/error-404");
             }

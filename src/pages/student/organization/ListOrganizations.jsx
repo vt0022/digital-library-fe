@@ -40,7 +40,7 @@ const ListOrganizations = () => {
                 <div className="px-[5%]">
                     <div className="grid place-items-center mt-20 mb-10">
                         <img src={institutionImage} alt="" width="20%" height="20%" />
-                        <h2 class="text-3xl font-semibold text-gray-500 dark:text-white">Bạn muốn tìm trường nào?</h2>
+                        <h2 className="text-3xl font-semibold text-gray-500 dark:text-white">Bạn muốn tìm trường nào?</h2>
                     </div>
 
                     <div className="w-2/3 mb-10 m-auto">

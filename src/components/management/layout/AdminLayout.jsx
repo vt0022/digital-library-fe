@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ThemeAction from "../../../redux/actions/ThemeAction";
 import AdminRoutes from "../../routers/AdminRouters";
 
-const Layout = () => {
+const AdminLayout = () => {
     const themeReducer = useSelector((state) => state.ThemeReducer);
 
     const dispatch = useDispatch();
@@ -43,4 +43,4 @@ const Layout = () => {
     );
 };
 
-export default Layout;
+export default AdminLayout;

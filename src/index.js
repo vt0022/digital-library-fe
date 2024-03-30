@@ -35,6 +35,8 @@ import App from "./App";
 
 import "./index.css";
 
+import "flowbite";
+
 const store = createStore(rootReducer);
 
 document.title = "Wisdo";

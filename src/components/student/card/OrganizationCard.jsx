@@ -24,7 +24,7 @@ const OrganizationCard = (props) => {
                 >
                 <HiOutlineLibrary className="h-5 w-5 text-bold text-white mr-2" />
 
-                <h4 class="text-sm text-white text-center font-medium">{orgName}</h4>
+                <h4 className="text-sm text-white text-center font-medium">{orgName}</h4>
             </div>
         </>
     );

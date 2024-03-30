@@ -29,7 +29,7 @@ const KeyCard = (props) => {
 
                 {icon === "field" && <HiOutlineBookOpen className="h-10 w-10 mb-2 text-white" />}
 
-                <h4 class="text-xl font-bold text-white text-center">{name}</h4>
+                <h4 className="text-xl font-bold text-white text-center">{name}</h4>
             </div>
         </>
     );
