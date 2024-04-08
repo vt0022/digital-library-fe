@@ -1,14 +1,21 @@
+import { initFlowbite } from "flowbite";
 import { Avatar, Button, Dropdown, Navbar } from "flowbite-react";
-import React from "react";
-import { HiOutlineSearchCircle } from "react-icons/hi";
+import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import logo from "./../../assets/images/logo.png"
+import logo from "./../../assets/images/logo.png";
 const TopBar = () => {
+    initFlowbite();
+
     const navigate = useNavigate();
 
     const location = useLocation();
 
     const currentPath = location.pathname;
+
+    const user = JSON.parse(sessionStorage.getItem("profile"));
+
+    const [query, setQuery] = useState("");
+
     return (
         <>
             <Navbar fluid rounded className="w-full">
@@ -18,31 +25,57 @@ const TopBar = () => {
                     </Navbar.Brand>
                 </div>
 
-                <div className="w-1/5">
-                    <div className="text-green-400 rounded-full border h-11 p-3 cursor-pointer hover:bg-green-400 active:border-2 hover:text-white active:border-2 active:border-green-100 w-full">
-                        <HiOutlineSearchCircle className=" w-5 h-5" />
+                <div className="w-1/3">
+                    <div className="relative rounded-full">
+                        <input
+                            type="text"
+                            id="list-search"
+                            className="text-sm text-black block w-full p-3 ps-5 border border-gray-300 bg-white focus:ring-0 focus:border-green-400 rounded-full"
+                            placeholder="Tìm kiếm"
+                            required
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    e.preventDefault();
+                                    navigate("/forum?query=" + query);
+                                }
+                            }}
+                        />
+
+                        <div className="absolute inset-y-0 end-0 flex items-center pe-5 cursor-pointer rounded-full">
+                            <svg className="w-4 h-4 text-green-400 hover:text-green-200 focus:text-green-200 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                            </svg>
+                        </div>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-x-[5%] w-1/2 justify-end">
+                <div className="flex items-center gap-x-[5%] w-1/3 justify-end">
                     <div className="flex md:order-2 mr-10">
-                        <Dropdown arrowIcon={false} inline label={<Avatar rounded bordered />}>
-                            <Dropdown.Header>
-                                <span className="block text-lg font-normal text-green-400 mb-3"></span>
-                                <span className="block truncate text-sm font-medium"></span>
-                            </Dropdown.Header>
-                            <Dropdown.Item as={Link} to="/me">
-                                Trang cá nhân
-                            </Dropdown.Item>
-                            <Dropdown.Divider />
-                            <Dropdown.Item as={Link} to="/login">
-                                Đăng xuất
-                            </Dropdown.Item>
-                        </Dropdown>
+                        {user && (
+                            <Dropdown arrowIcon={false} inline label={<Avatar alt={user.lastName} img={user.image ? user.image : ""} rounded bordered />}>
+                                <Dropdown.Header>
+                                    <span className="block text-lg font-normal text-green-400 mb-3">
+                                        {user.lastName} {user.firstName}
+                                    </span>
+                                    <span className="block truncate text-sm font-medium">@{user.email}</span>
+                                </Dropdown.Header>
+                                <Dropdown.Item as={Link} to="/me">
+                                    Trang cá nhân
+                                </Dropdown.Item>
+                                <Dropdown.Divider />
+                                <Dropdown.Item as={Link} to="/login">
+                                    Đăng xuất
+                                </Dropdown.Item>
+                            </Dropdown>
+                        )}
 
-                        <Button className="text-white bg-green-400 enabled:hover:bg-green-500 focus:ring-green-200 focus:ring-1" pill onClick={() => navigate("/login")}>
-                            Đăng nhập
-                        </Button>
+                        {!user && (
+                            <Button className="text-white bg-green-400 enabled:hover:bg-green-500 focus:ring-green-200 focus:ring-1" pill onClick={() => navigate("/login")}>
+                                Đăng nhập
+                            </Button>
+                        )}
                         <Navbar.Toggle />
                     </div>
 
@@ -55,12 +88,31 @@ const TopBar = () => {
                         </Navbar.Link>
                     </Navbar.Collapse>
 
+                    {/* <Dropdown
+                        label=""
+                        inline
+                        renderTrigger={() => (
+                            <button type="button" class="relative inline-flex items-center p-3 text-sm font-medium text-center text-white bg-transparent rounded-lg ">
+                                <HiOutlineTrash className="text-gray-700 text-2xl hover:text-red-500 active:text-red-400 cursor-pointer" />
+
+                                <span class="sr-only">Notifications</span>
+                                <div class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900">20</div>
+                            </button>
+                        )}>
+                        <Dropdown.Item className="z-20 w-full max-w-sm bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-800 dark:divide-gray-700">
+                            <div className="block px-4 py-2 font-medium text-center text-gray-700 rounded-t-lg bg-gray-50 dark:bg-gray-800 dark:text-white">Notifications</div>
+                        </Dropdown.Item>
+                        <Dropdown.Item>Settings</Dropdown.Item>
+                        <Dropdown.Item>Earnings</Dropdown.Item>
+                        <Dropdown.Item>Sign out</Dropdown.Item>
+                    </Dropdown> */}
+
                     <button id="dropdownNotificationButton" data-dropdown-toggle="dropdownNotification" className="relative inline-flex items-center text-sm font-medium text-center text-gray-500 hover:text-gray-900 focus:outline-none dark:hover:text-white dark:text-gray-400" type="button">
                         <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 14 20">
                             <path d="M12.133 10.632v-1.8A5.406 5.406 0 0 0 7.979 3.57.946.946 0 0 0 8 3.464V1.1a1 1 0 0 0-2 0v2.364a.946.946 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C1.867 13.018 0 13.614 0 14.807 0 15.4 0 16 .538 16h12.924C14 16 14 15.4 14 14.807c0-1.193-1.867-1.789-1.867-4.175ZM3.823 17a3.453 3.453 0 0 0 6.354 0H3.823Z" />
                         </svg>
-
-                        <div className="absolute block w-3 h-3 bg-red-500 border-2 border-white rounded-full -top-0.5 start-2.5 dark:border-gray-900"></div>
+                        {/* 
+                        <div className="absolute block w-3 h-3 bg-red-500 border-2 border-white rounded-full -top-0.5 start-2.5 dark:border-gray-900">245</div> */}
                     </button>
 
                     <div id="dropdownNotification" className="z-20 hidden w-full max-w-sm bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-800 dark:divide-gray-700" aria-labelledby="dropdownNotificationButton">

@@ -1,7 +1,6 @@
 import React from "react";
 import { BrowserRouter} from "react-router-dom";
-
-import RootRouters from "./components/routers/RootRouters";
+import RootRouters from "./routers/RootRouters"
 
 function App() {
     return (

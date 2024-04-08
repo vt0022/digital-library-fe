@@ -12,8 +12,8 @@ import TopNav from "../topnav/TopNav";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import ThemeAction from "../../../redux/actions/ThemeAction";
-import AdminRoutes from "../../routers/AdminRouters";
+import ThemeAction from "./../../../redux/actions/ThemeAction";
+import AdminRoutes from "./../../../routers/AdminRouters";
 
 const AdminLayout = () => {
     const themeReducer = useSelector((state) => state.ThemeReducer);

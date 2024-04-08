@@ -2,17 +2,17 @@ import React from "react";
 
 import { Route, Routes } from "react-router-dom";
 
-import Page404 from "../../pages/404Page.jsx";
-import ManagerDashboard from "../../pages/manager/Dashboard.jsx";
-import ManagerProfile from "../../pages/manager/Profile.jsx";
-import ManagerDetailDocument from "../../pages/manager/document/DetailDocument.jsx";
-import ManagerDocuments from "../../pages/manager/document/Documents.jsx";
-import ManagerEditDocument from "../../pages/manager/document/EditDocument.jsx";
-import ManagerNewDocument from "../../pages/manager/document/NewDocument.jsx";
-import ManagerPendingDocuments from "../../pages/manager/document/PendingDocument.jsx";
-import Reviews from "../../pages/manager/review/Reviews.jsx";
-import ManagerDetailUser from "../../pages/manager/user/DetailUser.jsx";
-import ManagerUsers from "../../pages/manager/user/Users.jsx";
+import Page404 from "./../pages/404Page.jsx";
+import ManagerDashboard from "./../pages/manager/Dashboard.jsx";
+import ManagerProfile from "./../pages/manager/Profile.jsx";
+import ManagerDetailDocument from "./../pages/manager/document/DetailDocument.jsx";
+import ManagerDocuments from "./../pages/manager/document/Documents.jsx";
+import ManagerEditDocument from "./../pages/manager/document/EditDocument.jsx";
+import ManagerNewDocument from "./../pages/manager/document/NewDocument.jsx";
+import ManagerPendingDocuments from "./../pages/manager/document/PendingDocument.jsx";
+import Reviews from "./../pages/manager/review/Reviews.jsx";
+import ManagerDetailUser from "./../pages/manager/user/DetailUser.jsx";
+import ManagerUsers from "./../pages/manager/user/Users.jsx";
 
 const ManagementRoutes = () => {
     return (

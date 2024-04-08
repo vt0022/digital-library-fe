@@ -2,19 +2,19 @@ import React from "react";
 
 import { Route, Routes } from "react-router-dom";
 
-import Dashboard from "../../pages/admin/Dashboard.jsx";
-import Profile from "../../pages/admin/Profile.jsx";
-import Categories from "../../pages/admin/category/Categories.jsx";
-import DetailDocument from "../../pages/admin/document/DetailDocument.jsx";
-import Documents from "../../pages/admin/document/Documents.jsx";
-import EditDocument from "../../pages/admin/document/EditDocument.jsx";
-import NewDocument from "../../pages/admin/document/NewDocument.jsx";
-import PendingDocuments from "../../pages/admin/document/PendingDocument.jsx";
-import Fields from "../../pages/admin/field/Fields.jsx";
-import Organizations from "../../pages/admin/organization/Organizations.jsx";
-import DetailUser from "../../pages/admin/user/DetailUser.jsx";
-import Users from "../../pages/admin/user/Users.jsx";
-import Page404 from "../../pages/404Page.jsx";
+import Dashboard from "./../pages/admin/Dashboard.jsx";
+import Profile from "./../pages/admin/Profile.jsx";
+import Categories from "./../pages/admin/category/Categories.jsx";
+import DetailDocument from "./../pages/admin/document/DetailDocument.jsx";
+import Documents from "./../pages/admin/document/Documents.jsx";
+import EditDocument from "./../pages/admin/document/EditDocument.jsx";
+import NewDocument from "./../pages/admin/document/NewDocument.jsx";
+import PendingDocuments from "./../pages/admin/document/PendingDocument.jsx";
+import Fields from "./../pages/admin/field/Fields.jsx";
+import Organizations from "./../pages/admin/organization/Organizations.jsx";
+import DetailUser from "./../pages/admin/user/DetailUser.jsx";
+import Users from "./../pages/admin/user/Users.jsx";
+import Page404 from "./../pages/404Page.jsx";
 
 const ManagementRoutes = () => {
     return (

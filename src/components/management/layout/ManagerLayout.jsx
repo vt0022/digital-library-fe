@@ -13,7 +13,7 @@ import TopNav from "../topnav/TopNav";
 import { useDispatch, useSelector } from "react-redux";
 
 import ThemeAction from "../../../redux/actions/ThemeAction";
-import ManagerRoutes from "../../routers/ManagerRouters";
+import ManagerRoutes from "./../../../routers/ManagerRouters";
 
 const ManagerLayout = () => {
     const themeReducer = useSelector((state) => state.ThemeReducer);

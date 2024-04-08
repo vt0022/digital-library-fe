@@ -1,0 +1,23 @@
+.right-rounded {
+    border-radius: 100px 999px 999px 100px !important;
+}
+
+.left-rounded {
+    border-radius: 999px 100px 100px 999px !important;
+}
+
+.all-rounded {
+    border-radius: 5px !important;
+}
+
+.tlbr-rounded {
+    border-radius: 5px 100px 5px 100px !important;
+}
+
+.subsection:hover{
+ background-color:var(--hover-color) !important;
+}
+
+.subsection:active{
+ background-color:var(--active-color) !important;
+}

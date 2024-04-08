@@ -3,7 +3,7 @@ import React from "react";
 import CustomNavbar from "../../components/student/navbar/Navbar";
 import CustomSidebar from "../../components/student/sidebar/Sidebar";
 
-import UserRoute from "../../components/routers/UserRouters";
+import UserRoute from "../../routers/UserRouters";
 import CustomFooter from "../../components/student/footer/Footer";
 
 const Main = () => {

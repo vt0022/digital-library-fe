@@ -1,6 +1,6 @@
 import axios, { privateAxios } from "../axios";
 
-export const getReply = async (postId, config) => {
+export const getReplies = async (postId, config) => {
     try {
         const response = await privateAxios.get(`/posts/${postId}/replies`, config);
         return response.data;
@@ -9,7 +9,7 @@ export const getReply = async (postId, config) => {
     }
 };
 
-export const getReplyForGuest = async (postId, config) => {
+export const getRepliesForGuest = async (postId, config) => {
     try {
         const response = await axios.get(`/posts/${postId}/replies/guest`, config);
         return response.data;
@@ -18,9 +18,46 @@ export const getReplyForGuest = async (postId, config) => {
     }
 };
 
-export const addReply = async (postId, data) => {
+export const addAReply = async (postId, data) => {
     try {
         const response = await privateAxios.post(`/posts/${postId}/reply`, data);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const editAReply = async (replyId, data) => {
+    try {
+        const response = await privateAxios.put(`/replies/${replyId}`, data);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const deleteAReply = async (replyId) => {
+    try {
+        const response = await privateAxios.delete(`/replies/${replyId}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getRepliesOfUser = async (userId, config) => {
+    try {
+        const response = await axios.get(`/replies/user/${userId}`, config);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+
+export const getHistoryOfReply = async (replyId) => {
+    try {
+        const response = await axios.get(`/replies/${replyId}/history`);
         return response.data;
     } catch (error) {
         throw error;

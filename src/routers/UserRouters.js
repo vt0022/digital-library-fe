@@ -1,23 +1,21 @@
 import { React } from "react";
 import { Route, Routes } from "react-router-dom";
 
-import ListCategories from "../../pages/student/category/ListCategories";
-import DetailDocument from "../../pages/student/document/DetailDocument";
-import LikedDocument from "../../pages/student/document/LikedDocuments";
-import ListDocument from "../../pages/student/document/ListDocuments";
-import StudentNewDocument from "../../pages/student/document/UploadDocument";
-import ListOrganizations from "../../pages/student/organization/ListOrganizations";
-import StudentProfile from "../../pages/student/user/Profile";
-import UserWall from "../../pages/student/user/Wall";
-import Home from "../../pages/student/Home";
-import StudentEditDocument from "../../pages/student/document/EditDocument";
-import SavedDocument from "../../pages/student/document/SavedDocuments";
-import UploadedDocument from "../../pages/student/document/UploadedDocuments";
-import ListFields from "../../pages/student/field/ListFields";
-import Error404 from "../../pages/student/error/Error404";
+import ListCategories from "../pages/student/category/ListCategories";
+import DetailDocument from "../pages/student/document/DetailDocument";
+import StudentEditDocument from "../pages/student/document/EditDocument";
+import LikedDocument from "../pages/student/document/LikedDocuments";
+import ListDocument from "../pages/student/document/ListDocuments";
+import SavedDocument from "../pages/student/document/SavedDocuments";
+import StudentNewDocument from "../pages/student/document/UploadDocument";
+import UploadedDocument from "../pages/student/document/UploadedDocuments";
+import ListFields from "../pages/student/field/ListFields";
+import ListOrganizations from "../pages/student/organization/ListOrganizations";
+import StudentProfile from "../pages/student/user/Profile";
+import UserWall from "../pages/student/user/Wall";
 
 import { useNavigate } from "react-router-dom";
-import RecentDocument from "../../pages/student/document/RecentDocuments";
+import RecentDocument from "../pages/student/document/RecentDocuments";
 // import Search from "../search/search";
 // import UserHome from "../user/home";
 // import UserProfile from "../user/profile";
@@ -64,13 +62,11 @@ export default UserRoute;
 // import { React } from "react";
 // import { Route, Routes } from "react-router-dom";
 
-
 // // import ReadDocument from "../document/document";
 // import Search from "../search/search";
 // import UserHome from "../user/home";
 // import UserProfile from "../user/profile";
 // import DocumentDetail from "../document/documentDetail";
-
 
 // const UserRoute = () => {
 //     return (
