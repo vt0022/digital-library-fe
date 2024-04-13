@@ -4,6 +4,7 @@ import moment from "moment";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { render } from "react-dom";
 import { HiOutlinePencil, HiOutlineThumbUp, HiOutlineTrash, HiOutlineUser, HiOutlineX, HiReply, HiThumbUp } from "react-icons/hi";
+import { MdBattery0Bar, MdBattery1Bar, MdBattery2Bar, MdBattery3Bar, MdBattery4Bar, MdBattery5Bar, MdBattery6Bar, MdBatteryFull } from "react-icons/md";
 import { WiTime4 } from "react-icons/wi";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -164,7 +165,7 @@ const DetailPost = () => {
                 setParentReplyId(null);
                 const parentReplySection = document.getElementById("parent-reply-section");
                 render(null, parentReplySection);
-            } else navigate("/error-404");
+            } 
         } catch (error) {
             navigate("/error-500");
         }
@@ -185,7 +186,7 @@ const DetailPost = () => {
                 const htmlContent = <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(response.data.content) }} id={`edit-${response.data.replyId}`} />;
 
                 render(htmlContent, editReplySection);
-            } else navigate("/error-404");
+            }
         } catch (error) {
             navigate("/error-500");
         }
@@ -485,6 +486,19 @@ const DetailPost = () => {
                             <div className="text-center font-semibold hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/users/${post.userPosted.userId}`)}>
                                 {post && post.userPosted && post.userPosted.lastName} {post && post.userPosted && post.userPosted.firstName}
                             </div>
+
+                            <div className="m-auto text-center p-1 w-fit rounded-lg text-center font-medium text-white bg-gradient-to-r from-cyan-500 to-blue-500">{post && post.userPosted && post.userPosted.badge && post.userPosted.badge.badgeName}</div>
+
+                            <div className="flex justify-center mt-2">
+                                <MdBattery0Bar />
+                                <MdBattery1Bar />
+                                <MdBattery2Bar />
+                                <MdBattery3Bar />
+                                <MdBattery4Bar />
+                                <MdBattery5Bar />
+                                <MdBattery6Bar />
+                                <MdBatteryFull />
+                            </div>
                         </div>
 
                         <div className="col-span-3 bg-green-100 p-5">
@@ -563,6 +577,19 @@ const DetailPost = () => {
 
                                         <div className="text-center font-semibold hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/users/${reply.user.userId}`)}>
                                             {reply.user && reply.user.lastName} {reply.user && reply.user.firstName}
+                                        </div>
+
+                                        <div className="m-auto text-center p-1 w-fit rounded-lg text-center font-medium text-white bg-gradient-to-r from-cyan-500 to-blue-500">{reply.user && reply.user.badge && reply.user.badge.badgeName}</div>
+
+                                        <div className="flex justify-center mt-2">
+                                            <MdBattery0Bar />
+                                            <MdBattery1Bar />
+                                            <MdBattery2Bar />
+                                            <MdBattery3Bar />
+                                            <MdBattery4Bar />
+                                            <MdBattery5Bar />
+                                            <MdBattery6Bar />
+                                            <MdBatteryFull />
                                         </div>
                                     </div>
 

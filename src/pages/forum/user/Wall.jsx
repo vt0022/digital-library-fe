@@ -3,8 +3,11 @@ import { Avatar, Button } from "flowbite-react";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { HiChevronDoubleDown } from "react-icons/hi";
+import { LuBadgeCheck } from "react-icons/lu";
+import { MdBattery0Bar,  MdBattery1Bar,  MdBattery2Bar,  MdBattery3Bar,  MdBattery4Bar,  MdBattery5Bar,  MdBattery6Bar, MdBatteryFull } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import "react-tabs/style/react-tabs.css";
+import { getBadgesOfUser } from "../../../api/main/badgeAPI";
 import { getPostsOfUser } from "../../../api/main/postAPI";
 import { getRepliesOfUser } from "../../../api/main/replyAPI";
 import { getAUser } from "../../../api/main/userAPI";
@@ -19,6 +22,7 @@ const Wall = () => {
 
     const [postList, setPostList] = useState([]);
     const [replyList, setReplyList] = useState([]);
+    const [badgeList, setBadgeList] = useState([]);
     const [totalPosts, setTotalPosts] = useState(0);
     const [noOfPosts, setNoOfPosts] = useState(5);
     const [totalReplies, setTotalReplies] = useState(0);
@@ -28,6 +32,7 @@ const Wall = () => {
 
     useEffect(() => {
         getUserProfile();
+        getBadgeList();
     }, []);
 
     useEffect(() => {
@@ -97,6 +102,17 @@ const Wall = () => {
         }
     };
 
+    const getBadgeList = async () => {
+        try {
+            const response = await getBadgesOfUser(userId);
+            if (response.status === 200) {
+                setBadgeList(response.data);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
         <div className="w-5/6 m-auto min-h-screen h-max mt-5 p-5">
             <div className="bg-white mt-2 p-5 rounded-lg flex">
@@ -108,6 +124,19 @@ const Wall = () => {
                     <div className="text-center font-semibold">
                         {user && user.lastName} {user && user.firstName}
                         {moment("2024-04-02").isSame(moment().subtract(1, "days"), "day") && <span className="text-xs text-red-500"> (Chưa xác thực)</span>}
+                    </div>
+
+                    <div className="m-auto text-center p-1 w-fit rounded-lg text-center font-medium text-white bg-gradient-to-r from-cyan-500 to-blue-500">{user && user.badge && user.badge.badgeName}</div>
+
+                    <div className="flex justify-center mt-2">
+                        <MdBattery0Bar />
+                        <MdBattery1Bar />
+                        <MdBattery2Bar />
+                        <MdBattery3Bar />
+                        <MdBattery4Bar />
+                        <MdBattery5Bar />
+                        <MdBattery6Bar />
+                        <MdBatteryFull />
                     </div>
 
                     <div className="text-center text-xs mt-5">Tham gia: {user && moment(user.createdAt).format("DD-MM-yyyy")}</div>
@@ -204,24 +233,60 @@ const Wall = () => {
                                         <p className="text-sm text-gray-400">{moment(reply.createdAt).format("DD-MM-yyyy")}</p>
                                     </div>
                                 ))}
-                            {totalReplies !== noOfReplies && (
+                            {totalReplies !== 0 && totalReplies !== noOfReplies && (
                                 <Button className="ml-auto bg-green-400 enabled:hover:bg-green-500" onClick={handleMoreReplies}>
                                     <HiChevronDoubleDown className="mr-2 h-5 w-5 " />
                                     Xem thêm
                                 </Button>
                             )}
+
+                            {totalReplies === 0 && <p className="font-medium text-center">Người dùng chưa đăng phản hồi nào!!!</p>}
                         </div>
 
                         <div className="hidden p-4 border-b border-gray-300 space-y-2" id="styled-about" role="tabpanel" aria-labelledby="about-tab">
-                            <p>
-                                Tổng bài viết: <span className="font-semibold">1</span>
-                            </p>
-                            <p>
-                                Tổng phản hồi: <span className="font-semibold">3</span>
-                            </p>
-                            <p>
-                                Tổng lượt thích: <span className="font-semibold">10</span>
-                            </p>
+                            <div className="border-b border-gray-300 pb-4 space-y-2">
+                                <p>
+                                    Tổng bài viết: <span className="font-semibold">{user && user.totalPosts}</span>
+                                </p>
+                                <p>
+                                    Tổng phản hồi: <span className="font-semibold">{user && user.totalReplies}</span>
+                                </p>
+                                <p>
+                                    Tổng lượt thích: <span className="font-semibold">{user && user.totalPostLikes}</span>
+                                </p>
+                            </div>
+
+                            <div className="py-2 space-y-2">
+                                <p>
+                                    Huy hiệu đã nhận được: <span className="font-bold">{badgeList.length}</span>
+                                </p>
+                                <div className="flex flex-wrap space-x-5">
+                                    {badgeList &&
+                                        badgeList.map((badge, index) => (
+                                            <div className="tooltip-container">
+                                                <img key={index} alt={badge.badgeName} src={badge.image} className="rounded-full w-20 h-20 transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-110 duration-150 hover:drop-shadow-2xl" />
+
+                                                <div className="tooltip-content mt-4 w-1/4 z-1 rounded-lg bg-white">
+                                                    <div className="bg-gradient-to-r from-orange-300 to-violet-400 py-8 flex items-center justify-center">
+                                                        <img key={index} alt={badge.badgeName} src={badge.image} className="rounded-full w-24 h-24" />
+                                                    </div>
+
+                                                    <div className="p-3">
+                                                        <div className="border-b border-gray-300 pb-3">
+                                                            <p className="text-lg uppercase font-semibold">{badge.badgeName}</p>
+                                                            <p className="text-sm text-gray-700">{badge.description}</p>
+                                                        </div>
+
+                                                        <div className="flex space-x-2 pt-3">
+                                                            <LuBadgeCheck className="text-gray-500 text-lg" />
+                                                            <p className="text-gray-400 text-sm">Mở khoá vào {moment(badge.rewardedAt).format("DD-MM-yyyy")}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

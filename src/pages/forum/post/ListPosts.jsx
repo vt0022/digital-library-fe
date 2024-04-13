@@ -1,8 +1,9 @@
-import { Button, Pagination, Spinner } from "flowbite-react";
+import { Avatar, Button, Pagination, Spinner } from "flowbite-react";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { getActiveLabels } from "../../../api/main/labelAPI";
 import { getAllPosts } from "../../../api/main/postAPI";
 import SelectFilter from "../../../components/student/select/SelectFilter";
 
@@ -14,9 +15,11 @@ const ListPosts = () => {
     const { section = "", label = "" } = useParams();
 
     const [postList, setPostList] = useState([]);
+    const [labelList, setLabelList] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [order, setOrder] = useState("newest");
+    const [labelSelect, setLabelSelect] = useState(label);
     const [isFetching, setIsFetching] = useState(false);
 
     const orderList = [
@@ -55,15 +58,28 @@ const ListPosts = () => {
     ];
 
     useEffect(() => {
+        getLabelList();
+    }, []);
+
+    useEffect(() => {
         setCurrentPage(1);
         getPostList(currentPage);
-    }, [order, query]);
+    }, [order, query, labelSelect]);
 
     useEffect(() => {
         getPostList(currentPage);
     }, [currentPage, query]);
 
     const onPageChange = (page) => setCurrentPage(page);
+
+    const getLabelList = async () => {
+        try {
+            const response = await getActiveLabels();
+            setLabelList(response.data);
+        } catch (error) {
+            navigate("/error-500");
+        }
+    };
 
     const getPostList = async (page) => {
         try {
@@ -76,7 +92,7 @@ const ListPosts = () => {
                     order: order,
                     s: query,
                     subsection: section,
-                    label: label,
+                    label: labelSelect === "all" ? "" : labelSelect,
                 },
             });
             setPostList(response.data.content);
@@ -100,7 +116,7 @@ const ListPosts = () => {
 
                 <div className="flex bg-white rounded-lg shadow-lg shadow-gray-300">
                     <div className="w-fit flex text-xs w-fit px-2">
-                        <div className="flex justify-between items-center w-full">
+                        <div className="flex justify-between items-center w-full space-x-5">
                             <SelectFilter
                                 className="w-full"
                                 options={orderList}
@@ -110,8 +126,22 @@ const ListPosts = () => {
                                 }}
                                 name="name"
                                 field="order"
-                                defaultName="Mặc định"
+                                defaultName="Sắp xếp mặc định"
                                 defaultValue="newest"
+                                required
+                            />
+
+                            <SelectFilter
+                                className="w-full"
+                                options={labelList}
+                                selectedValue={labelSelect}
+                                onChangeHandler={(e) => {
+                                    setLabelSelect(e.target.value);
+                                }}
+                                name="labelName"
+                                field="slug"
+                                defaultName="Tất cả nhãn"
+                                defaultValue=""
                                 required
                             />
                         </div>
@@ -133,7 +163,7 @@ const ListPosts = () => {
                         <table>
                             <thead>
                                 <tr className="bg-gray-100 border-y border-gray-300">
-                                    <th className="w-8/12 text-base pl-8 font-medium ">Bài đăng</th>
+                                    <th className="w-8/12 text-base pl-4 font-medium ">Bài đăng</th>
                                     <th className="w-2/12 text-base font-medium ">Thống kê</th>
                                     <th className="w-2/12 text-base font-medium ">Mới nhất</th>
                                 </tr>
@@ -142,17 +172,29 @@ const ListPosts = () => {
                                 {postList &&
                                     postList.map((post, index) => (
                                         <tr className="border-y border-gray-300 hover:bg-inherit" key={index}>
-                                            <td className="pl-8">
-                                                <p className="text-lg truncate whitespace-normal line-clamp-1 font-medium text-green-600 hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/posts/${post.postId}`)}>
-                                                    {post.title}
-                                                </p>
-                                                <p>
-                                                    <span className="text-sky-600 hover:text-sky-400 cursor-pointer" onClick={() => navigate(`/forum/users/${post.userPosted.userId}`)}>
-                                                        {post.userPosted.lastName} {post.userPosted.firstName}
-                                                    </span>
-                                                    <span className="text-gray-900"> ● </span>
-                                                    <span className="text-gray-400 text-sm">{moment(post.createdAt).format("DD/MM/yyyy")}</span>
-                                                </p>
+                                            <td className="pl-4 h-full">
+                                                <div className="flex space-x-3 items-center h-full">
+                                                    <div>
+                                                        <Avatar alt="User" img={post.userPosted.image ? post.userPosted.image : ""} rounded size="sm" />
+                                                    </div>
+
+                                                    <div>
+                                                        <p className="text-lg truncate whitespace-normal line-clamp-2 font-medium text-green-600 hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/posts/${post.postId}`)}>
+                                                            <span className="text-white rounded-md text-sm p-1 font-normal" style={{ backgroundColor: post.label && post.label.color }} onClick={(e) => e.stopPropagation()}>
+                                                                {post.label && post.label.labelName}
+                                                            </span>{" "}
+                                                            {post.title}
+                                                        </p>
+
+                                                        <p>
+                                                            <span className="text-sky-600 hover:text-sky-400 cursor-pointer" onClick={() => navigate(`/forum/users/${post.userPosted.userId}`)}>
+                                                                {post.userPosted.lastName} {post.userPosted.firstName}
+                                                            </span>
+                                                            <span className="text-gray-900"> ● </span>
+                                                            <span className="text-gray-400 text-sm">{moment(post.createdAt).format("DD/MM/yyyy")}</span>
+                                                        </p>
+                                                    </div>
+                                                </div>
                                             </td>
                                             <td className="text-sm pr-10">
                                                 <div className="flex justify-between items-end">
