@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Button, Modal, Tooltip } from "flowbite-react";
+import { CgExtensionRemove } from "react-icons/cg";
 import { HiBookmark, HiEye, HiHeart, HiOutlineLightBulb, HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
 
 import "./card.css";
 
 const DocumentCard = (props) => {
-    const { docName, slug, thumbnail, totalView, totalFavorite, type, action, tab, reason } = props;
+    const { docName, slug, thumbnail, totalView, totalFavorite, type, action, reason} = props;
 
     const [openModal, setOpenModal] = useState(false);
 
@@ -129,6 +130,18 @@ const DocumentCard = (props) => {
                                         />
                                     </Tooltip>
                                 </>
+                            )}
+
+                            {type === "COLLECTION" && (
+                                <Tooltip content="Xoá khỏi bộ sưu tập" style="light">
+                                    <CgExtensionRemove
+                                        className="w-8 h-8 text-red-500 hover:text-red-300 active:text-red-200"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            action();
+                                        }}
+                                    />
+                                </Tooltip>
                             )}
                         </div>
                     </div>

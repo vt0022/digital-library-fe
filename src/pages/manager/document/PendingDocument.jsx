@@ -34,8 +34,8 @@ const ManagerPendingDocuments = () => {
             </td>
             <td className="text-center">
                 <div className="flex space-x-0">
-                    <ActionButton onClick={() => handleDetail(item.slug)} icon="bx bxs-calendar" color="green" content="Xem chi tiết tài liệu" />
-                    <ActionButton onClick={() => handleApprove(item.docId)} icon="bx bxs-calendar-edit" color="yellow" content="Phê duyệt tài liệu" />
+                    <ActionButton onClick={() => handleDetail(item.slug)} icon="bx bx-show" color="sky" content="Xem chi tiết tài liệu" />
+                    <ActionButton onClick={() => handleApprove(item.docId)} icon="bx bxs-check-shield" color="green" content="Duyệt tài liệu" />
                 </div>
             </td>
         </tr>

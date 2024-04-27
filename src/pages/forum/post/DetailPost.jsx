@@ -1,10 +1,9 @@
 import DOMPurify from "dompurify";
-import { Avatar, Button, Modal, Pagination } from "flowbite-react";
+import { Avatar, Button, Modal, Pagination, Tooltip } from "flowbite-react";
 import moment from "moment";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { render } from "react-dom";
 import { HiOutlinePencil, HiOutlineThumbUp, HiOutlineTrash, HiOutlineUser, HiOutlineX, HiReply, HiThumbUp } from "react-icons/hi";
-import { MdBattery0Bar, MdBattery1Bar, MdBattery2Bar, MdBattery3Bar, MdBattery4Bar, MdBattery5Bar, MdBattery6Bar, MdBatteryFull } from "react-icons/md";
 import { WiTime4 } from "react-icons/wi";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -15,10 +14,9 @@ import { likePost } from "../../../api/main/postLikeAPI";
 import { addAReply, deleteAReply, editAReply, getHistoryOfReply, getReplies, getRepliesForGuest } from "../../../api/main/replyAPI";
 import { likeReply } from "../../../api/main/replyLikeAPI";
 import usePrivateAxios from "../../../api/usePrivateAxios";
-import HistoryModal from "../../../components/forum/modal/PostHistoryModal";
-import "./post.css";
-import ReplyHistoryModal from "../../../components/forum/modal/ReplyHistoryModal";
 import PostHistoryModal from "../../../components/forum/modal/PostHistoryModal";
+import ReplyHistoryModal from "../../../components/forum/modal/ReplyHistoryModal";
+import "./post.css";
 
 const DetailPost = () => {
     const { postId } = useParams();
@@ -121,17 +119,17 @@ const DetailPost = () => {
         }
     };
 
-        const getReplyHistory = async (replyId) => {
-            try {
-                const response = await getHistoryOfReply(replyId);
+    const getReplyHistory = async (replyId) => {
+        try {
+            const response = await getHistoryOfReply(replyId);
 
-                if (response.status === 200) {
-                    setReplyHistory(response.data);
-                }
-            } catch (error) {
-                navigate("/error-500");
+            if (response.status === 200) {
+                setReplyHistory(response.data);
             }
-        };
+        } catch (error) {
+            navigate("/error-500");
+        }
+    };
 
     const handlePostLike = async () => {
         try {
@@ -165,7 +163,7 @@ const DetailPost = () => {
                 setParentReplyId(null);
                 const parentReplySection = document.getElementById("parent-reply-section");
                 render(null, parentReplySection);
-            } 
+            }
         } catch (error) {
             navigate("/error-500");
         }
@@ -487,18 +485,13 @@ const DetailPost = () => {
                                 {post && post.userPosted && post.userPosted.lastName} {post && post.userPosted && post.userPosted.firstName}
                             </div>
 
-                            <div className="m-auto text-center p-1 w-fit rounded-lg text-center font-medium text-white bg-gradient-to-r from-cyan-500 to-blue-500">{post && post.userPosted && post.userPosted.badge && post.userPosted.badge.badgeName}</div>
-
-                            <div className="flex justify-center mt-2">
-                                <MdBattery0Bar />
-                                <MdBattery1Bar />
-                                <MdBattery2Bar />
-                                <MdBattery3Bar />
-                                <MdBattery4Bar />
-                                <MdBattery5Bar />
-                                <MdBattery6Bar />
-                                <MdBatteryFull />
+                            <div className="flex justify-center mb-2">
+                                <Tooltip content={post && post.userPosted && post.userPosted.badge && post.userPosted.badge.badgeName}>
+                                    <Avatar alt="User" img={post && post.userPosted && post.userPosted.badge && post.userPosted.badge.image ? post.userPosted.badge.image : ""} rounded bordered />
+                                </Tooltip>
                             </div>
+
+                            {/*<div className="m-auto text-center p-1 w-fit rounded-lg text-center font-medium text-white bg-gradient-to-r from-cyan-500 to-blue-500">{post && post.userPosted && post.userPosted.badge && post.userPosted.badge.badgeName}</div>*/}
                         </div>
 
                         <div className="col-span-3 bg-green-100 p-5">
@@ -542,13 +535,13 @@ const DetailPost = () => {
                             <div className="flex justify-between py-3 text-green-500 text-sm">
                                 <div className="flex space-x-2 items-end">
                                     {post && post.liked && (
-                                        <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125  duration-150 bg-transparent" onClick={() => handlePostLike(postId)}>
+                                        <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handlePostLike(postId)}>
                                             <HiThumbUp className="text-2xl hover:text-green-300 active:text-green-200 cursor-pointer" />
                                         </button>
                                     )}
 
                                     {post && !post.liked && (
-                                        <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125  duration-150 bg-transparent" onClick={() => handlePostLike(postId)}>
+                                        <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handlePostLike(postId)}>
                                             <HiOutlineThumbUp className="text-2xl hover:fill-green-500 active:fill-green-600 active:text-green-600 cursor-pointer" />
                                         </button>
                                     )}
@@ -579,18 +572,13 @@ const DetailPost = () => {
                                             {reply.user && reply.user.lastName} {reply.user && reply.user.firstName}
                                         </div>
 
-                                        <div className="m-auto text-center p-1 w-fit rounded-lg text-center font-medium text-white bg-gradient-to-r from-cyan-500 to-blue-500">{reply.user && reply.user.badge && reply.user.badge.badgeName}</div>
-
                                         <div className="flex justify-center mt-2">
-                                            <MdBattery0Bar />
-                                            <MdBattery1Bar />
-                                            <MdBattery2Bar />
-                                            <MdBattery3Bar />
-                                            <MdBattery4Bar />
-                                            <MdBattery5Bar />
-                                            <MdBattery6Bar />
-                                            <MdBatteryFull />
+                                            <Tooltip content={post && post.userPosted && post.userPosted.badge && post.userPosted.badge.badgeName}>
+                                                <Avatar alt="User" img={reply.user && reply.user.badge && reply.user.badge.image ? reply.user.badge.image : ""} rounded bordered />
+                                            </Tooltip>
                                         </div>
+
+                                        {/*<div className="m-auto text-center p-1 w-fit rounded-lg text-center font-medium text-white bg-gradient-to-r from-cyan-500 to-blue-500 mt-2">{reply.user && reply.user.badge && reply.user.badge.badgeName}</div>*/}
                                     </div>
 
                                     <div className="col-span-3 p-5">

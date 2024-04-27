@@ -219,6 +219,7 @@ export function addDocumentToList(newDocument) {
         localStorage.setItem("recentDocuments", JSON.stringify(recentDocuments));
     }
 }
+
 export const getAllDocumentsForGuest = async (page, size, order, sortOrder, category, field, organization) => {
     try {
         const response = await axios.get("/documents/public", {
@@ -232,6 +233,15 @@ export const getAllDocumentsForGuest = async (page, size, order, sortOrder, cate
                 organization: organization || "all",
             },
         });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getRelatedDocuments = async (slug) => {
+    try {
+        const response = await axios.get(`/documents/related/${slug}`);
         return response.data;
     } catch (error) {
         throw error;

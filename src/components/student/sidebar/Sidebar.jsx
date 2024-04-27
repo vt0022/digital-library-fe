@@ -3,6 +3,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { Avatar, Button, Sidebar } from "flowbite-react";
 import { HiBookmark, HiCollection, HiHeart, HiDuplicate } from "react-icons/hi";
+import { TbAppsFilled } from "react-icons/tb";
+import { MdRateReview } from "react-icons/md";
 
 import "./sidebar.css";
 
@@ -29,7 +31,7 @@ const CustomSidebar = () => {
 
                 <p className="mb-6 text-base font-medium text-center">{!user && "Khách"}</p>
                 <Sidebar.ItemGroup>
-                    <Sidebar.Item href="/me/uploads" icon={HiCollection} className={`gap-x-2 py-3 active:bg-green-300 active:text-white hover:text-green-400 hover:bg-green-100 ${currentPath === "/me/uploads" ? "text-green-400 bg-green-100" : ""}`}>
+                    <Sidebar.Item as={Link} to="/me/uploads" icon={HiCollection} className={`gap-x-2 py-3 active:bg-green-300 active:text-white hover:text-green-400 hover:bg-green-100 ${currentPath === "/me/uploads" ? "text-green-400 bg-green-100" : ""}`}>
                         Tài liệu của tôi
                     </Sidebar.Item>
 
@@ -43,6 +45,14 @@ const CustomSidebar = () => {
 
                     <Sidebar.Item as={Link} to="/me/recents" icon={HiDuplicate} className={`gap-x-2 py-3 active:bg-green-300 active:text-white hover:text-green-400 hover:bg-green-100 ${currentPath === "/me/recents" ? "text-green-400 bg-green-100" : ""}`}>
                         Gần đây
+                    </Sidebar.Item>
+
+                    <Sidebar.Item as={Link} to="/me/collections" icon={TbAppsFilled} className={`gap-x-2 py-3 active:bg-green-300 active:text-white hover:text-green-400 hover:bg-green-100 ${currentPath === "/me/collections" ? "text-green-400 bg-green-100" : ""}`}>
+                        Bộ sưu tập
+                    </Sidebar.Item>
+
+                    <Sidebar.Item as={Link} to="/me/reviews" icon={MdRateReview} className={`gap-x-2 py-3 active:bg-green-300 active:text-white hover:text-green-400 hover:bg-green-100 ${currentPath === "/me/reviews" ? "text-green-400 bg-green-100" : ""}`}>
+                        Đánh giá của tôi
                     </Sidebar.Item>
                 </Sidebar.ItemGroup>
             </Sidebar.Items>

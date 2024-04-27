@@ -2,46 +2,56 @@
     padding: 0;
 }
 
-.card-organization:hover{
- background-color:var(--hover-color) !important;
+.card-organization:hover {
+    background-color: var(--hover-color) !important;
 }
 
-.card-organization:active{
- background-color:var(--active-color) !important;
+.card-organization:active {
+    background-color: var(--active-color) !important;
 }
 
-
-.key-card:hover{
- background-color:var(--hover-color) !important;
+.key-card:hover {
+    background-color: var(--hover-color) !important;
 }
 
-.key-card:active{
- background-color:var(--active-color) !important;
+.key-card:active {
+    background-color: var(--active-color) !important;
+}
+
+.collection-card:hover {
+    box-shadow: 0 0 25px -5px var(--hover-color), 0 8px 10px -6px var(--hover-color) !important;
+}
+
+.collection-name {
+    color: var(--active-color) !important;
+}
+
+.collection-name:hover {
+    color: var(--hover-color) !important;
 }
 
 .title {
-      position: absolute;
-      top: 60%;
-      margin-top: 10px;
-      padding: .55rem 1rem;
-      font-size: 1rem;
-      font-weight: 500;
-      white-space: nowrap;
-      color: #000;
-      border-radius: 50px;
-      background-color: #fff;
-      box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1),
-        0 5px 15px rgba(0, 0, 0, 0.07);
+    position: absolute;
+    top: 60%;
+    margin-top: 10px;
+    padding: 0.55rem 1rem;
+    font-size: 1rem;
+    font-weight: 500;
+    white-space: nowrap;
+    color: #000;
+    border-radius: 50px;
+    background-color: #fff;
+    box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
 
-      pointer-events: none;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-      opacity: 0;
-      transition: all 0.2s ease-in-out;
-    }
-    /* &:hover {
+    pointer-events: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    opacity: 0;
+    transition: all 0.2s ease-in-out;
+}
+/* &:hover {
       span {
         top: 100%;
         opacity: 0.9;

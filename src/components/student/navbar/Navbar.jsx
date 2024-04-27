@@ -65,6 +65,9 @@ const CustomNavbar = () => {
                     <Navbar.Link as={Link} to="/categories" active={currentPath === "/categories"} className={`text-base md:active:text-green-400 md:hover:text-green-500 ${currentPath === "/categories" ? "md:text-green-400" : ""}`}>
                         Danh mục
                     </Navbar.Link>
+                    <Navbar.Link as={Link} to="/collections" active={currentPath === "/collections"} className={`text-base md:active:text-green-400 md:hover:text-green-500 ${currentPath === "/collections" ? "md:text-green-400" : ""}`}>
+                        Khám phá
+                    </Navbar.Link>
                 </Navbar.Collapse>
             </div>
         </Navbar>

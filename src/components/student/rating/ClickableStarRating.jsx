@@ -28,7 +28,7 @@ const HoverableStarRating = ({ initialRating = 0, onChange }) => {
 
             stars.push(
                 <div key={i} onClick={() => handleStarClick(i)} onMouseEnter={() => handleStarHover(i)} onMouseLeave={handleMouseLeave} style={{ cursor: "pointer" }}>
-                    {isFilled ? <HiStar className="w-6 h-6 text-yellow-300 ml-0" /> : <HiOutlineStar className="w-6 h-6 text-yellow-300 ml-0" />}
+                    {isFilled ? <HiStar className="w-7 h-7 text-yellow-300 ml-0" /> : <HiOutlineStar className="w-6 h-6 text-yellow-300 ml-0" />}
                 </div>,
             );
         }
@@ -36,7 +36,7 @@ const HoverableStarRating = ({ initialRating = 0, onChange }) => {
         return stars;
     };
 
-    return <div className="flex gap-px ml-auto">{renderStars()}</div>;
+    return <div className="flex gap-px ml-auto items-center">{renderStars()}</div>;
 };
 
 export default HoverableStarRating;

@@ -1,22 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-import { Avatar, Button, Label, Textarea, Toast } from "flowbite-react";
+import { Button, Toast } from "flowbite-react";
 import { HiHeart, HiOutlineBookmark, HiOutlineCalendar, HiOutlineCheck, HiOutlineCloudDownload, HiOutlineColorSwatch, HiOutlineEye, HiOutlineHeart, HiOutlineLibrary, HiOutlinePaperAirplane, HiOutlineReply, HiOutlineTag, HiX } from "react-icons/hi";
+import { RiAddFill } from "react-icons/ri";
 
 import moment from "moment/moment";
 
-import { getADocument, getADocumentForGuest } from "../../../api/main/documentAPI";
+import { getADocument, getADocumentForGuest, getRelatedDocuments } from "../../../api/main/documentAPI";
 import { checkLikedStatus, likeDocument } from "../../../api/main/documentLikeAPI";
 import { checkSavedStatus, saveDocument } from "../../../api/main/saveAPI";
 
 import { addToRecentDocuments } from "../../../api/main/recencyAPI";
-import { checkReviewedStatus, getReviewsOfDocument, postAReview } from "../../../api/main/reviewAPI";
+import { checkReviewedStatus } from "../../../api/main/reviewAPI";
 import usePrivateAxios from "../../../api/usePrivateAxios";
-import ClickableStarRating from "../../../components/student/rating/ClickableStarRating";
-import StarRating from "../../../components/student/rating/StarRating";
 
-import { Document, Page, pdfjs } from "react-pdf";
+import { pdfjs } from "react-pdf";
+import DocumentCard from "../../../components/student/card/Card";
+import CollectionListModal from "../../../components/student/modal/CollectionListModal";
+import Review from "../../../components/student/review/Review";
+import { default as ReviewList } from "../../../components/student/review/ReviewList";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.js", import.meta.url).toString();
 
@@ -27,40 +30,83 @@ const DetailDocument = () => {
 
     usePrivateAxios();
 
-    const [document, setDocument] = useState(null);
-    const [reviewList, setReviewList] = useState([]);
+    const collectionRef = useRef(null);
+
+    const [doc, setDocument] = useState(null);
+    const [documentList, setDocumentList] = useState([]);
     const [isLiked, setIsLiked] = useState(false);
     const [isSaved, setIsSaved] = useState(false);
     const [isReviewed, setIsReviewed] = useState(false);
-    const [star, setStar] = useState(0);
-    const [content, setContent] = useState("");
-    const [isStarValid, setIsStarValid] = useState(true);
     const [message, setMessage] = useState("Đã xảy ra lỗi! Vui lòng thử lại!");
     const [status, setStatus] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
+    const [isOpenModal, setIsOpenModal] = useState(false);
     const [pdf, setPdf] = useState(null);
+    const [data, setData] = useState([]);
+    const [pdfString, setPdfString] = useState("");
+    const [numPages, setNumPages] = useState(null);
+    const [pageNumber, setPageNumber] = useState(1);
 
     const user = JSON.parse(sessionStorage.getItem("profile"));
     const accessToken = localStorage.getItem("accessToken");
 
     useEffect(() => {
         getDocumentBySlug();
-        getReviewsByDocument();
+        getRelatedDocumentList();
+
         if (user && accessToken) {
             checkLiked();
             checkSaved();
             checkReviewed();
             addToRecentList();
         }
+        // gapi.load("client:auth2", start);
+    }, [slug]);
+
+    useEffect(() => {
+        const handleCloseModal = (event) => {
+            if (collectionRef.current && !collectionRef.current.contains(event.target)) {
+                setIsOpenModal(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleCloseModal);
+
+        return () => {
+            document.removeEventListener("mousedown", handleCloseModal);
+        };
     }, []);
 
-    const downloadPDF = async (u) => {
-        const response = await fetch(u);
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
+    // const onDocumentLoadSuccess = ({ numPages }) => {
+    //     setNumPages(numPages);
+    // };
 
-        setPdf(url);
-    };
+    // const fileId = "1Vh2__JQ5yK6IaC5sKAiYVCzyUhS9aTop";
+    // const start = () => {
+    //     gapi.client.init({
+    //         apiKey: "AIzaSyDQVD4jD6Wb23DmT0iwx2gezRVTObpNtKU",
+    //         clientId: "355480575905-okvgom422abg0ecf8u9mfi4p35sp867n",
+    //         scope: "https://www.googleapis.com/auth/drive",
+    //     });
+
+    //     gapi.client.load("drive", "v3").then(() => {
+    //         try {
+    //             gapi.client.drive.files
+    //                 .get({ fileId, alt: "media" })
+    //                 .then((response) => {
+    //                     const fileContent = response.body;
+    //                     setData(fileContent);
+    //                     setPdfString(fileContent);
+    //                     console.log(fileContent, "aaaaaaaa");
+    //                 })
+    //                 .catch((error) => {
+    //                     console.log(error);
+    //                 });
+    //         } catch (error) {
+    //             console.log(error);
+    //         }
+    //     });
+    // };
 
     const getDocumentBySlug = async () => {
         const accessToken = localStorage.getItem("accessToken");
@@ -83,14 +129,12 @@ const DetailDocument = () => {
         }
     };
 
-    const getReviewsByDocument = async () => {
+    const getRelatedDocumentList = async () => {
         try {
-            const response = await getReviewsOfDocument(slug);
+            const response = await getRelatedDocuments(slug);
 
             if (response.status === 200) {
-                setReviewList(response.data);
-            } else {
-                navigate("/error-404");
+                setDocumentList(response.data.content);
             }
         } catch (error) {
             navigate("/error-500");
@@ -200,8 +244,8 @@ const DetailDocument = () => {
     };
 
     const handleDownload = () => {
-        if (document && document.downloadUrl) {
-            window.location.href = document.downloadUrl;
+        if (doc && doc.downloadUrl) {
+            window.location.href = doc.downloadUrl;
         } else {
             setStatus(-1);
             setMessage("Liên kết tải xuống đã bị hỏng! Xin lỗi vì sự bất tiện này!");
@@ -226,48 +270,8 @@ const DetailDocument = () => {
         window.open(`https://www.facebook.com/sharer/sharer.php?u=${shareLink}`, "popup", `width=${popupWidth},height=${popupHeight},left=${left},top=${top}`);
     };
 
-    const handleReview = async () => {
-        if (star !== 0) {
-            setIsLoading(true);
-            try {
-                const data = {
-                    star: star,
-                    content: content,
-                };
-
-                const response = await postAReview(document.docId, data);
-
-                setIsLoading(false);
-
-                if (response.status === 200) {
-                    setStatus(1);
-                    setMessage("Đánh giá thành công!");
-                    setTimeout(() => {
-                        setStatus(0);
-                    }, 4000);
-                    setIsReviewed(true);
-                    getReviewsByDocument();
-                    setStar(0);
-                    setContent("");
-                } else {
-                    setStatus(-1);
-                    setMessage("Đã xảy ra lỗi! Xin vui lòng thử lại!");
-
-                    setTimeout(() => {
-                        setStatus(0);
-                    }, 4000);
-                }
-            } catch (error) {
-                navigate("/error-500");
-            }
-        } else {
-            setIsStarValid(false);
-        }
-    };
-
-    const handleRatingChange = (newRating) => {
-        setStar(newRating);
-        setIsStarValid(true);
+    const handleAddToCollection = () => {
+        setIsOpenModal(true);
     };
 
     const addToRecentList = async () => {
@@ -276,6 +280,38 @@ const DetailDocument = () => {
         } catch (error) {
             navigate("/error-500");
         }
+    };
+
+    const onAddToCollectionSuccess = () => {
+        setStatus(1);
+        setMessage("Thêm vào bộ sưu tập thành công!");
+        setTimeout(() => {
+            setStatus(0);
+        }, 4000);
+    };
+
+    const onAddToCollectionFailure = () => {
+        setStatus(-1);
+        setMessage("Có lỗi xảy ra! Vui lòng thử lại!");
+        setTimeout(() => {
+            setStatus(0);
+        }, 4000);
+    };
+
+    const onAddReviewSuccess = () => {
+        setStatus(1);
+        setMessage("Đánh giá của bạn sẽ được duyệt trước khi hiển thị!");
+        setTimeout(() => {
+            setStatus(0);
+        }, 4000);
+    };
+
+    const onAddReviewFailure = () => {
+        setStatus(-1);
+        setMessage("Có lỗi xảy ra! Vui lòng thử lại!");
+        setTimeout(() => {
+            setStatus(0);
+        }, 4000);
     };
 
     return (
@@ -298,43 +334,43 @@ const DetailDocument = () => {
                 <div className="flex gap-5 w-full">
                     <div className="bg-white rounded-lg shadow-md p-5 w-3/4">
                         <div>
-                            <h2 className="mt-2 mb-6 text-2xl font-bold text-green-400 dark:text-gray-400 md:text-2xl text-justify">{document && document.docName}</h2>
+                            <h2 className="mt-2 mb-6 text-2xl font-bold text-green-400 dark:text-gray-400 md:text-2xl text-justify">{doc && doc.docName}</h2>
                         </div>
 
                         <div>
-                            <p className="mb-4 mt-4 text-gray-700 dark:text-gray-400 text-sm text-justify">{document && document.docIntroduction}</p>
+                            <p className="mb-4 mt-4 text-gray-700 dark:text-gray-400 text-sm text-justify">{doc && doc.docIntroduction}</p>
                         </div>
 
                         <div className="flex">
                             <div className="w-4/5 flex gap-8 items-center">
-                                <div className="flex items-center font-bold cursor-pointer " onClick={() => navigate("/users/" + document.userUploaded.userId)}>
+                                <div className="flex items-center font-bold cursor-pointer " onClick={() => navigate("/users/" + doc.userUploaded.userId)}>
                                     <HiOutlinePaperAirplane className="w-5 h-5 mr-1 text-gray-500 dark:text-white" />
                                     <span className="block text-base font-normal text-cyan-500 hover:text-cyan-700">
-                                        {document && document.userUploaded && document.userUploaded.lastName} {document && document.userUploaded && document.userUploaded.firstName}
+                                        {doc && doc.userUploaded && doc.userUploaded.lastName} {doc && doc.userUploaded && doc.userUploaded.firstName}
                                     </span>
                                 </div>
 
                                 <div className="flex items-center font-bold">
                                     <HiOutlineCalendar className="w-5 h-5 mr-1 text-gray-500 dark:text-white" />
-                                    <span className="block text-base font-normal text-red-500 dark:text-white">{document && moment(document.updatedAt).format("DD/MM/yyyy")}</span>
+                                    <span className="block text-base font-normal text-red-500 dark:text-white">{doc && moment(doc.updatedAt).format("DD/MM/yyyy")}</span>
                                 </div>
 
                                 <div className="flex items-center font-bold">
                                     <HiOutlineEye className="w-5 h-5 mr-1 text-gray-500 dark:text-white" />
-                                    <span className="block text-base font-normal text-red-500 dark:text-white">{document && document.totalView}</span>
+                                    <span className="block text-base font-normal text-red-500 dark:text-white">{doc && doc.totalView}</span>
                                 </div>
 
                                 <div className="flex items-center font-bold">
                                     <HiOutlineHeart className="w-5 h-5 mr-1 text-gray-500 dark:text-white" />
-                                    <span className="block text-base font-normal text-red-500 dark:text-white">{document && document.totalFavorite}</span>
+                                    <span className="block text-base font-normal text-red-500 dark:text-white">{doc && doc.totalFavorite}</span>
                                 </div>
                             </div>
 
                             <div className="w-1/5 grid place-items-center">
                                 <h1 className="text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400" style={{ fontSize: "3.75rem" }}>
-                                    {document && document.averageRating ? document.averageRating.toFixed(1) : 0}
+                                    {doc && doc.averageRating ? doc.averageRating.toFixed(1) : 0}
                                 </h1>
-                                <p className="mt-2">({document && document.totalReviews} đánh giá)</p>
+                                <p className="mt-2">({doc && doc.totalReviews} đánh giá)</p>
                             </div>
                         </div>
                     </div>
@@ -345,8 +381,8 @@ const DetailDocument = () => {
                                 <HiOutlineLibrary className="w-5 h-5 mr-3 text-gray-800 dark:text-white" />
                                 <span className="block text-base font-medium dark:text-white">Trường</span>
                             </div>
-                            <div className="block mb-2 text-base font-medium text-green-400 dark:text-white hover:text-green-600 cursor-pointer" onClick={() => navigate("/institutions/" + document.organization.slug)}>
-                                {document && document.organization && document.organization.orgName}
+                            <div className="block mb-2 text-base font-medium text-green-400 dark:text-white hover:text-green-600 cursor-pointer" onClick={() => navigate("/institutions/" + doc.organization.slug)}>
+                                {doc && doc.organization && doc.organization.orgName}
                             </div>
                         </div>
 
@@ -355,8 +391,8 @@ const DetailDocument = () => {
                                 <HiOutlineTag className="w-5 h-5 mr-3 text-gray-800 dark:text-white" />
                                 <span className="block text-base font-medium dark:text-white">Danh mục</span>
                             </div>
-                            <div className="block text-base font-medium text-green-400 dark:text-white hover:text-green-600 cursor-pointer" onClick={() => navigate("/categories/" + document.category.slug)}>
-                                {document && document.category && document.category.categoryName}
+                            <div className="block text-base font-medium text-green-400 dark:text-white hover:text-green-600 cursor-pointer" onClick={() => navigate("/categories/" + doc.category.slug)}>
+                                {doc && doc.category && doc.category.categoryName}
                             </div>
                         </div>
 
@@ -365,19 +401,36 @@ const DetailDocument = () => {
                                 <HiOutlineColorSwatch className="w-5 h-5 mr-3 text-gray-800 dark:text-white" />
                                 <span className="block text-base font-medium dark:text-white">Lĩnh vực</span>
                             </div>
-                            <div className="block text-base font-medium text-green-400 dark:text-white hover:text-green-600 cursor-pointer" onClick={() => navigate("/fields/" + document.field.slug)}>
-                                {document && document.field && document.field.fieldName}
+                            <div className="block text-base font-medium text-green-400 dark:text-white hover:text-green-600 cursor-pointer" onClick={() => navigate("/fields/" + doc.field.slug)}>
+                                {doc && doc.field && doc.field.fieldName}
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="flex gap-5 w-full mt-5  mb-5 h-full">
-                    <div className="bg-white rounded-lg shadow-md w-3/4 h-[700px]">
-                        <iframe width="100%" height="700px" className="rounded-lg" title="Tài liệu PDF" src={document && document.viewUrl + "#toolbar=0"}></iframe>
+                <div className="flex gap-5 w-full mt-5 mb-5 h-full">
+                    <div className="bg-white rounded-lg shadow-md w-3/4 h-[700px] relative">
+                        <iframe width="100%" height="700px" className="rounded-lg" title="Tài liệu PDF" src={doc && doc.viewUrl + "#toolbar=0"}></iframe>
+
+                        {isOpenModal && (
+                            <div ref={collectionRef}>
+                                <CollectionListModal docId={doc.docId} onClose={() => setIsOpenModal(false)} onSuccess={onAddToCollectionSuccess} onFailure={onAddToCollectionFailure} />
+                            </div>
+                        )}
                     </div>
 
-                    <div className="w-[18%] fixed right-4 sticky">
+                    {/* <div>
+                        <Document file={a} onLoadSuccess={onDocumentLoadSuccess}>
+                            <Page pageNumber={10} />
+                        </Document>
+                        {pdfString && (
+                            <Document error={""} file={`data:application/pdf;base64,${pdfString}`} onLoadSuccess={onDocumentLoadSuccess}>
+                                <Page pageNumber={2} />
+                            </Document>
+                        )}
+                    </div> */}
+
+                    <div className="w-1/4 fixed right-4 sticky">
                         <div className="flex flex-col gap-y-5 p-3 w-auto">
                             <Button pill className="bg-white text-lg text-gray-700 enabled:hover:bg-red-50 enabled:active:bg-red-100 focus:border focus:ring-0 focus:bg-white border border-solid shadow-lg" onClick={handleLike}>
                                 {isLiked ? <HiHeart className="mr-2 h-7 w-7 text-red-500" /> : <HiOutlineHeart className="mr-2 h-7 w-7 text-red-500" />}
@@ -390,59 +443,37 @@ const DetailDocument = () => {
                             </Button>
 
                             <Button pill className="bg-white text-gray-700 enabled:hover:bg-gray-50 enabled:active:bg-gray-100 focus:border focus:ring-0 focus:bg-white border border-solid shadow-lg" onClick={handleDownload}>
-                                <HiOutlineCloudDownload className="mr-2 h-7 w-7 text-gray-700" />
+                                <HiOutlineCloudDownload className="mr-2 h-7 w-7 text-indigo-500" />
                                 <span className="text-base">Tải về</span>
                             </Button>
 
                             <Button pill className="bg-white text-gray-700 enabled:hover:bg-gray-50 enabled:active:bg-gray-100 focus:border focus:ring-0 focus:bg-white border border-solid shadow-lg" onClick={handleShare}>
-                                <HiOutlineReply className="mr-2 h-7 w-7 text-gray-700" />
+                                <HiOutlineReply className="mr-2 h-7 w-7 text-sky-500" />
                                 <span className="text-base">Chia sẻ</span>
                             </Button>
+
+                            <Button pill className="bg-white text-gray-700 enabled:hover:bg-gray-50 enabled:active:bg-gray-100 focus:border focus:ring-0 focus:bg-white border border-solid shadow-lg" onClick={handleAddToCollection}>
+                                <RiAddFill className="mr-2 h-7 w-7 text-amber-500" />
+                                <span className="text-base">Thêm vào bộ sưu tập</span>
+                            </Button>
+
+                            {!isReviewed && <Review docId={doc && doc.docId} setIsReviewed={() => setIsReviewed(true)} onSuccess={onAddReviewSuccess} onFailure={onAddReviewFailure}/>}
                         </div>
                     </div>
                 </div>
 
-                <div className="flex gap-5">
-                    <div className="bg-white rounded-lg shadow-md p-5 w-3/4 h-fit">
-                        {reviewList.length === 0 && <p className="text-sm font-medium">Chưa có đánh giá!</p>}
-                        <div className="grid grid-cols-2 gap-5">
-                            {reviewList.map((review, index) => (
-                                <div className="shadow-lg rounded-lg border p-3">
-                                    <div className="flex items-center  gap-2" key={review.reviewId}>
-                                        <Avatar alt={review.user.firstName} img={review.user.image} rounded />
-                                        <p className="text-sm font-medium">
-                                            {review.user.lastName} {review.user.firstName}
-                                        </p>
-                                        <StarRating rating={review.star} />
-                                    </div>
+                <ReviewList slug={slug} totalReviews={doc && doc.totalReviews} averageRating={doc && doc.averageRating.toFixed(1)} />
 
-                                    <p className="text-xs text-justify mt-2">{review.content}</p>
-                                </div>
+                {documentList.length > 0 && (
+                    <div className="space-y-3">
+                        <p className="text-lg font-medium">Có thể bạn quan tâm</p>
+                        <div className="grid grid-cols-5 gap-3">
+                            {documentList.map((document, index) => (
+                                <DocumentCard docName={document.docName} slug={document.slug} thumbnail={document.thumbnail} totalView={document.totalView} totalFavorite={document.totalFavorite} key={index} />
                             ))}
                         </div>
                     </div>
-
-                    <div className="bg-white rounded-lg shadow-md p-5 w-1/4 h-fit">
-                        <div className="max-w-md mb-5">
-                            <div className="mb-2 block">
-                                <Label htmlFor="star" value="Rating" />
-                            </div>
-                            <ClickableStarRating onChange={handleRatingChange} />
-                            {!isStarValid && <p className="block mt-2 text-xs font-medium text-red-600 italic">Vui lòng chọn rating</p>}
-                        </div>
-
-                        <div className="max-w-md mb-4">
-                            <div className="mb-2 block">
-                                <Label htmlFor="content" value="Nội dung" />
-                            </div>
-                            <Textarea id="content" className="focus:border-green-500 focus:border-2 focus:ring-0 text-justify" placeholder="Nhập nội dung..." value={content} required rows={5} onChange={(e) => setContent(e.target.value)} />
-                        </div>
-
-                        <Button pill className="bg-green-400 text-white enabled:hover:bg-green-300 enabled:active:bg-green-350 focus:border focus:ring-0 focus:bg-green-350 border border-solid px-3" onClick={handleReview} disabled={isReviewed} isProcessing={isLoading}>
-                            <span className="text-base">Gửi</span>
-                        </Button>
-                    </div>
-                </div>
+                )}
             </div>
         </>
     );

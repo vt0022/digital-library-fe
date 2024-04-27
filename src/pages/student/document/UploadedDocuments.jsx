@@ -11,7 +11,11 @@ import DocumentCard from "../../../components/student/card/Card";
 
 import "./document.css";
 
+import { initFlowbite } from "flowbite";
+
 const UploadedDocument = () => {
+    initFlowbite();
+    
     usePrivateAxios();
 
     const navigate = useNavigate();

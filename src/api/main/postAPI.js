@@ -71,3 +71,12 @@ export const getHistoryOfPost = async (postId) => {
         throw error;
     }
 };
+
+export const getRelatedPosts = async (config) => {
+    try {
+        const response = await axios.get("/posts/related", config);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

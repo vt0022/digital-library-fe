@@ -16,6 +16,10 @@ import UserWall from "../pages/student/user/Wall";
 
 import { useNavigate } from "react-router-dom";
 import RecentDocument from "../pages/student/document/RecentDocuments";
+import ListCollections from "../pages/student/collection/ListCollections";
+import DetailCollection from "../pages/student/collection/DetailCollection";
+import MyCollections from "../pages/student/collection/MyCollections";
+import MyReviews from "../pages/student/review/MyReviews";
 // import Search from "../search/search";
 // import UserHome from "../user/home";
 // import UserProfile from "../user/profile";
@@ -28,14 +32,16 @@ const UserRoute = () => {
             <Route path="/documents/upload" element={<StudentNewDocument />} />
             <Route path="/documents/:slug/edit" element={<StudentEditDocument />} />
             <Route path="/documents/:slug" element={<DetailDocument />} />
+            <Route path="/documents" element={<ListDocument />} />
 
             <Route path="/me/likes" element={<LikedDocument />} />
             <Route path="/me/saves" element={<SavedDocument />} />
             <Route path="/me/uploads" element={<UploadedDocument />} />
             <Route path="/me/recents" element={<RecentDocument />} />
+            <Route path="/me/collections" element={<MyCollections />} />
+            <Route path="/me/reviews" element={<MyReviews />} />
             <Route path="/me" element={<StudentProfile />} />
 
-            <Route path="/documents" element={<ListDocument />} />
             <Route path="/search/:searchQuery" element={<ListDocument />} />
             <Route path="/categories/:categorySlug" element={<ListDocument />} />
             <Route path="/categories" element={<ListCategories />} />
@@ -43,6 +49,8 @@ const UserRoute = () => {
             <Route path="/fields" element={<ListFields />} />
             <Route path="/institutions/:organizationSlug" element={<ListDocument />} />
             <Route path="/institutions" element={<ListOrganizations />} />
+            <Route path="/collections/:collectionSlug" element={<DetailCollection />} />
+            <Route path="/collections" element={<ListCollections />} />
 
             <Route path="/users/:userId" element={<UserWall />} />
 
