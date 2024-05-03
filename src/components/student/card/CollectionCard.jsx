@@ -7,8 +7,8 @@ import { deleteCollection } from "../../../api/main/collectionAPI";
 import CollectionModal from "../modal/CollectionModal";
 import { GiPadlock } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
-import colors from "./../../../assets/JsonData/colors.json";
-import heights from "./../../../assets/JsonData/heights.json";
+import colors from "../../../assets/JsonData/colors.json";
+import heights from "../../../assets/JsonData/heights.json";
 
 const CollectionCard = (props) => {
     const { collection, isMine, refreshList } = props;

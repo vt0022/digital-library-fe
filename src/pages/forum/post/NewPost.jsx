@@ -85,6 +85,8 @@ const NewPost = () => {
                     subsectionId: subsection,
                 });
 
+                setIsLoading(false);
+
                 if (response.status === 200) {
                     setStatus(1);
                     setTimeout(() => {
@@ -92,12 +94,13 @@ const NewPost = () => {
                     }, 2000);
                 } else {
                     setStatus(-1);
-                    console.log(response.message);
+                    setTimeout(() => {
+                        setStatus(0);
+                    }, 2000);
                 }
             } catch (error) {
                 navigate("/error-500");
             }
-            setIsLoading(false);
         } else {
             setIsLoading(false);
         }
@@ -165,7 +168,7 @@ const NewPost = () => {
                 },
             },
             clipboard: {
-                matchVisual: false,
+                matchVisual: true,
             },
         }),
         [imageHandler],
@@ -175,6 +178,20 @@ const NewPost = () => {
 
     return (
         <>
+            {status === -1 && (
+                <Toast className="top-1/5 right-5 w-100 fixed z-50">
+                    <HiX className="h-5 w-5 text-amber-400 dark:text-amber-300" />
+                    <div className="pl-4 text-sm font-normal">Đã xảy ra lỗi! Xin vui lòng thử lại!</div>
+                </Toast>
+            )}
+
+            {status === 1 && (
+                <Toast className="top-1/5 right-5 fixed w-100 z-50">
+                    <HiOutlineCheck className="h-5 w-5 text-green-600 dark:text-green-500" />
+                    <div className="pl-4 text-sm font-normal">Đăng bài thành công!</div>
+                </Toast>
+            )}
+
             <div className="w-5/6 m-auto min-h-screen h-max mt-5 p-5">
                 <div className="items-center mb-5 w-full border-b border-black py-2">
                     <p className="text-3xl font-medium">Bài đăng mới</p>
@@ -211,7 +228,7 @@ const NewPost = () => {
                                     }}
                                     name="labelName"
                                     field="labelId"
-                                    defaultName="(Không nhãn)"
+                                    defaultName={null}
                                     placeholder="(Chọn nhãn)"
                                     defaultValue={null}
                                 />
@@ -308,20 +325,6 @@ const NewPost = () => {
                     </div>
                 </div>
             </div>
-
-            {status === -1 && (
-                <Toast className="top-1/5 right-5 w-100 fixed z-50">
-                    <HiX className="h-5 w-5 text-amber-400 dark:text-amber-300" />
-                    <div className="pl-4 text-sm font-normal">Đã xảy ra lỗi! Xin vui lòng thử lại!</div>
-                </Toast>
-            )}
-
-            {status === 1 && (
-                <Toast className="top-1/5 right-5 fixed w-100 z-50">
-                    <HiOutlineCheck className="h-5 w-5 text-green-600 dark:text-green-500" />
-                    <div className="pl-4 text-sm font-normal">Tải lên thành công!</div>
-                </Toast>
-            )}
         </>
     );
 };

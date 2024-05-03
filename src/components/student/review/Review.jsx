@@ -1,6 +1,5 @@
-import { Button, Label, Textarea, Toast } from "flowbite-react";
+import { Button, Label, Textarea } from "flowbite-react";
 import React, { useState } from "react";
-import { HiOutlineCheck, HiX } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { editAReview, postAReview } from "../../../api/main/reviewAPI";
 import ClickableStarRating from "./../rating/ClickableStarRating";
@@ -61,7 +60,7 @@ const Review = (props) => {
     return (
         <>
             <div className="bg-white rounded-lg shadow-md p-5 h-fit">
-                <div className="max-w-md mb-5">
+                <div className=" mb-5">
                     <div className="mb-2 block">
                         <Label htmlFor="star" value="Rating" />
                     </div>
@@ -69,12 +68,14 @@ const Review = (props) => {
                     {!isStarValid && <p className="block mt-2 text-xs font-medium text-red-600 italic">Vui lòng chọn rating</p>}
                 </div>
 
-                <div className="max-w-md mb-4">
+                <div className="mb-4">
                     <div className="mb-2 block">
                         <Label htmlFor="content" value="Nội dung" />
                     </div>
                     <Textarea id="content" className="focus:border-green-500 focus:border-2 focus:ring-0 text-justify" placeholder="Nhập nội dung..." value={content} required rows={5} onChange={(e) => setContent(e.target.value)} />
                 </div>
+
+                {isEditted && <div className="mb-4 text-xs text-red-500 italic">* Mỗi người có thể chỉnh sửa đánh giá nhiều lần. Nếu đánh giá của bạn đã được duyệt 2 lần thì bạn không thể chỉnh sửa nữa.</div>}
 
                 <div className="flex justify-between">
                     <Button pill className="bg-green-400 text-white enabled:hover:bg-green-300 enabled:active:bg-green-350 focus:border focus:ring-0 focus:bg-green-350 border border-solid px-3" onClick={handleReview} disabled={isLoading} isProcessing={isLoading}>

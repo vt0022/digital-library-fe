@@ -13,7 +13,9 @@ const SelectFilter = (props) => {
                 value={selectedValue}
                 onChange={onChangeHandler}
                 placeholder={placeholder}>
-                <option value={defaultValue}>{defaultName}</option>
+                <option value={defaultValue}>
+                    {defaultName}
+                </option>
                 {options?.map((item) => (
                     <option key={item[field]} value={item[field]} className="bg-white">
                         {item[name]}

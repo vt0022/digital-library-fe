@@ -1,7 +1,7 @@
 import { Spinner } from "flowbite-react";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getPublicCollections } from "../../../api/main/collectionAPI";
+import { getCollections, getPublicCollections } from "../../../api/main/collectionAPI";
 import CollectionCard from "../../../components/student/card/CollectionCard";
 import "./collection.css";
 
@@ -18,6 +18,9 @@ const ListCollections = () => {
     const [isFetching, setIsFetching] = useState(false);
 
     const collectionSectionRef = useRef(null);
+
+    const user = JSON.parse(sessionStorage.getItem("profile"));
+    const accessToken = localStorage.getItem("accessToken");
 
     useEffect(() => {
         const handleScroll = () => {
@@ -37,18 +40,29 @@ const ListCollections = () => {
     }, [noOfCollections]);
 
     useEffect(() => {
-        if(noOfCollections -8 <= totalCollections) getCollectionList();
+        if (noOfCollections - 8 <= totalCollections) getCollectionList();
     }, [noOfCollections]);
 
     const getCollectionList = async () => {
         try {
             setIsFetching(true);
-            const response = await getPublicCollections({
-                params: {
-                    page: 0,
-                    size: noOfCollections,
-                },
-            });
+
+            let response = null;
+            if (user && accessToken)
+                response = await getCollections({
+                    params: {
+                        page: 0,
+                        size: noOfCollections,
+                    },
+                });
+            else
+                response = await getPublicCollections({
+                    params: {
+                        page: 0,
+                        size: noOfCollections,
+                    },
+                });
+
             setIsFetching(false);
             if (response.status === 200) {
                 setCollectionList(response.data.content);

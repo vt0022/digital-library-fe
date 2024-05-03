@@ -9,6 +9,15 @@ export const getPublicCollections = async (config) => {
     }
 };
 
+export const getCollections = async (config) => {
+    try {
+        const response = await privateAxios.get("/collections", config);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const getDetailCollection = async (slug) => {
     try {
         const response = await privateAxios.get(`/collections/${slug}`);
