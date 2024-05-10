@@ -17,3 +17,14 @@
 .card-small .w-fit .absolute {
     width: fit-content;
 } */
+
+.toast {
+    max-width: 40rem !important;
+    width: fit-content !important;
+    left: calc(59% - 20rem) !important;
+}
+
+
+.Toastify__toast-container {
+  width:fit-content !important;
+}

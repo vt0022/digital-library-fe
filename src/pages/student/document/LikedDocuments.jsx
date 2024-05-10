@@ -1,28 +1,37 @@
-import React, { useEffect, useState } from "react";
+import { Pagination } from "flowbite-react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-import { Pagination, Toast } from "flowbite-react";
-import { HiOutlineCheck, HiX } from "react-icons/hi";
-
-import { getLikedDocuments, likeDocument } from "../../../api/main/documentLikeAPI";
+import { Bounce, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { getLikedDocuments, undoUnlikeDocument, unlikeDocument } from "../../../api/main/documentAPI";
 import usePrivateAxios from "../../../api/usePrivateAxios";
-
 import DocumentCard from "../../../components/student/card/Card";
+import "./document.css";
 
 const LikedDocument = () => {
     usePrivateAxios();
 
     const navigate = useNavigate();
 
-    const accessToken = localStorage.getItem("accessToken");
-    const user = JSON.parse(sessionStorage.getItem("profile"));
-
     const [documentList, setDocumentList] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [search, setSearch] = useState("");
-    const [message, setMessage] = useState("Đã xảy ra lỗi! Vui lòng thử lại!");
-    const [status, setStatus] = useState(0);
+
+    const previousLike = useRef(null);
+    const myToast = useRef(null);
+
+    const toastOptions = {
+        position: "bottom-center",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+    };
 
     useEffect(() => {
         getLikedList(currentPage);
@@ -31,6 +40,32 @@ const LikedDocument = () => {
     const onPageChange = (page) => {
         setCurrentPage(page);
     };
+
+    const notifySuccess = (slug, docName) =>
+        (myToast.current = toast.success(
+            <div className="flex space-x-5 items-center">
+                <div className="pl-4 text-sm font-normal">
+                    <p>
+                        Đã xoá <span className="font-semibold">{docName.substring(0, 25) + "..."}</span> khỏi danh sách yêu thích!
+                    </p>
+                </div>
+
+                <button className="rounded-lg p-1.5 text-sm font-medium text-cyan-600 hover:bg-cyan-100" onClick={() => handleUndo(slug)}>
+                    Hoàn tác
+                </button>
+            </div>,
+            toastOptions,
+        ));
+
+    const notifyFailure = () =>
+        toast.error(
+            <div className="flex space-x-5 items-center">
+                <p>Đã xảy ra lỗi, vui lòng thử lại!</p>
+            </div>,
+            toastOptions,
+        );
+
+    const dismissToast = () => toast.dismiss(myToast.current);
 
     const getLikedList = async (page) => {
         try {
@@ -46,55 +81,57 @@ const LikedDocument = () => {
                 setDocumentList(response.data.content);
                 setTotalPages(response.data.totalPages);
             } else {
-                // navigate("/error-500");
+                notifyFailure();
             }
         } catch (error) {
             navigate("/error-500");
         }
     };
 
-    const handleLike = async (slug) => {
+    const handleUnlike = async (slug, docName) => {
+        dismissToast();
+
         try {
-            const response = await likeDocument(slug);
+            const response = await unlikeDocument(slug);
 
             if (response.status === 200) {
-                setMessage("Đã xoá khỏi danh sách yêu thích!");
+                previousLike.current = response.data;
 
-                setCurrentPage(1);
-                getLikedList(currentPage);
+                notifySuccess(slug, docName);
 
-                setStatus(1);
-                setTimeout(() => {
-                    setStatus(0);
-                }, 4000);
+                if (currentPage === totalPages && documentList.length === 1 && totalPages > 1) setCurrentPage(currentPage - 1);
+                else getLikedList(currentPage);
             } else {
-                setStatus(-1);
-                setMessage("Đã xảy ra lỗi! Vui lòng thử lại!");
-                setTimeout(() => {
-                    setStatus(0);
-                }, 4000);
+                notifyFailure();
             }
         } catch (error) {
             navigate("/error-500");
+        }
+    };
+
+    const handleRelike = async (slug, previousLike) => {
+        try {
+            const response = await undoUnlikeDocument(slug, previousLike.current);
+
+            if (response.status === 200) {
+                if (currentPage === totalPages && documentList.length === 12 && totalPages) setCurrentPage(currentPage + 1);
+                else getLikedList(currentPage);
+            }
+        } catch (error) {
+            navigate("/error-500");
+        }
+    };
+
+    const handleUndo = (slug) => {
+        dismissToast();
+
+        if (previousLike.current) {
+            handleRelike(slug, previousLike);
         }
     };
 
     return (
         <>
-            {status === -1 && (
-                <Toast className="top-1/4 right-5 w-100 fixed z-50">
-                    <HiX className="h-5 w-5 bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200" />
-                    <div className="pl-4 text-sm font-normal">{message}</div>
-                </Toast>
-            )}
-
-            {status === 1 && (
-                <Toast className="top-1/4 right-5 fixed w-100 z-50">
-                    <HiOutlineCheck className="h-5 w-5 bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200" />
-                    <div className="pl-4 text-sm font-normal">{message}</div>
-                </Toast>
-            )}
-
             <div className="flex-1 p-4 bg-gray-50 h-full">
                 <div className="rounded-lg bg-white py-8 px-8 ">
                     <div className="mb-5 flex items-center">
@@ -132,12 +169,12 @@ const LikedDocument = () => {
                     )}
 
                     <div className="grid grid-cols-4 gap-8">
-                        {documentList.map((document) => (
-                            <DocumentCard docName={document.docName} slug={document.slug} thumbnail={document.thumbnail} totalView={document.totalView} totalFavorite={document.totalFavorite} type="LIKE" action={() => handleLike(document.slug)} />
+                        {documentList.map((document, index) => (
+                            <DocumentCard docName={document.docName} slug={document.slug} thumbnail={document.thumbnail} totalView={document.totalView} totalFavorite={document.totalFavorite} type="LIKE" action={() => handleUnlike(document.slug, document.docName)} key={index} />
                         ))}
                     </div>
 
-                    {documentList.length !== 0 && (
+                    {totalPages > 1 && (
                         <div className="flex overflow-x-auto sm:justify-center mt-4">
                             <Pagination previousLabel="" nextLabel="" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} showIcons />
                         </div>

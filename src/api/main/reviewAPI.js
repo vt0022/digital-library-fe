@@ -64,15 +64,6 @@ export const countReviewsOfDocument = async (slug) => {
     }
 };
 
-export const checkReviewedStatus = async (slug, config) => {
-    try {
-        const response = await privateAxios.get(`/documents/${slug}/reviewed`, config);
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
-};
-
 export const postAReview = async (docId, data, config) => {
     try {
         const response = await privateAxios.post(`/documents/${docId}/review`, data, config);

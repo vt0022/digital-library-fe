@@ -5,7 +5,7 @@ import { editAReview, postAReview } from "../../../api/main/reviewAPI";
 import ClickableStarRating from "./../rating/ClickableStarRating";
 
 const Review = (props) => {
-    const { docId, reviewId, setIsReviewed, oldStar, oldContent, isEditted, refreshList, cancel, onSuccess, onFailure } = props;
+    const { docId, reviewId, action, oldStar, oldContent, isEditted, refreshList, cancel, onSuccess, onFailure } = props;
     const navigate = useNavigate();
 
     const [star, setStar] = useState(oldStar ? oldStar : 0);
@@ -38,7 +38,7 @@ const Review = (props) => {
                         cancel();
                         refreshList();
                     } else {
-                        setIsReviewed();
+                        action();
                     }
                 } else {
                     onFailure();

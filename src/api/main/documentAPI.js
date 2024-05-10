@@ -247,3 +247,84 @@ export const getRelatedDocuments = async (slug) => {
         throw error;
     }
 };
+
+export const getLikedDocuments = async (config) => {
+    try {
+        const response = await privateAxios.get("/documents/liked", config);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const likeDocument = async (slug) => {
+    try {
+        const response = await privateAxios.post(`/documents/${slug}/like`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const unlikeDocument = async (slug) => {
+    try {
+        const response = await privateAxios.post(`/documents/${slug}/unlike`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const undoUnlikeDocument = async (slug, data) => {
+    try {
+        const response = await privateAxios.post(`/documents/${slug}/relike`, data);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const saveDocument = async (slug) => {
+    try {
+        const response = await privateAxios.post(`/documents/${slug}/save`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const unsaveDocument = async (slug) => {
+    try {
+        const response = await privateAxios.post(`/documents/${slug}/unsave`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const undoUnsaveDocument = async (slug, data) => {
+    try {
+        const response = await privateAxios.post(`/documents/${slug}/resave`, data);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getSavedDocuments = async (config) => {
+    try {
+        const response = await privateAxios.get("/documents/saved", config);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getRecentDocuments = async (config) => {
+    try {
+        const response = await privateAxios.get("/documents/recent", config);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

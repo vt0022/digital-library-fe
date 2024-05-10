@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { HiChatBubbleLeftRight } from "react-icons/hi2";
 import { useNavigate } from "react-router-dom";
 import { getActiveSections } from "../../../api/main/sectionAPI";
 
-import moment from "moment";
+import Subsection from "../../../components/forum/card/Subsection";
 import "./home.css";
-import Subsection from "../../../components/forum/section/Subsection";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -37,10 +35,7 @@ const Home = () => {
                                         <p>{section.sectionName}</p>
                                     </div>
 
-                                    {section.subsections &&
-                                        section.subsections.map((subsection, index) => (
-                                            <Subsection key={index} subsection={subsection} />
-                                        ))}
+                                    {section.subsections && section.subsections.map((subsection, index) => <Subsection key={index} subsection={subsection} />)}
                                 </div>
                             </div>
                         ))}

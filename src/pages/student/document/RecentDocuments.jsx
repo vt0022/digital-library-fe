@@ -6,7 +6,7 @@ import { HiOutlineCheck, HiX } from "react-icons/hi";
 
 import usePrivateAxios from "../../../api/usePrivateAxios";
 
-import { getRecentDocuments } from "../../../api/main/recencyAPI";
+import { getRecentDocuments } from "../../../api/main/documentAPI";
 import DocumentCard from "../../../components/student/card/Card";
 
 const RecentDocument = () => {

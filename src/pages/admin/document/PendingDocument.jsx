@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import ActionButton from "../../../components/management/action-button/ActionButton";
+import SelectFilter from "../../../components/management/select/SelectFilter";
 import Table from "../../../components/management/table/Table";
 
 import { Button, Label, Modal, Pagination, Spinner, TextInput, Toast } from "flowbite-react";
 import { HiDocumentRemove, HiOutlineCheck, HiX } from "react-icons/hi";
 
 import { approveADocument, getPendingDocuments } from "../../../api/main/documentAPI";
+import { getAllOrganizations } from "../../../api/main/organizationAPI";
 import usePrivateAxios from "../../../api/usePrivateAxios";
 
 let selectedPage = 0;
@@ -57,9 +59,10 @@ const PendingDocuments = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [documentList, setDocumentList] = useState([]);
-
+    const [organizationList, setOrganizationList] = useState([]);
     const [openAppoveModal, setOpenAppoveModal] = useState(false);
     const [openRejectModal, setOpenRejectModal] = useState(false);
+    const [organization, setOrganization] = useState("all");
     const [reason, setReason] = useState("");
     const [message, setMessage] = useState("");
     const [status, setStatus] = useState(0);
@@ -68,8 +71,18 @@ const PendingDocuments = () => {
     const [isFetching, setIsFetching] = useState(false);
 
     useEffect(() => {
+        getOrganizationList();
+    }, []);
+
+    useEffect(() => {
         getDocumentList(currentPage);
     }, [currentPage]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+        selectedPage = 0;
+        getDocumentList(1);
+    }, [organization]);
 
     const onPageChange = (page) => {
         setCurrentPage(page);
@@ -83,7 +96,7 @@ const PendingDocuments = () => {
                 params: {
                     page: page - 1,
                     size: 10,
-                    order: "docId",
+                    organization: organization
                 },
             });
             setIsFetching(false);
@@ -92,6 +105,29 @@ const PendingDocuments = () => {
                 setTotalPages(response.data.totalPages);
             } else {
                 // navigate("/admin/login");
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const getOrganizationList = async () => {
+        try {
+            setIsFetching(true);
+            const response = await getAllOrganizations({
+                params: {
+                    page: 0,
+                    size: 1000,
+                    s: "",
+                    deleted: "all",
+                },
+            });
+
+            setIsFetching(false);
+            if (response.status === 200) {
+                setOrganizationList(response.data.content);
+            } else {
+                //navigate("/admin/login");
             }
         } catch (error) {
             console.log(error);
@@ -143,6 +179,29 @@ const PendingDocuments = () => {
     return (
         <div>
             <h2 className="page-header">tài liệu đang chờ</h2>
+
+            <div className="row">
+                <div className="col-12">
+                    <div className="card">
+                        <div className="card__body">
+                            <div className="flex flex-wrap justify-between">
+                                <SelectFilter
+                                    selectName="Trường"
+                                    options={organizationList}
+                                    selectedValue={organization}
+                                    onChangeHandler={(e) => {
+                                        setOrganization(e.target.value);
+                                    }}
+                                    name="orgName"
+                                    field="slug"
+                                    required
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div className="row">
                 <div className="col-12">
                     <div className="card">

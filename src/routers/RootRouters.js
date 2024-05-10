@@ -10,10 +10,10 @@ import ManagerLogin from "./../pages/manager/auth/Login";
 
 import "./../App.css";
 
+import ManagerLayout from "./../components/management/layout/ManagerLayout";
 import Forum from "./../pages/forum/Forum";
 import Home from "./../pages/student/Home";
 import Main from "./../pages/student/Main";
-import ManagerLayout from "./../components/management/layout/ManagerLayout";
 import StudentForgotPassword from "./../pages/student/auth/ForgotPassword";
 import StudentLogin from "./../pages/student/auth/Login";
 import StudentRegister from "./../pages/student/auth/Register";

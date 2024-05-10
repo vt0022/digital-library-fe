@@ -1,21 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-
 import { Button, Toast } from "flowbite-react";
+import moment from "moment/moment";
+import React, { useEffect, useRef, useState } from "react";
 import { HiHeart, HiOutlineBookmark, HiOutlineCalendar, HiOutlineCheck, HiOutlineCloudDownload, HiOutlineColorSwatch, HiOutlineEye, HiOutlineHeart, HiOutlineLibrary, HiOutlinePaperAirplane, HiOutlineReply, HiOutlineTag, HiX } from "react-icons/hi";
 import { RiAddFill } from "react-icons/ri";
-
-import moment from "moment/moment";
-
-import { getADocument, getADocumentForGuest, getRelatedDocuments } from "../../../api/main/documentAPI";
-import { checkLikedStatus, likeDocument } from "../../../api/main/documentLikeAPI";
-import { checkSavedStatus, saveDocument } from "../../../api/main/saveAPI";
-
-import { addToRecentDocuments } from "../../../api/main/recencyAPI";
-import { checkReviewedStatus } from "../../../api/main/reviewAPI";
-import usePrivateAxios from "../../../api/usePrivateAxios";
-
 import { pdfjs } from "react-pdf";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { getADocument, getADocumentForGuest, getRelatedDocuments, likeDocument, saveDocument } from "../../../api/main/documentAPI";
+import usePrivateAxios from "../../../api/usePrivateAxios";
 import DocumentCard from "../../../components/student/card/Card";
 import CollectionListModal from "../../../components/student/modal/CollectionListModal";
 import Review from "../../../components/student/review/Review";
@@ -34,9 +25,6 @@ const DetailDocument = () => {
 
     const [doc, setDocument] = useState(null);
     const [documentList, setDocumentList] = useState([]);
-    const [isLiked, setIsLiked] = useState(false);
-    const [isSaved, setIsSaved] = useState(false);
-    const [isReviewed, setIsReviewed] = useState(false);
     const [message, setMessage] = useState("Đã xảy ra lỗi! Vui lòng thử lại!");
     const [status, setStatus] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
@@ -54,12 +42,6 @@ const DetailDocument = () => {
         getDocumentBySlug();
         getRelatedDocumentList();
 
-        if (user && accessToken) {
-            checkLiked();
-            checkSaved();
-            checkReviewed();
-            addToRecentList();
-        }
         // gapi.load("client:auth2", start);
     }, [slug]);
 
@@ -141,61 +123,16 @@ const DetailDocument = () => {
         }
     };
 
-    const checkLiked = async () => {
-        try {
-            const response = await checkLikedStatus(slug);
-
-            if (response.status === 200) {
-                if (response.message === "Liked") setIsLiked(true);
-                else setIsLiked(false);
-            } else {
-                navigate("/error-404");
-            }
-        } catch (error) {
-            navigate("/error-500");
-        }
-    };
-
-    const checkSaved = async () => {
-        try {
-            const response = await checkSavedStatus(slug);
-
-            if (response.status === 200) {
-                if (response.message === "Saved") setIsSaved(true);
-                else setIsSaved(false);
-            } else {
-                navigate("/error-404");
-            }
-        } catch (error) {
-            navigate("/error-500");
-        }
-    };
-
-    const checkReviewed = async () => {
-        try {
-            const response = await checkReviewedStatus(slug);
-
-            if (response.status === 200) {
-                if (response.message === "Reviewed") setIsReviewed(true);
-                else setIsReviewed(false);
-            } else {
-                navigate("/error-404");
-            }
-        } catch (error) {
-            navigate("/error-500");
-        }
-    };
-
     const handleLike = async () => {
         try {
             const response = await likeDocument(slug);
 
             if (response.status === 200) {
                 if (response.message === "Unlike document successfully") {
-                    setIsLiked(false);
+                    getDocumentBySlug();
                     setMessage("Đã xoá khỏi danh sách yêu thích!");
                 } else {
-                    setIsLiked(true);
+                    getDocumentBySlug();
                     setMessage("Đã thêm vào danh sách yêu thích!");
                 }
                 getDocumentBySlug();
@@ -221,10 +158,10 @@ const DetailDocument = () => {
 
             if (response.status === 200) {
                 if (response.message === "Unsave document successfully") {
-                    setIsSaved(false);
+                    getDocumentBySlug();
                     setMessage("Đã xoá khỏi danh sách đã lưu!");
                 } else {
-                    setIsSaved(true);
+                    getDocumentBySlug();
                     setMessage("Đã thêm vào danh sách đã lưu!");
                 }
                 setStatus(1);
@@ -272,14 +209,6 @@ const DetailDocument = () => {
 
     const handleAddToCollection = () => {
         setIsOpenModal(true);
-    };
-
-    const addToRecentList = async () => {
-        try {
-            await addToRecentDocuments(slug);
-        } catch (error) {
-            navigate("/error-500");
-        }
     };
 
     const onAddToCollectionSuccess = () => {
@@ -433,13 +362,13 @@ const DetailDocument = () => {
                     <div className="w-1/4 fixed right-4 sticky">
                         <div className="flex flex-col gap-y-5 p-3 w-auto">
                             <Button pill className="bg-white text-lg text-gray-700 enabled:hover:bg-red-50 enabled:active:bg-red-100 focus:border focus:ring-0 focus:bg-white border border-solid shadow-lg" onClick={handleLike}>
-                                {isLiked ? <HiHeart className="mr-2 h-7 w-7 text-red-500" /> : <HiOutlineHeart className="mr-2 h-7 w-7 text-red-500" />}
-                                {isLiked ? <span className="text-base">Đã thích</span> : <span className="text-base">Thích</span>}
+                                {doc && doc.liked ? <HiHeart className="mr-2 h-7 w-7 text-red-500" /> : <HiOutlineHeart className="mr-2 h-7 w-7 text-red-500" />}
+                                {doc && doc.liked ? <span className="text-base">Đã thích</span> : <span className="text-base">Thích</span>}
                             </Button>
 
                             <Button pill className="bg-white text-gray-700 enabled:hover:bg-green-50 enabled:active:bg-green-100 focus:border focus:ring-0 focus:bg-white border border-solid shadow-lg" onClick={handleSave}>
-                                {isSaved ? <HiOutlineBookmark className="mr-2 h-7 w-7 fill-green-500 text-green-500" /> : <HiOutlineBookmark className="mr-2 h-7 w-7 text-green-500" />}
-                                {isSaved ? <span className="text-base">Đã lưu</span> : <span className="text-base">Lưu</span>}
+                                {doc && doc.saved ? <HiOutlineBookmark className="mr-2 h-7 w-7 fill-green-500 text-green-500" /> : <HiOutlineBookmark className="mr-2 h-7 w-7 text-green-500" />}
+                                {doc && doc.saved ? <span className="text-base">Đã lưu</span> : <span className="text-base">Lưu</span>}
                             </Button>
 
                             <Button pill className="bg-white text-gray-700 enabled:hover:bg-gray-50 enabled:active:bg-gray-100 focus:border focus:ring-0 focus:bg-white border border-solid shadow-lg" onClick={handleDownload}>
@@ -457,7 +386,7 @@ const DetailDocument = () => {
                                 <span className="text-base">Thêm vào bộ sưu tập</span>
                             </Button>
 
-                            {!isReviewed && <Review docId={doc && doc.docId} setIsReviewed={() => setIsReviewed(true)} onSuccess={onAddReviewSuccess} onFailure={onAddReviewFailure}/>}
+                            {doc && !doc.reviewed && <Review docId={doc && doc.docId} action={getDocumentBySlug} onSuccess={onAddReviewSuccess} onFailure={onAddReviewFailure} />}
                         </div>
                     </div>
                 </div>
