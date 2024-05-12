@@ -1,23 +1,10 @@
-import React from "react";
-
-import "./topnav.css";
-
+import profileImage from "@assets/images/default_profile.jpg";
+import notifications from "@assets/json-data/notification.json";
+import user_menu from "@assets/json-data/user_menus.json";
+import Dropdown from "@components/management/dropdown/Dropdown";
+import ThemeMenu from "@components/management/thememenu/ThemeMenu";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-
-import Dropdown from "../dropdown/Dropdown";
-
-import ThemeMenu from "../thememenu/ThemeMenu";
-
-import notifications from "../../../assets/JsonData/notification.json";
-
-import profileImage from "../../../assets/images/default_profile.jpg";
-
-import user_menu from "../../../assets/JsonData/user_menus.json";
-
-// const curr_user = {
-//     display_name: "Tuat Tran",
-//     image: user_image,
-// };
+import "./topnav.css";
 
 const Topnav = () => {
     const navigate = useNavigate();
@@ -35,9 +22,9 @@ const Topnav = () => {
             <div className="topnav__right-user__image">
                 <img src={user && user.image ? user.image : profileImage} alt="Avatar" />
             </div>
-            <div className="topnav__right-user__name">
+            {/* <div className="topnav__right-user__name">
                 {user && user.lastName} {user && user.firstName}
-            </div>
+            </div> */}
         </div>
     );
 
@@ -45,7 +32,9 @@ const Topnav = () => {
         <Link to={item.link} key={index} onClick={handleMenuClick(item)}>
             <div className="notification-item">
                 <i className={item.icon}></i>
-                <span>{item.content}</span>
+                <span>
+                    {item.content} {item.content === "Hello, " ? user && user.firstName : ""}
+                </span>
             </div>
         </Link>
     );
@@ -64,8 +53,8 @@ const Topnav = () => {
     const handleLogoutClick = (event) => {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
-       if (currentPath.includes("/manager")) navigate("/manager/login");
-       else navigate("/admin/login");
+        if (currentPath.includes("/manager")) navigate("/manager/login");
+        else navigate("/admin/login");
 
         event.preventDefault();
     };
@@ -98,13 +87,7 @@ const Topnav = () => {
 
     return (
         <div className="topnav">
-            <div className="topnav__search">
-                {/* {user && user.role && user.role.roleName === "ROLE_ADMIN" && (
-                    <>
-                        <input className="search_input" type="text" placeholder="" />
-                        <i className="bx bx-search"></i>
-                    </>
-                )} */}
+            <div>
                 {user && user.role && user.role.roleName === "ROLE_MANAGER" && (
                     <h1 className="text-xl font-extrabold text-gray-900 dark:text-white md:text-xl lg:text-2xl p-2 self-center">
                         <span className="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-green-400 self-center">{user && user.organization && user.organization.orgName}</span>

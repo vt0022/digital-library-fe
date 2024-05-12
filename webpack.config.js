@@ -1,19 +1,25 @@
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
+const path = require("path");
 
 module.exports = {
-    // ...
-    plugins: [
-        new NodePolyfillPlugin()
-    ],
+    plugins: [new NodePolyfillPlugin()],
 
-    resolve : {
+    resolve: {
         fallback: {
-            "fs": false,
-            "tls": false,
-            "net": false,
-            "path": false,
-        }
-    }
-};
+            fs: false,
+            tls: false,
+            net: false,
+            path: false,
+        },
 
-// Path: digital-library-fe/src/index.js
+        modules: [path.resolve(__dirname, "./src"), "node_modules"],
+
+        alias: {
+            api: path.resolve(__dirname, "./src/api"),
+            assets: path.resolve(__dirname, "./src/assets"),
+            components: path.resolve(__dirname, "./src/components"),
+            pages: path.resolve(__dirname, "./src/pages"),
+            routers: path.resolve(__dirname, "./src/routers"),
+        },
+    },
+};

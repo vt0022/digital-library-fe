@@ -1,5 +1,5 @@
 .status-card {
-    padding: 30px;
+    padding: 40px 20px 40px 20px;
     display: flex;
     align-items: center;
     background-color: var(--main-bg);
@@ -9,7 +9,8 @@
     overflow: hidden;
     z-index: 1;
     transition: color 0.5s ease 0s;
-    margin-bottom: 30px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .status-card__icon {
@@ -26,7 +27,8 @@
     flex-grow: 1;
     text-align: center;
     z-index: 1;
-    text-transform: capitalize;
+    font-size: 15px;
+    font-weight: 500;
 }
 
 .status-card__info > h4 {

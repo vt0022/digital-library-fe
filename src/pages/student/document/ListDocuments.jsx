@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { Pagination, Spinner } from "flowbite-react";
@@ -13,7 +13,7 @@ import { searchDocumentsForGuest, searchDocumentsForStudent } from "../../../api
 import { getAccessibleFields } from "../../../api/main/fieldAPI";
 import { getAccessibleOrganizations } from "../../../api/main/organizationAPI";
 
-import sortOptions from "../../../assets/JsonData/sortOptions.json";
+import sortOptions from "../../../assets/json-data/sortOptions.json";
 
 import usePrivateAxios from "../../../api/usePrivateAxios";
 

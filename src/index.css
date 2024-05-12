@@ -26,3 +26,7 @@ code {
   flex-direction: column;
   min-height: 100vh;
 } */
+
+.Toastify__toast-container {
+  width:fit-content !important;
+}

@@ -1,9 +1,10 @@
 .topnav {
-    padding: 30px;
+    padding: 15px 30px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: var(--topnav-height);
+    /* height: var(--topnav-height); */
+    height: fit-content;
     background-color: var(--main-bg);
     box-shadow: var(--box-shadow);
     border-radius: var(--border-radius);
@@ -68,8 +69,8 @@
 }
 
 .topnav__right-user__image {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     overflow: hidden;
     margin-right: 10px;

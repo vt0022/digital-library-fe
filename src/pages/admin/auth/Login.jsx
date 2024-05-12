@@ -1,17 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-
 import { useDispatch } from "react-redux";
-import loginAction from "../../../redux/actions/LoginAction";
-
-import axios from "../../../api/axios";
-
+import loginAction from "@redux/actions/LoginAction";
+import axios from "@api/axios";
 import { Button, Checkbox, Label, Toast } from "flowbite-react";
 import { HiOutlineCheck, HiX } from "react-icons/hi";
-
-import { emailRegrex } from "../../../utils/regrex";
-
-import { getProfile } from "../../../api/main/userAPI";
+import { emailRegrex } from "@utils/regrex";
+import { getProfile } from "@api/main/userAPI";
 import "./login-form.css";
 
 
@@ -135,6 +130,7 @@ const AdminLogin = () => {
                     }
                 }
             } catch (error) {
+                setIsLoading(false);
                 setStatus(-1);
                 setMessage("Đã xảy ra lỗi! Xin vui lòng thử lại!");
                 setTimeout(() => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useMatch, useNavigate, useParams } from "react-router-dom";
 
 import ActionButton from "../../../components/management/action-button/ActionButton";
@@ -14,8 +14,8 @@ import { getAllFields } from "../../../api/main/fieldAPI";
 import { getAllOrganizations } from "../../../api/main/organizationAPI";
 import usePrivateAxios from "../../../api/usePrivateAxios";
 
-import scopeList from "../../../assets/JsonData/scopes.json";
-import verifiedStatusList from "../../../assets/JsonData/verified_status_list.json";
+import scopeList from "../../../assets/json-data/scopes.json";
+import verifiedStatusList from "../../../assets/json-data/verified_status_list.json";
 
 let selectedPage = 0;
 

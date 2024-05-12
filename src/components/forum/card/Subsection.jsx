@@ -1,8 +1,7 @@
 import moment from "moment";
-import React from "react";
 import { HiChatBubbleLeftRight } from "react-icons/hi2";
 import { useNavigate } from "react-router-dom";
-import colors from "../../../assets/JsonData/colors.json";
+import colors from "../../../assets/json-data/colors.json";
 
 const Subsection = (props) => {
     const { subsection } = props;

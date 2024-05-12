@@ -1,21 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-
+import { getRecentDocuments } from "@api/main/documentAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
+import DocumentCard from "@components/student/card/Card";
 import { Toast } from "flowbite-react";
+import { useEffect, useState } from "react";
 import { HiOutlineCheck, HiX } from "react-icons/hi";
-
-import usePrivateAxios from "../../../api/usePrivateAxios";
-
-import { getRecentDocuments } from "../../../api/main/documentAPI";
-import DocumentCard from "../../../components/student/card/Card";
+import { useNavigate } from "react-router-dom";
 
 const RecentDocument = () => {
     usePrivateAxios();
 
     const navigate = useNavigate();
-
-    const accessToken = localStorage.getItem("accessToken");
-    const user = JSON.parse(sessionStorage.getItem("profile"));
 
     const [documentList, setDocumentList] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);

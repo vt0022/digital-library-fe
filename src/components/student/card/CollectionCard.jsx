@@ -1,14 +1,14 @@
 import { Button, Modal, Toast, Tooltip } from "flowbite-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import { CgExtensionRemove } from "react-icons/cg";
+import { GiPadlock } from "react-icons/gi";
 import { HiOutlineCheck, HiX } from "react-icons/hi";
 import { RiDeleteBinFill, RiEditCircleLine } from "react-icons/ri";
-import { deleteCollection } from "../../../api/main/collectionAPI";
-import CollectionModal from "../modal/CollectionModal";
-import { GiPadlock } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
-import colors from "../../../assets/JsonData/colors.json";
-import heights from "../../../assets/JsonData/heights.json";
+import { deleteCollection } from "../../../api/main/collectionAPI";
+import colors from "../../../assets/json-data/colors.json";
+import heights from "../../../assets/json-data/heights.json";
+import CollectionModal from "../modal/CollectionModal";
 
 const CollectionCard = (props) => {
     const { collection, isMine, refreshList } = props;
@@ -86,7 +86,7 @@ const CollectionCard = (props) => {
                 )}
             </div>
 
-            <p className="font-medium text-base mt-3 mb-3 cursor-pointer collection-name" onClick={() => navigate(`/collections/${collection.slug}`)} style={{"--hover-color": getRandomColor.hover, "--active-color": getRandomColor.active }}>
+            <p className="font-medium text-base mt-3 mb-3 cursor-pointer collection-name" onClick={() => navigate(`/collections/${collection.slug}`)} style={{ "--hover-color": getRandomColor.hover, "--active-color": getRandomColor.active }}>
                 {collection.collectionName}
             </p>
             {/* 

@@ -1,0 +1,42 @@
+[
+    {
+        "display_name": "Trang chủ",
+        "route": "/admin/home",
+        "icon": "bx bx-atom"
+    },
+    {
+        "display_name": "Tài liệu",
+        "route": "/admin/documents",
+        "icon": "bx bx-file"
+    },
+    {
+        "display_name": "Danh mục",
+        "route": "/admin/categories",
+        "icon": "bx bx-category-alt"
+    },
+    {
+        "display_name": "Lĩnh vực",
+        "route": "/admin/fields",
+        "icon": "bx bx-cube"
+    },
+    {
+        "display_name": "Trường học",
+        "route": "/admin/organizations",
+        "icon": "bx bx-buildings"
+    },
+    {
+        "display_name": "Người dùng",
+        "route": "/admin/users",
+        "icon": "bx bx-user"
+    },
+    {
+        "display_name": "Phê duyệt",
+        "route": "/admin/documents/pending",
+        "icon": "bx bx-notification"
+    },
+        {
+            "display_name": "Chuyên mục",
+            "route": "/admin/subsections",
+            "icon": "bx bx-notification"
+        }
+]

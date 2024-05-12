@@ -1,19 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-
-import OrganizationModal from "../../../components/management/admin/modal/organization/OrganizationModal";
-import Table from "../../../components/management/table/Table";
-
-import ActionButton from "../../../components/management/action-button/ActionButton";
-
+import { activateAnOrganization, deleteAnOrganization, getAllOrganizations } from "@api/main/organizationAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
+import ActionButton from "@components/management/action-button/ActionButton";
+import OrganizationModal from "@components/management/admin/modal/organization/OrganizationModal";
+import SelectFilter from "@components/management/select/SelectFilter";
+import Table from "@components/management/table/Table";
 import { Badge, Button, Modal, Pagination, Spinner, Toast, Tooltip } from "flowbite-react";
-
-import { activateAnOrganization, deleteAnOrganization, getAllOrganizations } from "../../../api/main/organizationAPI";
-import usePrivateAxios from "../../../api/usePrivateAxios";
-
+import { useEffect, useState } from "react";
 import { HiCheck, HiDocumentRemove, HiOutlineCheck, HiX } from "react-icons/hi";
-
-import SelectFilter from "../../../components/management/select/SelectFilter";
+import { useNavigate } from "react-router-dom";
 
 let selectedPage = 0;
 

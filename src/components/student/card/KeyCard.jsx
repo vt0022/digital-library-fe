@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 
-import { HiOutlineTag, HiOutlineBookOpen } from "react-icons/hi";
+import { HiOutlineBookOpen, HiOutlineTag } from "react-icons/hi";
 
-import colors from "../../../assets/JsonData/colors.json";
+import colors from "../../../assets/json-data/colors.json";
 
 import "./card.css";
 

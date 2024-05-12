@@ -36,6 +36,7 @@ import App from "./App";
 import "./index.css";
 
 import "flowbite";
+import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 
 const store = createStore(rootReducer);

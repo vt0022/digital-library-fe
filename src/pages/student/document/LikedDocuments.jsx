@@ -1,8 +1,7 @@
 import { Pagination } from "flowbite-react";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { getLikedDocuments, undoUnlikeDocument, unlikeDocument } from "../../../api/main/documentAPI";
 import usePrivateAxios from "../../../api/usePrivateAxios";
 import DocumentCard from "../../../components/student/card/Card";

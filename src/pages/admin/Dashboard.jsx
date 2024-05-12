@@ -1,32 +1,25 @@
-import React, { useEffect, useState } from "react";
-
+import { getLatestDocuments } from "@api/main/documentAPI";
+import { getGeneralStatistics, getYearlyStatistics } from "@api/main/statisticsAPI";
+import { getLatestUsers } from "@api/main/userAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
+import StatusCard from "@components/management/status-card/StatusCard";
+import Table from "@components/management/table/Table";
+import { Button, Datepicker, Radio, Select } from "flowbite-react";
+import moment from "moment";
+import { useEffect, useState } from "react";
+import Chart from "react-apexcharts";
+import { GoDash } from "react-icons/go";
+import { TbMoodEmpty } from "react-icons/tb";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-import Chart from "react-apexcharts";
-
-import { useSelector } from "react-redux";
-
-import StatusCard from "../../components/management/status-card/StatusCard";
-
-import Table from "../../components/management/table/Table";
-
-import { Button, Datepicker, Radio, Select } from "flowbite-react";
-import moment, { isMoment } from "moment";
-import { TbMoodEmpty } from "react-icons/tb";
-import { getLatestDocuments } from "../../api/main/documentAPI";
-import { getGeneralStatistics } from "../../api/main/statisticsAPI";
-import { getLatestUsers } from "../../api/main/userAPI";
-import usePrivateAxios from "../../api/usePrivateAxios";
-
-import { GoDash } from "react-icons/go";
-
 const lineOptions = {
-    color: ["#6ab04c", "#2980b9"],
     chart: {
         background: "transparent",
     },
     stroke: {
-        curve: "smooth",
+        curve: "monotoneCubic",
+        width: 3,
     },
     xaxis: {
         categories: ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12"],
@@ -101,31 +94,36 @@ const Dashboard = () => {
     const [totalDocuments, setTotalDocuments] = useState(0);
     const [totalPendingDocuments, setTotalPendingDocuments] = useState(0);
     const [totalUsers, setTotalUsers] = useState(0);
-    const [latestUsers, setLatestUsers] = useState([]);
-    const [latestDocuments, setLatestDocuments] = useState([]);
+    const [totalCategories, setTotalCategories] = useState(0);
+    const [totalFields, setTotalFields] = useState(0);
+    const [totalOrganizations, setTotalOrganizations] = useState(0);
+    const [totalPosts, setTotalPosts] = useState(0);
+    const [totalReplies, setTotalReplies] = useState(0);
+    const [totalSubsections, setTotalSubsections] = useState(0);
+    const [totalLabels, setTotalLabels] = useState(0);
     const [documentsByMonth, setDocumentsByMonth] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
     const [usersByMonth, setUsersByMonth] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    const [postsByMonth, setPostsByMonth] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    const [repliesByMonth, setRepliesByMonth] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
     const [documentsByCategory, setDocumentsByCategory] = useState([]);
     const [documentsByField, setDocumentsByField] = useState([]);
     const [documentsByOrganization, setDocumentsByOrganization] = useState([]);
+    const [usersByOrganization, setUsersByOrganization] = useState([]);
+    const [postsBySubsection, setPostsBySubsection] = useState([]);
+    const [postsByLabel, setPostsByLabel] = useState([]);
+    const [repliesBySubsection, setRepliesBySubsection] = useState([]);
+    const [repliesByLabel, setRepliesByLabel] = useState([]);
+
+    const [latestUsers, setLatestUsers] = useState([]);
+    const [latestDocuments, setLatestDocuments] = useState([]);
+
+    const [year, setYear] = useState(new Date().getFullYear()); // [2021, 2022, 2023, ...
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [dateRange, setDateRange] = useState("all"); // ["all", "1month", "3months", "6months", "1year"]
     const [isGeneral, setIsGeneral] = useState(true);
 
     const statusCards = [
-        {
-            icon: "bx bx-user",
-            count: totalUsers,
-            title: "Người dùng",
-            link: "/admin/users",
-        },
-        {
-            icon: "bx bx-bar-chart-alt-2",
-            count: 0,
-            title: "Lượt truy cập",
-            link: "#",
-        },
         {
             icon: "bx bx-file",
             count: totalDocuments,
@@ -135,12 +133,72 @@ const Dashboard = () => {
         {
             icon: "bx bx-time-five",
             count: totalPendingDocuments,
-            title: "Đang chờ duyệt",
+            title: "Tài liệu đang chờ",
             link: "/admin/documents/pending",
+        },
+        {
+            icon: "bx bxs-star-half",
+            count: 0,
+            title: "Đánh giá",
+            link: "/admin/documents/pending",
+        },
+        {
+            icon: "bx bx-time",
+            count: 0,
+            title: "Đánh giá đang chờ",
+            link: "/admin/documents/pending",
+        },
+        {
+            icon: "bx bx-user",
+            count: totalUsers,
+            title: "Người dùng",
+            link: "/admin/users",
+        },
+        {
+            icon: "bx bx-category",
+            count: totalCategories,
+            title: "Danh mục",
+            link: "/admin/users",
+        },
+        {
+            icon: "bx bx-bulb",
+            count: totalFields,
+            title: "Lĩnh vực",
+            link: "/admin/documents",
+        },
+        {
+            icon: "bx bxs-school",
+            count: totalOrganizations,
+            title: "Trường",
+            link: "/admin/documents/pending",
+        },
+        {
+            icon: "bx bx-message-square-dots",
+            count: totalPosts,
+            title: "Bài viết",
+            link: "/admin/users",
+        },
+        {
+            icon: "bx bx-reply",
+            count: totalReplies,
+            title: "Phản hồi",
+            link: "/admin/documents",
+        },
+        {
+            icon: "bx bx-detail",
+            count: totalSubsections,
+            title: "Chuyên mục",
+            link: "/admin/documents/pending",
+        },
+        {
+            icon: "bx bx-purchase-tag",
+            count: totalLabels,
+            title: "Nhãn",
+            link: "/admin/users",
         },
     ];
 
-    const lineSeries = [
+    const userDocumentLineSeries = [
         {
             name: "Tài liệu",
             data: Object.values(documentsByMonth),
@@ -151,16 +209,31 @@ const Dashboard = () => {
         },
     ];
 
+    const postReplyLineSeries = [
+        {
+            name: "Bài đăng",
+            data: Object.values(postsByMonth),
+        },
+        {
+            name: "Phản hồi",
+            data: Object.values(repliesByMonth),
+        },
+    ];
+
     useEffect(() => {
         getLatestUserList();
         getLatestDocumentList();
     }, []);
 
     useEffect(() => {
-        getStatistics();
+        getYearlyStatisticsForAdmin();
+    }, [year]);
+
+    useEffect(() => {
+        getGeneralStatisticsForAdmin();
     }, [isGeneral, dateRange]);
 
-    const getStatistics = async () => {
+    const getGeneralStatisticsForAdmin = async () => {
         try {
             let params = null;
             if (isGeneral) {
@@ -183,11 +256,38 @@ const Dashboard = () => {
                 setTotalDocuments(response.data.totalDocuments);
                 setTotalPendingDocuments(response.data.totalPendingDocuments);
                 setTotalUsers(response.data.totalUsers);
-                setDocumentsByMonth(response.data.documentsByMonth);
+                setTotalCategories(response.data.totalCategories);
+                setTotalFields(response.data.totalFields);
+                setTotalOrganizations(response.data.totalOrganizations);
+                setTotalPosts(response.data.totalPosts);
+                setTotalReplies(response.data.totalReplies);
+                setTotalSubsections(response.data.totalSubsections);
+                setTotalLabels(response.data.totalLabels);
                 setDocumentsByCategory(response.data.documentsByCategory);
                 setDocumentsByField(response.data.documentsByField);
                 setDocumentsByOrganization(response.data.documentsByOrganization);
+                setUsersByOrganization(response.data.usersByOrganization);
+                setPostsBySubsection(response.data.postsBySubsection);
+                setPostsByLabel(response.data.postsByLabel);
+                setRepliesBySubsection(response.data.repliesBySubsection);
+                setRepliesByLabel(response.data.repliesByLabel);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const getYearlyStatisticsForAdmin = async () => {
+        try {
+            const response = await getYearlyStatistics({
+                params: { year: year },
+            });
+
+            if (response.status === 200) {
+                setDocumentsByMonth(response.data.documentsByMonth);
                 setUsersByMonth(response.data.usersByMonth);
+                setPostsByMonth(response.data.postsByMonth);
+                setRepliesByMonth(response.data.repliesByMonth);
             }
         } catch (error) {
             console.log(error);
@@ -219,10 +319,10 @@ const Dashboard = () => {
     };
 
     return (
-        <div>
-            <h2 className="page-header">Dashboard</h2>
-
+        <div className="space-y-10">
             <div className="row">
+                <h2 className="page-header px-[15px]">Tổng quan</h2>
+
                 <div className="col-12">
                     <div className="card flex items-center space-x-10 justify-between">
                         <div className="card__body min-w-1/4 w-fit flex space-x-5 items-center">
@@ -272,46 +372,20 @@ const Dashboard = () => {
                                     required
                                 />
 
-                                <Button color="success" onClick={() => getStatistics()}>Áp dụng</Button>
+                                <Button color="success" onClick={getGeneralStatisticsForAdmin}>
+                                    Áp dụng
+                                </Button>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div className="row">
-                <div className="flex">
-                    <div className="col-6">
-                        <div className="row">
-                            {statusCards.map((item, index) => (
-                                <div className="col-6" key={index}>
-                                    <StatusCard icon={item.icon} count={item.count} title={item.title} link={item.link} />
-                                </div>
-                            ))}
+                <div className="flex w-full grid grid-cols-4">
+                    {statusCards.map((item, index) => (
+                        <div className="col-3 w-full" key={index}>
+                            <StatusCard icon={item.icon} count={item.count} title={item.title} link={item.link} />
                         </div>
-                    </div>
-
-                    <div className="col-6">
-                        <div className="card full-height">
-                            {/* chart */}
-                            <Chart
-                                options={
-                                    themeReducer === "theme-mode-dark"
-                                        ? {
-                                              ...lineOptions,
-                                              theme: { mode: "dark" },
-                                          }
-                                        : {
-                                              ...lineOptions,
-                                              theme: { mode: "light" },
-                                          }
-                                }
-                                series={lineSeries}
-                                type="line"
-                                height="100%"
-                            />
-                        </div>
-                    </div>
+                    ))}
                 </div>
 
                 <div className="flex w-full">
@@ -328,27 +402,15 @@ const Dashboard = () => {
 
                             {Object.keys(documentsByCategory).length > 0 && (
                                 <Chart
-                                    options={
-                                        themeReducer === "theme-mode-dark"
-                                            ? {
-                                                  ...pieOptions,
-                                                  theme: { mode: "dark", palette: "palette5" },
-                                                  labels: Object.keys(documentsByCategory),
-                                                  title: {
-                                                      ...pieOptions.title,
-                                                      text: "Tài liệu theo danh mục",
-                                                  },
-                                              }
-                                            : {
-                                                  ...pieOptions,
-                                                  theme: { mode: "light", palette: "palette5" },
-                                                  labels: Object.keys(documentsByCategory),
-                                                  title: {
-                                                      ...pieOptions.title,
-                                                      text: "Tài liệu theo danh mục",
-                                                  },
-                                              }
-                                    }
+                                    options={{
+                                        ...pieOptions,
+                                        theme: { mode: themeReducer === "theme-mode-dark" ? "dark" : "light", palette: "palette5" },
+                                        labels: Object.keys(documentsByCategory),
+                                        title: {
+                                            ...pieOptions.title,
+                                            text: "Tài liệu theo danh mục",
+                                        },
+                                    }}
                                     series={Object.values(documentsByCategory)}
                                     type="donut"
                                     height="300px"
@@ -370,27 +432,15 @@ const Dashboard = () => {
 
                             {Object.keys(documentsByField).length > 0 && (
                                 <Chart
-                                    options={
-                                        themeReducer === "theme-mode-dark"
-                                            ? {
-                                                  ...pieOptions,
-                                                  theme: { mode: "dark", palette: "palette8" },
-                                                  labels: Object.keys(documentsByField),
-                                                  title: {
-                                                      ...pieOptions.title,
-                                                      text: "Tài liệu theo lĩnh vực",
-                                                  },
-                                              }
-                                            : {
-                                                  ...pieOptions,
-                                                  theme: { mode: "light", palette: "palette8" },
-                                                  labels: Object.keys(documentsByField),
-                                                  title: {
-                                                      ...pieOptions.title,
-                                                      text: "Tài liệu theo lĩnh vực",
-                                                  },
-                                              }
-                                    }
+                                    options={{
+                                        ...pieOptions,
+                                        theme: { mode: themeReducer === "theme-mode-dark" ? "dark" : "light", palette: "palette8" },
+                                        labels: Object.keys(documentsByField),
+                                        title: {
+                                            ...pieOptions.title,
+                                            text: "Tài liệu theo lĩnh vực",
+                                        },
+                                    }}
                                     series={Object.values(documentsByField)}
                                     type="polarArea"
                                     height="300px"
@@ -412,32 +462,237 @@ const Dashboard = () => {
 
                             {Object.keys(documentsByOrganization).length > 0 && (
                                 <Chart
-                                    options={
-                                        themeReducer === "theme-mode-dark"
-                                            ? {
-                                                  ...pieOptions,
-                                                  theme: { mode: "dark" },
-                                                  labels: Object.keys(documentsByOrganization),
-                                                  title: {
-                                                      ...pieOptions.title,
-                                                      text: "Tài liệu theo trường",
-                                                  },
-                                              }
-                                            : {
-                                                  ...pieOptions,
-                                                  theme: { mode: "light" },
-                                                  labels: Object.keys(documentsByOrganization),
-                                                  title: {
-                                                      ...pieOptions.title,
-                                                      text: "Tài liệu theo trường",
-                                                  },
-                                              }
-                                    }
+                                    options={{
+                                        ...pieOptions,
+                                        theme: { mode: themeReducer === "theme-mode-dark" ? "dark" : "light" },
+                                        labels: Object.keys(documentsByOrganization),
+                                        title: {
+                                            ...pieOptions.title,
+                                            text: "Tài liệu theo trường",
+                                        },
+                                    }}
                                     series={Object.values(documentsByOrganization)}
                                     type="pie"
                                     height="300px"
                                 />
                             )}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex w-full">
+                    <div className="col-4 w-full">
+                        <div className="card full-height w-full flex flex-col">
+                            {Object.keys(usersByOrganization).length === 0 && (
+                                <>
+                                    <p class="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
+                                        Người dùng theo trường
+                                    </p>
+                                    <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
+                                </>
+                            )}
+
+                            {Object.keys(usersByOrganization).length > 0 && (
+                                <Chart
+                                    options={{
+                                        ...pieOptions,
+                                        theme: { mode: themeReducer === "theme-mode-dark" ? "dark" : "light", palette: "palette5" },
+                                        labels: Object.keys(usersByOrganization),
+                                        title: {
+                                            ...pieOptions.title,
+                                            text: "Người dùng theo trường",
+                                        },
+                                    }}
+                                    series={Object.values(usersByOrganization)}
+                                    type="donut"
+                                    height="300px"
+                                />
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="col-4 w-full">
+                        <div className="card full-height w-full flex flex-col">
+                            {Object.keys(postsBySubsection).length === 0 && (
+                                <>
+                                    <p class="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
+                                        Bài đăng theo phân mục
+                                    </p>
+                                    <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
+                                </>
+                            )}
+
+                            {Object.keys(postsBySubsection).length > 0 && (
+                                <Chart
+                                    options={{
+                                        ...pieOptions,
+                                        theme: { mode: themeReducer === "theme-mode-dark" ? "dark" : "light", palette: "palette8" },
+                                        labels: Object.keys(postsBySubsection),
+                                        title: {
+                                            ...pieOptions.title,
+                                            text: "Bài đăng theo phân mục",
+                                        },
+                                    }}
+                                    series={Object.values(postsBySubsection)}
+                                    type="polarArea"
+                                    height="300px"
+                                />
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="col-4 w-full">
+                        <div className="card full-height w-full flex flex-col">
+                            {Object.keys(postsByLabel).length === 0 && (
+                                <>
+                                    <p class="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
+                                        Bài đăng theo nhãn
+                                    </p>
+                                    <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
+                                </>
+                            )}
+
+                            {Object.keys(postsByLabel).length > 0 && (
+                                <Chart
+                                    options={{
+                                        ...pieOptions,
+                                        theme: { mode: themeReducer === "theme-mode-dark" ? "dark" : "light" },
+                                        labels: Object.keys(postsByLabel),
+                                        title: {
+                                            ...pieOptions.title,
+                                            text: "Bài đăng theo nhãn",
+                                        },
+                                    }}
+                                    series={Object.values(postsByLabel)}
+                                    type="pie"
+                                    height="300px"
+                                />
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex w-full">
+                    <div className="col-4 w-full">
+                        <div className="card full-height w-full flex flex-col">
+                            {Object.keys(repliesBySubsection).length === 0 && (
+                                <>
+                                    <p class="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
+                                        Phản hồi theo phân mục
+                                    </p>
+                                    <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
+                                </>
+                            )}
+
+                            {Object.keys(repliesBySubsection).length > 0 && (
+                                <Chart
+                                    options={{
+                                        ...pieOptions,
+                                        theme: { mode: themeReducer === "theme-mode-dark" ? "dark" : "light", palette: "palette8" },
+                                        labels: Object.keys(repliesBySubsection),
+                                        title: {
+                                            ...pieOptions.title,
+                                            text: "Phản hồi theo phân mục",
+                                        },
+                                    }}
+                                    series={Object.values(repliesBySubsection)}
+                                    type="polarArea"
+                                    height="300px"
+                                />
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="col-4 w-full">
+                        <div className="card full-height w-full flex flex-col">
+                            {Object.keys(repliesByLabel).length === 0 && (
+                                <>
+                                    <p class="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
+                                        Phản hồi theo nhãn
+                                    </p>
+                                    <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
+                                </>
+                            )}
+
+                            {Object.keys(repliesByLabel).length > 0 && (
+                                <Chart
+                                    options={{
+                                        ...pieOptions,
+                                        theme: { mode: themeReducer === "theme-mode-dark" ? "dark" : "light" },
+                                        labels: Object.keys(repliesByLabel),
+                                        title: {
+                                            ...pieOptions.title,
+                                            text: "Phản hồi theo nhãn",
+                                        },
+                                    }}
+                                    series={Object.values(repliesByLabel)}
+                                    type="pie"
+                                    height="300px"
+                                />
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-12">
+                    <div className="card flex items-center space-x-10 justify-between">
+                        <div className="card__body min-w-1/4 w-fit flex space-x-5 items-center">
+                            <Select id="years" required onChange={(e) => setYear(e.target.value)}>
+                                <option value={new Date().getFullYear()}>{new Date().getFullYear()}</option>
+                                <option value={new Date().getFullYear() - 1}>{new Date().getFullYear() - 1}</option>
+                                <option value={new Date().getFullYear() - 2}>{new Date().getFullYear() - 2}</option>
+                                <option value={new Date().getFullYear() - 3}>{new Date().getFullYear() - 3}</option>
+                                <option value={new Date().getFullYear() - 4}>{new Date().getFullYear() - 4}</option>
+                                <option value={new Date().getFullYear() - 5}>{new Date().getFullYear() - 5}</option>
+                            </Select>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex w-full h-96">
+                    <div className="col-6 w-full h-full">
+                        <div className="card full-height">
+                            <Chart
+                                options={
+                                    themeReducer === "theme-mode-dark"
+                                        ? {
+                                              ...lineOptions,
+                                              colors: ["#f2c00a", "#e8271a"],
+                                              theme: { mode: "dark" },
+                                          }
+                                        : {
+                                              ...lineOptions,
+                                              colors: ["#f2c00a", "#e8271a"],
+                                              theme: { mode: "light" },
+                                          }
+                                }
+                                series={userDocumentLineSeries}
+                                type="line"
+                                height="100%"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="col-6 w-full">
+                        <div className="card full-height">
+                            <Chart
+                                options={
+                                    themeReducer === "theme-mode-dark"
+                                        ? {
+                                              ...lineOptions,
+                                              theme: { mode: "dark" },
+                                          }
+                                        : {
+                                              ...lineOptions,
+                                              theme: { mode: "light" },
+                                          }
+                                }
+                                series={postReplyLineSeries}
+                                type="line"
+                                height="100%"
+                            />
                         </div>
                     </div>
                 </div>
