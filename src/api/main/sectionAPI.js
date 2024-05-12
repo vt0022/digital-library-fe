@@ -18,6 +18,51 @@ export const getAllSections = async (config) => {
     }
 };
 
+export const getSection = async (sectionId) => {
+    try {
+        const response = await privateAxios.get(`/sections/${sectionId}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const createSection = async (data) => {
+    try {
+        const response = await privateAxios.post("/sections", data);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const updateSection = async (sectionId, data) => {
+    try {
+        const response = await privateAxios.put(`/sections/${sectionId}`, data);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const deleteSection = async (sectionId) => {
+    try {
+        const response = await privateAxios.delete(`/sections/${sectionId}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const activateSection = async (sectionId) => {
+    try {
+        const response = await privateAxios.put(`/sections/${sectionId}/activation`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const getEditableSubsections = async () => {
     try {
         const response = await privateAxios.get("/sections/sub/editable");

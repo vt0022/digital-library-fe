@@ -298,9 +298,11 @@ const Subsections = () => {
 
                             {isFetching && <Spinner aria-label="Default status example" className="flex items-center w-full mb-2 mt-2" style={{ color: "var(--main-color)" }} />}
 
-                            <div className="flex overflow-x-auto sm:justify-center">
-                                <Pagination previousLabel="" nextLabel="" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} showIcons />
-                            </div>
+                            {totalPages > 1 && (
+                                <div className="flex overflow-x-auto sm:justify-center">
+                                    <Pagination previousLabel="" nextLabel="" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} showIcons />
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

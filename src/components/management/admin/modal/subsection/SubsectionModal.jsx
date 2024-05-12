@@ -147,6 +147,7 @@ const SubsectionModal = (props) => {
                             <div className="mb-2 block">
                                 <Label htmlFor="subsectionName" value="* Tên chuyên mục" />
                             </div>
+
                             <TextInput id="subsectionName" value={subsectionName} onChange={(event) => setSubsectionName(event.target.value)} required />
                             {!isSubsectionNameValid && <p className="block mt-2 text-sm font-medium text-red-600 italic">* Vui lòng nhập tên chuyên mục</p>}
                         </div>
@@ -155,6 +156,7 @@ const SubsectionModal = (props) => {
                             <div className="mb-2 block">
                                 <Label htmlFor="editable" value="* Cho phép thành viên đăng bài" />
                             </div>
+                            
                             <ToggleSwitch checked={editable} onChange={setEditable} />
                         </div>
 

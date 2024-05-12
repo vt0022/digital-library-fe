@@ -34,9 +34,19 @@
         "route": "/admin/documents/pending",
         "icon": "bx bx-notification"
     },
-        {
-            "display_name": "Chuyên mục",
-            "route": "/admin/subsections",
-            "icon": "bx bx-notification"
-        }
+    {
+        "display_name": "Mục",
+        "route": "/admin/sections",
+        "icon": "bx bx-notification"
+    },
+    {
+        "display_name": "Chuyên mục",
+        "route": "/admin/subsections",
+        "icon": "bx bx-notification"
+    },
+    {
+        "display_name": "Nhãn",
+        "route": "/admin/labels",
+        "icon": "bx bx-notification"
+    }
 ]

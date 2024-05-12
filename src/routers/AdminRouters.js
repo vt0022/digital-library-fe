@@ -8,8 +8,10 @@ import EditDocument from "@pages/admin/document/EditDocument.jsx";
 import NewDocument from "@pages/admin/document/NewDocument.jsx";
 import PendingDocuments from "@pages/admin/document/PendingDocument.jsx";
 import Fields from "@pages/admin/field/Fields.jsx";
+import Labels from "@pages/admin/label/Labels.jsx";
 import Organizations from "@pages/admin/organization/Organizations.jsx";
-import Subsections from "@pages/admin/subection/Subsections.jsx";
+import Sections from "@pages/admin/section/Sections.jsx";
+import Subsections from "@pages/admin/subsection/Subsections.jsx";
 import DetailUser from "@pages/admin/user/DetailUser.jsx";
 import Users from "@pages/admin/user/Users.jsx";
 import { Route, Routes } from "react-router-dom";
@@ -32,6 +34,8 @@ const ManagementRoutes = () => {
             <Route path="/organizations/:organizationSlug" element={<Documents />} />
             <Route path="/organizations" element={<Organizations />} />
             <Route path="/subsections" element={<Subsections />} />
+            <Route path="/sections" element={<Sections />} />
+            <Route path="/labels" element={<Labels />} />
             <Route path="/documents" element={<Documents />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/home" element={<Dashboard />} />
