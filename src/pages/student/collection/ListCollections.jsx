@@ -154,7 +154,7 @@ const ListCollections = () => {
                 </div>
             </div>
 
-            <div className="flex justify-center mt-5 mb-2">{isFetching && <Spinner aria-label="Loading collection" className="flex items-center w-full mb-2 mt-2 text-green-400" />}</div>
+            <div className="flex justify-center mt-5 mb-2">{isFetching &&  <Spinner color="success" className="flex items-center w-full mb-2 mt-2 text-green-400" />}</div>
         </div>
     );
 };

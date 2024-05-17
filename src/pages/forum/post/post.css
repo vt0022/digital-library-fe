@@ -8,6 +8,10 @@
     text-decoration: underline;
 }
 
+.breadcrumb span {
+    font-size: 14pt;
+}
+
 .ql-toolbar {
     border-radius: 6px 6px 0 0 !important;
 }

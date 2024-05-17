@@ -1,7 +1,7 @@
 import React from "react";
 
 const Select = (props) => {
-    const { selectName, options, selectedValue, onChangeHandler, name, field} = props;
+    const { selectName, defaultName, options, selectedValue, onChangeHandler, name, field} = props;
     return (
         <div className="mb-2 max-w-full">
             <label htmlFor="hs-select-label" className="block text-sm text-gray-700 font-medium mb-2 dark:text-white">
@@ -13,7 +13,7 @@ const Select = (props) => {
             dark:text-gray-400 dark:focus:ring-gray-600"
                 value={selectedValue}
                 onChange={onChangeHandler}>
-                <option value="">Chọn</option>
+                <option value="">{defaultName ? defaultName : "Chọn"}</option>
                 {options?.map((item) => (
                     <option key={item[field]} value={item[field]}>
                         {item[name]}

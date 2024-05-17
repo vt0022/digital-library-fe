@@ -1,6 +1,6 @@
 import { Avatar, Button, Pagination, Spinner } from "flowbite-react";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { getActiveLabels } from "../../../api/main/labelAPI";
@@ -155,7 +155,7 @@ const ListPosts = () => {
                 </div>
 
                 <div className="bg-white mt-2 p-5 rounded-lg shadow-lg shadow-gray-300">
-                    {isFetching && <Spinner aria-label="Default status example" className="flex items-center w-full mb-2 mt-2" style={{ color: "var(--main-color)" }} />}
+                    {isFetching && <Spinner color="success" className="flex items-center w-full mb-2 mt-2" />}
 
                     {postList.length === 0 && !isFetching && <p className="text-center font-medium mb-3">Không tìm thấy bài đăng nào!!!</p>}
 

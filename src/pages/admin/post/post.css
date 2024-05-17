@@ -1,0 +1,26 @@
+.main-section a {
+    color: cornflowerblue !important;
+    font-style: italic;
+    text-decoration: none;
+}
+
+.main-section a:hover {
+    text-decoration: underline;
+}
+
+.ql-toolbar {
+    border-radius: 6px 6px 0 0 !important;
+}
+
+.ql-container {
+    height: 70% !important;
+    border-radius: 0 0 6px 6px !important;
+}
+
+.ql-font-monospace {
+    font-family: "Courier Prime", monospace;
+}
+
+.ql-font-serif {
+    font-family: "Noto Serif", serif;
+}

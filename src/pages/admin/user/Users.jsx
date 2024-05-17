@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useMatch, useNavigate } from "react-router-dom";
 
 import ActionButton from "../../../components/management/action-button/ActionButton";
 import Table from "../../../components/management/table/Table";
 
 import { Badge, Button, Modal, Pagination, Spinner, Toast } from "flowbite-react";
-import { HiCheck, HiDocumentRemove, HiOutlineBadgeCheck, HiOutlineCheck, HiX } from "react-icons/hi";
+import { HiDocumentRemove, HiOutlineBadgeCheck, HiOutlineCheck, HiX } from "react-icons/hi";
 
 import { getAllOrganizations } from "../../../api/main/organizationAPI";
 import { deleteAUser, getAllUsers, getLatestUsers } from "../../../api/main/userAPI";
@@ -167,7 +167,7 @@ const Users = () => {
     }, [currentPage]);
 
     useEffect(() => {
-        setCurrentPage(1)
+        setCurrentPage(1);
         if (isLatestRoute) getLatestUserList(currentPage);
         else getUserList(currentPage);
     }, [gender, deleted, role, search, organization]);
@@ -177,9 +177,9 @@ const Users = () => {
         selectedPage = page - 1;
     };
 
-        useEffect(() => {
-            selectedPage = currentPage - 1;
-        }, [currentPage]);
+    useEffect(() => {
+        selectedPage = currentPage - 1;
+    }, [currentPage]);
 
     const getOrganizationList = async () => {
         try {
@@ -386,7 +386,7 @@ const Users = () => {
                             {userList.length === 0 && <p className="mt-2 mb-4 font-medium">Không có kết quả!</p>}
                             <Table totalPages="10" headData={tableHead} renderHead={(item, index) => renderHead(item, index)} bodyData={userList} renderBody={(item, index) => renderBody(item, index)} />
 
-                            {isFetching && <Spinner aria-label="Default status example" className="flex items-center w-full mb-2 mt-2" style={{ color: "var(--main-color)" }} />}
+                            {isFetching && <Spinner className="flex items-center w-full mb-2 mt-2" style={{ color: "var(--main-color)" }} />}
 
                             <div className="flex overflow-x-auto sm:justify-center">
                                 <Pagination previousLabel="" nextLabel="" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} showIcons />

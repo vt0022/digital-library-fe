@@ -393,7 +393,7 @@ const Dashboard = () => {
                         <div className="card full-height w-full flex flex-col">
                             {Object.keys(documentsByCategory).length === 0 && (
                                 <>
-                                    <p class="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
+                                    <p className="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
                                         Tài liệu theo danh mục
                                     </p>
                                     <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
@@ -423,7 +423,7 @@ const Dashboard = () => {
                         <div className="card full-height w-full flex flex-col">
                             {Object.keys(documentsByField).length === 0 && (
                                 <>
-                                    <p class="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
+                                    <p className="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
                                         Tài liệu theo lĩnh vực
                                     </p>
                                     <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
@@ -453,7 +453,7 @@ const Dashboard = () => {
                         <div className="card full-height w-full flex flex-col">
                             {Object.keys(documentsByOrganization).length === 0 && (
                                 <>
-                                    <p class="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
+                                    <p className="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
                                         Tài liệu theo trường
                                     </p>
                                     <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
@@ -485,7 +485,7 @@ const Dashboard = () => {
                         <div className="card full-height w-full flex flex-col">
                             {Object.keys(usersByOrganization).length === 0 && (
                                 <>
-                                    <p class="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
+                                    <p className="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
                                         Người dùng theo trường
                                     </p>
                                     <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
@@ -515,7 +515,7 @@ const Dashboard = () => {
                         <div className="card full-height w-full flex flex-col">
                             {Object.keys(postsBySubsection).length === 0 && (
                                 <>
-                                    <p class="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
+                                    <p className="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
                                         Bài đăng theo phân mục
                                     </p>
                                     <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
@@ -545,7 +545,7 @@ const Dashboard = () => {
                         <div className="card full-height w-full flex flex-col">
                             {Object.keys(postsByLabel).length === 0 && (
                                 <>
-                                    <p class="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
+                                    <p className="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
                                         Bài đăng theo nhãn
                                     </p>
                                     <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
@@ -577,7 +577,7 @@ const Dashboard = () => {
                         <div className="card full-height w-full flex flex-col">
                             {Object.keys(repliesBySubsection).length === 0 && (
                                 <>
-                                    <p class="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
+                                    <p className="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
                                         Phản hồi theo phân mục
                                     </p>
                                     <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
@@ -607,7 +607,7 @@ const Dashboard = () => {
                         <div className="card full-height w-full flex flex-col">
                             {Object.keys(repliesByLabel).length === 0 && (
                                 <>
-                                    <p class="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
+                                    <p className="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
                                         Phản hồi theo nhãn
                                     </p>
                                     <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />

@@ -1,0 +1,66 @@
+[
+    {
+        "name": "GIA_MAO",
+        "value": "Giả mạo"
+    },
+    {
+        "name": "DOI_TRUY",
+        "value": "Chứa nội dung đồi truỵ"
+    },
+    {
+        "name": "THU_DICH",
+        "value": "Chứa nội dung thù địch, kích động, chia rẽ"
+    },
+    {
+        "name": "SPAM",
+        "value": "Spam"
+    },
+    {
+        "name": "SAI_LECH",
+        "value": "Thông tin sai lệch"
+    },
+    {
+        "name": "BAN_QUYEN",
+        "value": "Vi phạm bản quyền"
+    },
+    {
+        "name": "HIEU_LAM",
+        "value": "Nội dung gây hiểu lầm"
+    },
+    {
+        "name": "PHAN_DONG",
+        "value": "Nội dung phản động, chống phá"
+    },
+    {
+        "name": "CHAT_LUONG_KEM",
+        "value": "Chất lượng kém"
+    },
+    {
+        "name": "BAO_LUC",
+        "value": "Chứa ảnh bạo lực, nguy hiểm"
+    },
+    {
+        "name": "THU_GHET",
+        "value": "Ngôn từ gây thù ghét"
+    },
+    {
+        "name": "BAN_HANG",
+        "value": "Bán hàng"
+    },
+    {
+        "name": "TIN_GIA",
+        "value": "Tin giả"
+    },
+    {
+        "name": "XUC_PHAM",
+        "value": "Bạo lực ngôn từ, xúc phạm"
+    },
+    {
+        "name": "QUAY_ROI",
+        "value": "Quấy rối"
+    },
+    {
+        "name": "LUA_DAO",
+        "value": "Lừa đảo"
+    }
+]

@@ -36,7 +36,7 @@ const Subsections = () => {
             <td className="w-2/12 text-center">
                 <div className="m-auto w-fit">
                     {item.disabled ? (
-                        <Tooltip content="Kích hoạt chuyên mục" style="light">
+                        <Tooltip content="Kích hoạt phân mục" style="light">
                             <Badge
                                 color="warning"
                                 icon={HiX}
@@ -78,7 +78,7 @@ const Subsections = () => {
                         }}
                         icon="bx bx-pencil"
                         color="amber"
-                        content="Chỉnh sửa chuyên mục"
+                        content="Chỉnh sửa phân mục"
                     />
                     <ActionButton
                         onClick={(e) => {
@@ -87,7 +87,7 @@ const Subsections = () => {
                         }}
                         icon="bx bx-trash"
                         color="red"
-                        content="Xoá chuyên mục"
+                        content="Xoá phân mục"
                     />
                 </div>
             </td>
@@ -188,8 +188,8 @@ const Subsections = () => {
             setIsLoading(false);
             setOpenDeleteModal(false);
             if (response.status === 200) {
-                if (response.message === "Delete subsection from system successfully") toast.success(<p className="pr-2">Xoá chuyên mục thành công!</p>, toastOptions);
-                else toast.warn(<p className="pr-2">Chuyên mục có bài đăng, đã huỷ kích hoạt!</p>, toastOptions);
+                if (response.message === "Delete subsection from system successfully") toast.success(<p className="pr-2">Xoá phân mục thành công!</p>, toastOptions);
+                else toast.warn(<p className="pr-2">Phân mục có bài đăng, đã huỷ kích hoạt!</p>, toastOptions);
 
                 getSubsectionList(1);
                 setCurrentPage(1);
@@ -206,7 +206,7 @@ const Subsections = () => {
         try {
             const response = await activateSubsection(subsectionId);
             if (response.status === 200) {
-                toast.success(<p className="pr-2">Kích hoạt chuyên mục thành công!</p>, toastOptions);
+                toast.success(<p className="pr-2">Kích hoạt phân mục thành công!</p>, toastOptions);
 
                 getSubsectionList(1);
                 setCurrentPage(1);
@@ -227,10 +227,10 @@ const Subsections = () => {
         <div className="w-4/5 m-auto">
             <div className="row">
                 <div className="px-[15px]">
-                    <h2 className="page-header">Chuyên mục</h2>
+                    <h2 className="page-header">Phân mục</h2>
                     <Button color="gray" className="mt-7 justify-self-end bg-white py-1.5" style={{ boxShadow: "var(--box-shadow)", borderRadius: "var(--border-radius)" }} onClick={handleAdd}>
                         <i className="bx bxs-calendar-plus mr-3 text-xl hover:text-white" style={{ color: "var(--main-color)" }}></i>
-                        Thêm chuyên mục
+                        Thêm phân mục
                     </Button>
                 </div>
 
@@ -296,7 +296,7 @@ const Subsections = () => {
 
                             {subsectionList.length > 0 && <Table totalPages="10" headData={tableHead} renderHead={(item, index) => renderHead(item, index)} bodyData={subsectionList} renderBody={(item, index) => renderBody(item, index)} />}
 
-                            {isFetching && <Spinner aria-label="Default status example" className="flex items-center w-full mb-2 mt-2" style={{ color: "var(--main-color)" }} />}
+                            {isFetching && <Spinner className="flex items-center w-full mb-2 mt-2" style={{ color: "var(--main-color)" }} />}
 
                             {totalPages > 1 && (
                                 <div className="flex overflow-x-auto sm:justify-center">
@@ -313,7 +313,7 @@ const Subsections = () => {
                 <Modal.Body>
                     <div className="text-center">
                         <HiDocumentRemove className="mx-auto mb-4 h-14 w-14 text-red-600 dark:text-gray-200" />
-                        <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có chắc chắn muốn xoá chuyên mục này không?</h3>
+                        <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có chắc chắn muốn xoá phân mục này không?</h3>
                         <div className="flex justify-center gap-4">
                             <Button color="failure" isProcessing={isLoading} disabled={isLoading} onClick={() => deleteThisSubsection(subsectionId)}>
                                 Chắc chắn

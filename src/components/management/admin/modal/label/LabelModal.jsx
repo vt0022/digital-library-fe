@@ -149,7 +149,7 @@ const LabelModal = (props) => {
 
                             <div>
                                 <div className="flex space-x-5 items-center p-2 bg-white rounded-lg border inline-block cursor-pointer" onClick={handleClick}>
-                                    <div className="w-9 h-5 rounded" style={{backgroundColor: color}}/>
+                                    <div className="w-9 h-5 rounded border" style={{backgroundColor: color}}/>
                                     <div className="font-semibold">{color}</div>
                                 </div>
 

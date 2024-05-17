@@ -1,0 +1,3 @@
+.noti-avatar [data-testid="flowbite-avatar-img"] {
+    @apply !w-14 !h-14;
+}

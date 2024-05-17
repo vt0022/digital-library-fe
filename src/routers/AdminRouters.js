@@ -1,6 +1,7 @@
 import Page404 from "@pages/404Page.jsx";
 import Dashboard from "@pages/admin/Dashboard.jsx";
 import Profile from "@pages/admin/Profile.jsx";
+import Appeals from "@pages/admin/appeal/Appeals.jsx";
 import Categories from "@pages/admin/category/Categories.jsx";
 import DetailDocument from "@pages/admin/document/DetailDocument.jsx";
 import Documents from "@pages/admin/document/Documents.jsx";
@@ -10,6 +11,11 @@ import PendingDocuments from "@pages/admin/document/PendingDocument.jsx";
 import Fields from "@pages/admin/field/Fields.jsx";
 import Labels from "@pages/admin/label/Labels.jsx";
 import Organizations from "@pages/admin/organization/Organizations.jsx";
+import DetailPost from "@pages/admin/post/DetailPost.jsx";
+import EditPost from "@pages/admin/post/EditPost.jsx";
+import NewPost from "@pages/admin/post/NewPost";
+import Posts from "@pages/admin/post/Posts.jsx";
+import Reports from "@pages/admin/report/Reports.jsx";
 import Sections from "@pages/admin/section/Sections.jsx";
 import Subsections from "@pages/admin/subsection/Subsections.jsx";
 import DetailUser from "@pages/admin/user/DetailUser.jsx";
@@ -36,6 +42,12 @@ const ManagementRoutes = () => {
             <Route path="/subsections" element={<Subsections />} />
             <Route path="/sections" element={<Sections />} />
             <Route path="/labels" element={<Labels />} />
+            <Route path="/posts/new" element={<NewPost />} />
+            <Route path="/posts/:postId/edit" element={<EditPost />} />
+            <Route path="/posts/:postId" element={<DetailPost />} />
+            <Route path="/posts" element={<Posts />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/appeals" element={<Appeals />} />
             <Route path="/documents" element={<Documents />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/home" element={<Dashboard />} />

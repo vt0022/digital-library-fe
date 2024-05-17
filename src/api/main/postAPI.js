@@ -9,6 +9,15 @@ export const getAllPosts = async (config) => {
     }
 };
 
+export const getAllPostsForAdmin = async (config) => {
+    try {
+        const response = await privateAxios.get("/posts/all", config);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const getAPost = async (postId) => {
     try {
         const response = await privateAxios.get(`/posts/${postId}`);
@@ -45,15 +54,6 @@ export const editAPost = async (postId, data) => {
     }
 };
 
-export const getPostsOfUser = async (userId, config) => {
-    try {
-        const response = await axios.get(`/posts/user/${userId}`, config);
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
-};
-
 export const deleteAPost = async (postId) => {
     try {
         const response = await privateAxios.delete(`/posts/${postId}`);
@@ -72,9 +72,45 @@ export const getHistoryOfPost = async (postId) => {
     }
 };
 
+export const getPostsOfUser = async (userId, config) => {
+    try {
+        const response = await privateAxios.get(`/posts/user/${userId}`, config);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getPostsOfUserForAdmin = async (userId, config) => {
+    try {
+        const response = await privateAxios.get(`/posts/all/user/${userId}`, config);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const getRelatedPosts = async (config) => {
     try {
-        const response = await axios.get("/posts/related", config);
+        const response = await privateAxios.get("/posts/related", config);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const likePost = async (postId, config) => {
+    try {
+        const response = await privateAxios.post(`/posts/${postId}/like`, config);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getPostLikes = async (config) => {
+    try {
+        const response = await privateAxios.get("/posts/user/likes", config);
         return response.data;
     } catch (error) {
         throw error;

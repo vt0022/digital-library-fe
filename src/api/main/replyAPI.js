@@ -63,3 +63,21 @@ export const getHistoryOfReply = async (replyId) => {
         throw error;
     }
 };
+
+export const likeReply = async (replyId, config) => {
+    try {
+        const response = await privateAxios.post(`/replies/${replyId}/like`, config);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getReplyLikes = async (config) => {
+    try {
+        const response = await privateAxios.get("/replies/user/likes", config);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

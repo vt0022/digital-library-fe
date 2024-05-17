@@ -265,7 +265,7 @@ const Labels = () => {
 
                             {labelList.length > 0 && <Table totalPages="10" headData={tableHead} renderHead={(item, index) => renderHead(item, index)} bodyData={labelList} renderBody={(item, index) => renderBody(item, index)} />}
 
-                            {isFetching && <Spinner aria-label="Default status example" className="flex items-center w-full mb-2 mt-2" style={{ color: "var(--main-color)" }} />}
+                            {isFetching && <Spinner className="flex items-center w-full mb-2 mt-2" style={{ color: "var(--main-color)" }} />}
 
                             {totalPages > 1 && (
                                 <div className="flex overflow-x-auto sm:justify-center">

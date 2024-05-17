@@ -1,9 +1,9 @@
 import moment from "moment/moment";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Badge, Button, Datepicker, FileInput, Label, Modal, Pagination, Spinner, TextInput, Toast } from "flowbite-react";
-import { HiAdjustments, HiAtSymbol, HiCake, HiCheck, HiDocumentRemove, HiOutlineCheck, HiPhone, HiUser, HiX } from "react-icons/hi";
+import { Button, Datepicker, FileInput, Label, Modal, Pagination, Spinner, TextInput, Toast } from "flowbite-react";
+import { HiAdjustments, HiAtSymbol, HiCake, HiDocumentRemove, HiOutlineCheck, HiPhone, HiUser, HiX } from "react-icons/hi";
 
 import ActionButton from "../../components/management/action-button/ActionButton";
 import Select from "../../components/management/select/Select";
@@ -663,7 +663,7 @@ const Profile = () => {
                             <div className="card__body">
                                 <Table totalPages="10" headData={tableHead} renderHead={(item, index) => renderHead(item, index)} bodyData={documentList} renderBody={(item, index) => renderBody(item, index)} />
 
-                                {isFetching && <Spinner aria-label="Default status example" className="flex items-center w-full mb-2 mt-2" style={{ color: "var(--main-color)" }} />}
+                                {isFetching && <Spinner className="flex items-center w-full mb-2 mt-2" style={{ color: "var(--main-color)" }} />}
 
                                 <div className="flex overflow-x-auto sm:justify-center">
                                     <Pagination previousLabel="" nextLabel="" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} showIcons />

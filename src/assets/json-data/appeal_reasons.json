@@ -1,0 +1,37 @@
+[
+    {
+        "name": "KHONG_CHINH_XAC",
+        "value": "Quyết định không chính xác",
+        "detail": "Tôi tin rằng quyết định xử lý vi phạm này không chính xác. Bài viết của tôi không vi phạm tiêu chuẩn cộng đồng của Facebook."
+    },
+    {
+        "name": "NOI_DUNG_HIEU_LAM",
+        "value": "Nội dung bị hiểu lầm",
+        "detail": "Nội dung của tôi đã bị hiểu lầm. Ý định của tôi không phải là vi phạm các quy tắc của cộng đồng."
+    },
+    {
+        "name": "GIAO_DUC_THONG_TIN",
+        "value": "Nội dung mang tính giáo dục hoặc thông tin",
+        "detail": "Nội dung của tôi mang tính giáo dục/cung cấp thông tin và không có ý định xúc phạm hay gây hại."
+    },
+    {
+        "name": "BAO_CAO_SAI_LECH",
+        "value": "Quyết định dựa trên báo cáo sai lệch",
+        "detail": "Tôi tin rằng quyết định này dựa trên báo cáo sai lệch hoặc không trung thực từ người dùng khác."
+    },
+    {
+        "name": "KHONG_VI_PHAM",
+        "value": "Bài viết không vi phạm tiêu chuẩn cộng đồng",
+        "detail": "Bài viết của tôi không chứa bất kỳ nội dung nào vi phạm tiêu chuẩn cộng đồng đã được đề ra."
+    },
+    {
+        "name": "KHONG_MUC_DICH_GAY_HAI",
+        "value": "Nội dung không nhằm mục đích gây hại",
+        "detail": "Nội dung của tôi không nhằm mục đích gây hại, xúc phạm hoặc phân biệt đối xử với bất kỳ ai."
+    },
+    {
+        "name": "HAI_HUOC_CHAM_BIEM",
+        "value": "Nội dung mang tính hài hước hoặc châm biếm",
+        "detail": "Nội dung của tôi mang tính hài hước hoặc châm biếm và không nhằm xúc phạm bất kỳ ai."
+    }
+]

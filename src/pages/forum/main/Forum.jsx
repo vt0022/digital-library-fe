@@ -1,8 +1,7 @@
-import React from "react";
-import ForumRouters from "./../../routers/ForumRouters";
-import TopBar from "./TopBar";
-import Sidebar from "./Sidebar";
-import CustomFooter from "./../../components/student/footer/Footer";
+import CustomFooter from "../../../components/student/footer/Footer";
+import ForumRouters from "../../../routers/ForumRouters";
+import Sidebar from "../../../components/forum/sidebar/Sidebar";
+import TopBar from "../../../components/forum/topbar/TopBar";
 
 const Forum = () => {
     return (

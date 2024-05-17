@@ -278,7 +278,7 @@ const ListDocument = () => {
                         ))}
                     </div>
 
-                    <div className="flex justify-center mt-5 mb-2">{isFetching && <Spinner aria-label="Default status example" className="flex items-center w-full mb-2 mt-2 text-green-400" />}</div>
+                    <div className="flex justify-center mt-5 mb-2">{isFetching && <Spinner color="success" className="flex items-center w-full mb-2 mt-2 text-green-400" />}</div>
 
                     {documentList.length !== 0 && (
                         <div className="flex overflow-x-auto sm:justify-center">

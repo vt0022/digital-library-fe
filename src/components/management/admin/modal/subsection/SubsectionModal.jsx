@@ -114,7 +114,7 @@ const SubsectionModal = (props) => {
             setIsLoading(false);
 
             if (response.status === 200) {
-                toast.success(<p className="pr-2">{isCreatingNew ? "Tạo chuyên mục thành công!" : "Cập nhật chuyên mục thành công!"}</p>, toastOptions);
+                toast.success(<p className="pr-2">{isCreatingNew ? "Tạo phân mục thành công!" : "Cập nhật phân mục thành công!"}</p>, toastOptions);
 
                 setOpenModal(false);
 
@@ -139,17 +139,17 @@ const SubsectionModal = (props) => {
                 <Modal.Body>
                     <div className="space-y-6">
                         <h3 className="text-3xl font-medium text-gray-900 dark:text-white">
-                            {isCreatingNew && "Thêm chuyên mục mới"}
-                            {!isCreatingNew && "Cập nhật chuyên mục"}
+                            {isCreatingNew && "Thêm phân mục mới"}
+                            {!isCreatingNew && "Cập nhật phân mục"}
                         </h3>
 
                         <div className="mb-5">
                             <div className="mb-2 block">
-                                <Label htmlFor="subsectionName" value="* Tên chuyên mục" />
+                                <Label htmlFor="subsectionName" value="* Tên phân mục" />
                             </div>
 
                             <TextInput id="subsectionName" value={subsectionName} onChange={(event) => setSubsectionName(event.target.value)} required />
-                            {!isSubsectionNameValid && <p className="block mt-2 text-sm font-medium text-red-600 italic">* Vui lòng nhập tên chuyên mục</p>}
+                            {!isSubsectionNameValid && <p className="block mt-2 text-sm font-medium text-red-600 italic">* Vui lòng nhập tên phân mục</p>}
                         </div>
 
                         <div className="mb-5">

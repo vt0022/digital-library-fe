@@ -13,3 +13,12 @@
     display: block;
     z-index: 100;
 }
+
+.active :hover {
+    color: white !important;
+}
+
+.inactive :hover {
+    color: #9ca3af !important;
+}
+

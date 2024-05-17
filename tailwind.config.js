@@ -15,16 +15,19 @@ module.exports = {
                 "12xs": "1px",
                 "21xl": "40px",
                 "8xs": "5px",
-              },
-              fontSize: {
+            },
+            fontSize: {
                 xl: "20px",
                 mini: "15px",
                 "6xl": "25px",
                 "3xs": "10px",
                 xs: "12px",
                 inherit: "inherit",
-              },
+            },
         },
     },
     plugins: [require("flowbite/plugin")],
+    // corePlugins: {
+    //     preflight: false,
+    // },
 };

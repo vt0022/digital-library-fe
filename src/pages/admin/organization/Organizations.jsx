@@ -280,7 +280,7 @@ const Organizations = () => {
 
                             <Table totalPages="10" headData={tableHead} renderHead={(item, index) => renderHead(item, index)} bodyData={organizationList} renderBody={(item, index) => renderBody(item, index)} />
 
-                            {isFetching && <Spinner aria-label="Default status example" className="flex items-center w-full mb-2 mt-2" style={{ color: "var(--main-color)" }} />}
+                            {isFetching && <Spinner className="flex items-center w-full mb-2 mt-2" style={{ color: "var(--main-color)" }} />}
 
                             <div className="flex overflow-x-auto sm:justify-center">
                                 <Pagination previousLabel="" nextLabel="" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} showIcons />

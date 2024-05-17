@@ -1,17 +1,19 @@
+import { getBadgesOfUser } from "@api/main/badgeAPI";
+import { getPostsOfUser } from "@api/main/postAPI";
+import { getRepliesOfUser } from "@api/main/replyAPI";
+import { getAUser } from "@api/main/userAPI";
 import { initFlowbite } from "flowbite";
 import { Avatar, Button } from "flowbite-react";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
-import { HiChevronDoubleDown } from "react-icons/hi";
+import { useEffect, useState } from "react";
+import { AiFillLike } from "react-icons/ai";
+import { FaReplyAll } from "react-icons/fa6";
+import { HiBadgeCheck, HiChevronDoubleDown } from "react-icons/hi";
+import { HiMiniChatBubbleLeftRight } from "react-icons/hi2";
 import { LuBadgeCheck } from "react-icons/lu";
-import { MdBattery0Bar,  MdBattery1Bar,  MdBattery2Bar,  MdBattery3Bar,  MdBattery4Bar,  MdBattery5Bar,  MdBattery6Bar, MdBatteryFull } from "react-icons/md";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import "react-tabs/style/react-tabs.css";
-import { getBadgesOfUser } from "../../../api/main/badgeAPI";
-import { getPostsOfUser } from "../../../api/main/postAPI";
-import { getRepliesOfUser } from "../../../api/main/replyAPI";
-import { getAUser } from "../../../api/main/userAPI";
-import "./profile.css";
+import "./user.css";
 
 const Wall = () => {
     initFlowbite();
@@ -24,9 +26,9 @@ const Wall = () => {
     const [replyList, setReplyList] = useState([]);
     const [badgeList, setBadgeList] = useState([]);
     const [totalPosts, setTotalPosts] = useState(0);
-    const [noOfPosts, setNoOfPosts] = useState(5);
+    const [currentPostPage, setCurrentPostPage] = useState(1);
     const [totalReplies, setTotalReplies] = useState(0);
-    const [noOfReplies, setNoOfReplies] = useState(5);
+    const [currentReplyPage, setCurrentReplyPage] = useState(1);
     const [user, setUser] = useState(null);
     const [query, setQuery] = useState("");
 
@@ -38,16 +40,14 @@ const Wall = () => {
     useEffect(() => {
         getPostList();
         getReplyList();
-    }, [noOfPosts, noOfReplies]);
+    }, [currentPostPage, currentReplyPage]);
 
     const handleMorePosts = () => {
-        if (noOfPosts + 5 <= totalPosts) setNoOfPosts(noOfPosts + 5);
-        else setNoOfPosts(totalPosts);
+        setCurrentPostPage(currentPostPage + 1);
     };
 
     const handleMoreReplies = () => {
-        if (noOfReplies + 5 <= totalReplies) setNoOfReplies(noOfReplies + 5);
-        else setNoOfReplies(totalReplies);
+        setCurrentReplyPage(currentReplyPage + 1);
     };
 
     const getPostList = async () => {
@@ -55,14 +55,13 @@ const Wall = () => {
             const response = await getPostsOfUser(userId, {
                 params: {
                     page: 0,
-                    size: noOfPosts,
+                    size: currentPostPage * 5,
                     query: query,
                 },
             });
             if (response.status === 200) {
                 setPostList(response.data.content);
                 setTotalPosts(response.data.totalElements);
-                if (response.data.totalElements < noOfPosts) setNoOfPosts(response.data.totalElements);
             }
         } catch (error) {
             console.log(error);
@@ -74,13 +73,12 @@ const Wall = () => {
             const response = await getRepliesOfUser(userId, {
                 params: {
                     page: 0,
-                    size: noOfReplies,
+                    size: currentReplyPage * 5,
                 },
             });
             if (response.status === 200) {
                 setReplyList(response.data.content);
                 setTotalReplies(response.data.totalElements);
-                if (response.data.totalElements < noOfReplies) setNoOfReplies(response.data.totalElements);
             }
         } catch (error) {
             console.log(error);
@@ -114,57 +112,48 @@ const Wall = () => {
     };
 
     return (
-        <div className="w-5/6 m-auto min-h-screen h-max mt-5 p-5">
-            <div className="bg-white mt-2 p-5 rounded-lg flex">
-                <div className="w-1/4 rounded-lg py-5 bg-gray-100">
+        <div className="min-h-screen h-max p-5">
+            <div className="bg-white p-5 rounded-lg flex">
+                <div className="w-1/4 rounded-lg py-5 bg-gray-100 h-fit">
                     <Avatar alt="User" img={user && user.image ? user.image : ""} rounded bordered size="xl" className="mb-4 mt-2" />
-
-                    <div className="text-center text-sm mt-5">{user && user.email}</div>
 
                     <div className="text-center font-semibold">
                         {user && user.lastName} {user && user.firstName}
                         {moment("2024-04-02").isSame(moment().subtract(1, "days"), "day") && <span className="text-xs text-red-500"> (Chưa xác thực)</span>}
                     </div>
 
-                    <div className="m-auto text-center p-1 w-fit rounded-lg text-center font-medium text-white bg-gradient-to-r from-cyan-500 to-blue-500">{user && user.badge && user.badge.badgeName}</div>
-
-                    <div className="flex justify-center mt-2">
-                        <MdBattery0Bar />
-                        <MdBattery1Bar />
-                        <MdBattery2Bar />
-                        <MdBattery3Bar />
-                        <MdBattery4Bar />
-                        <MdBattery5Bar />
-                        <MdBattery6Bar />
-                        <MdBatteryFull />
+                    <div className="flex justify-center mt-2 mb-2">
+                        <Avatar alt={user && user.badge && user.badge.badgeName} img={user && user.badge && user.badge.image} rounded />
                     </div>
 
-                    <div className="text-center text-xs mt-5">Tham gia: {user && moment(user.createdAt).format("DD-MM-yyyy")}</div>
+                    <div className="m-auto text-center p-1 w-fit rounded-lg text-center font-medium text-white bg-gradient-to-r from-cyan-500 to-blue-500">{user && user.badge && user.badge.badgeName}</div>
+
+                    <div className="text-center text-xs mt-2 font-medium">Tham gia: {user && moment(user.createdAt).format("DD-MM-yyyy")}</div>
                 </div>
 
                 <div className="w-3/4 rounded-lg pl-5">
-                    <div className="mb-2 border-b border-gray-200 dark:border-gray-700">
+                    <div className="mb-2 border-b pb-2 border-gray-200">
                         <ul
                             className="flex flex-wrap -mb-px text-base font-medium text-center"
                             id="default-styled-tab"
                             data-tabs-toggle="#default-styled-tab-content"
-                            data-tabs-active-classes="text-green-400 hover:text-green-500 border-purple-600"
-                            data-tabs-inactive-classes="text-gray-400 hover:text-gray-600 border-gray-100 hover:border-gray-300"
+                            data-tabs-active-classes="bg-green-400 text-white rounded-full hover:bg-green-500 active"
+                            data-tabs-inactive-classes="text-gray-400 hover:bg-gray-100 hover:rounded-full inactive"
                             role="tablist">
                             <li className="me-2" role="presentation">
-                                <button className="inline-block p-4 border-b-2 rounded-t-lg" id="post-styled-tab" data-tabs-target="#styled-post" type="button" role="tab" aria-controls="post" aria-selected="false">
+                                <button className="inline-block px-6 py-2" id="post-styled-tab" data-tabs-target="#styled-post" type="button" role="tab" aria-controls="post" aria-selected="false">
                                     Bài đăng
                                 </button>
                             </li>
 
                             <li className="me-2" role="presentation">
-                                <button className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="reply-styled-tab" data-tabs-target="#styled-reply" type="button" role="tab" aria-controls="reply" aria-selected="false">
+                                <button className="inline-block px-6 py-2" id="reply-styled-tab" data-tabs-target="#styled-reply" type="button" role="tab" aria-controls="reply" aria-selected="false">
                                     Phản hồi
                                 </button>
                             </li>
 
                             <li className="me-2" role="presentation">
-                                <button className="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="about-styled-tab" data-tabs-target="#styled-about" type="button" role="tab" aria-controls="about" aria-selected="false">
+                                <button className="inline-block px-6 py-2" id="about-styled-tab" data-tabs-target="#styled-about" type="button" role="tab" aria-controls="about" aria-selected="false">
                                     Thông tin
                                 </button>
                             </li>
@@ -185,7 +174,7 @@ const Wall = () => {
                                     onKeyDown={(e) => {
                                         if (e.key === "Enter") {
                                             e.preventDefault();
-                                            setNoOfPosts(5);
+                                            setCurrentPostPage(5);
                                             getPostList();
                                         }
                                     }}
@@ -201,17 +190,19 @@ const Wall = () => {
                             {postList &&
                                 postList.map((post, index) => (
                                     <div className="px-4 py-2 border-b border-gray-300 space-y-1" key={index}>
-                                        <p className="font-medium text-lg text-sky-700 cursor-pointer" onClick={() => navigate(`/forum/posts/${post.postId}`)}>
+                                        <Link className="font-medium text-lg text-sky-700 cursor-pointer" to={`/forum/posts/${post.postId}`}>
                                             {post.title}
-                                        </p>
+                                        </Link>
+
                                         <p className="text-sm truncate whitespace-normal line-clamp-2">{post.content && post.content.replace(/(<([^>]+)>)/gi, "")}</p>
-                                        <p className="text-sm text-gray-400">{moment(post.createdAt).format("DD-MM-yyyy")}</p>
+
+                                        <p className="text-sm text-gray-400 text-right">{moment(post.createdAt).format("DD-MM-yyyy")}</p>
                                     </div>
                                 ))}
 
                             {totalPosts === 0 && <p className="font-medium text-center">Không tìm thấy bài đăng nào!!!</p>}
 
-                            {totalPosts !== 0 && totalPosts !== noOfPosts && (
+                            {totalPosts > currentPostPage * 5 && (
                                 <Button className="ml-auto bg-green-400 enabled:hover:bg-green-500" onClick={handleMorePosts}>
                                     <HiChevronDoubleDown className="mr-2 h-5 w-5 " />
                                     Xem thêm
@@ -225,15 +216,17 @@ const Wall = () => {
                                     <div className="px-4 py-2 border-b border-gray-300 space-y-1" key={index}>
                                         <p className="font-medium text-sky-700">
                                             {reply.user && reply.user.lastName} {reply.user && reply.user.firstName} <span className="font-normal text-black">đã phản hồi tại </span>
-                                            <span className="font-medium text-sky-700 cursor-pointer" onClick={() => navigate(`/forum/posts/${reply.post.postId}`)}>
+                                            <Link className="font-medium text-sky-700 cursor-pointer" to={`/forum/posts/${reply.post.postId}`}>
                                                 {reply.post.title}
-                                            </span>
+                                            </Link>
                                         </p>
+
                                         <p className="text-sm truncate whitespace-normal line-clamp-2">{reply.content && reply.content.replace(/(<([^>]+)>)/gi, "")}</p>
-                                        <p className="text-sm text-gray-400">{moment(reply.createdAt).format("DD-MM-yyyy")}</p>
+
+                                        <p className="text-sm text-gray-400 text-right">{moment(reply.createdAt).format("DD-MM-yyyy")}</p>
                                     </div>
                                 ))}
-                            {totalReplies !== 0 && totalReplies !== noOfReplies && (
+                            {totalReplies > currentReplyPage * 5 && (
                                 <Button className="ml-auto bg-green-400 enabled:hover:bg-green-500" onClick={handleMoreReplies}>
                                     <HiChevronDoubleDown className="mr-2 h-5 w-5 " />
                                     Xem thêm
@@ -244,22 +237,41 @@ const Wall = () => {
                         </div>
 
                         <div className="hidden p-4 border-b border-gray-300 space-y-2" id="styled-about" role="tabpanel" aria-labelledby="about-tab">
-                            <div className="border-b border-gray-300 pb-4 space-y-2">
-                                <p>
-                                    Tổng bài viết: <span className="font-semibold">{user && user.totalPosts}</span>
-                                </p>
-                                <p>
-                                    Tổng phản hồi: <span className="font-semibold">{user && user.totalReplies}</span>
-                                </p>
-                                <p>
-                                    Tổng lượt thích: <span className="font-semibold">{user && user.totalPostLikes}</span>
-                                </p>
+                            <div className="flex border-b border-gray-300 pb-4 space-x-4">
+                                <div className="w-1/4 flex p-4 space-x-2 items-center aspect-square border rounded-lg shadow">
+                                    <HiMiniChatBubbleLeftRight className="w-12 h-12 text-sky-500" />
+                                    <div>
+                                        <p className="text-2xl font-semibold">{user && user.totalPosts}</p>
+                                        <p className="text-xs">bài viết</p>
+                                    </div>
+                                </div>
+
+                                <div className="w-1/4 flex p-4 space-x-2 items-center aspect-square border rounded-lg shadow">
+                                    <FaReplyAll className="w-12 h-12 text-teal-400" />
+                                    <div>
+                                        <p className="text-2xl font-semibold">{user && user.totalReplies}</p>
+                                        <p className="text-xs">phản hồi</p>
+                                    </div>
+                                </div>
+
+                                <div className="w-1/4 flex p-4 space-x-2 items-center aspect-square border rounded-lg shadow">
+                                    <AiFillLike className="w-12 h-12 text-rose-500" />
+                                    <div>
+                                        <p className="text-2xl font-semibold">{user && user.totalPostLikes}</p>
+                                        <p className="text-xs">lượt thích</p>
+                                    </div>
+                                </div>
+
+                                <div className="w-1/4 flex p-4 space-x-2 items-center aspect-square border rounded-lg shadow">
+                                    <HiBadgeCheck className="w-12 h-12 text-orange-500" />
+                                    <div>
+                                        <p className="text-2xl font-semibold">{badgeList.length}</p>
+                                        <p className="text-xs">huy hiệu</p>
+                                    </div>
+                                </div>
                             </div>
 
                             <div className="py-2 space-y-2">
-                                <p>
-                                    Huy hiệu đã nhận được: <span className="font-bold">{badgeList.length}</span>
-                                </p>
                                 <div className="flex flex-wrap space-x-5">
                                     {badgeList &&
                                         badgeList.map((badge, index) => (

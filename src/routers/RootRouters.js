@@ -1,4 +1,3 @@
-import React from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import AdminLayout from "./../components/management/layout/AdminLayout";
 
@@ -10,8 +9,8 @@ import ManagerLogin from "./../pages/manager/auth/Login";
 
 import "./../App.css";
 
+import Forum from "../pages/forum/main/Forum";
 import ManagerLayout from "./../components/management/layout/ManagerLayout";
-import Forum from "./../pages/forum/Forum";
 import Home from "./../pages/student/Home";
 import Main from "./../pages/student/Main";
 import StudentForgotPassword from "./../pages/student/auth/ForgotPassword";
