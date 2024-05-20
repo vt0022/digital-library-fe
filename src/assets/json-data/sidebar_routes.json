@@ -1,8 +1,13 @@
 [
     {
-        "display_name": "Trang chủ",
+        "display_name": "Tổng quan",
         "route": "/admin/home",
-        "icon": "bx bx-atom"
+        "icon": "bx bx-bar-chart-square"
+    },
+    {
+        "display_name": "----------------",
+        "route": "",
+        "icon": ""
     },
     {
         "display_name": "Tài liệu",
@@ -30,29 +35,43 @@
         "icon": "bx bx-user"
     },
     {
-        "display_name": "Phê duyệt",
+        "display_name": "Duyệt tài liệu",
         "route": "/admin/documents/pending",
         "icon": "bx bx-notification"
     },
     {
+        "display_name": "----------------",
+        "route": "",
+        "icon": ""
+    },
+    {
         "display_name": "Mục",
         "route": "/admin/sections",
-        "icon": "bx bx-notification"
+        "icon": "bx bx-book-content"
     },
     {
         "display_name": "Chuyên mục",
         "route": "/admin/subsections",
-        "icon": "bx bx-notification"
+        "icon": "bx bx-detail"
     },
     {
         "display_name": "Nhãn",
         "route": "/admin/labels",
-        "icon": "bx bx-notification"
+        "icon": "bx bx-purchase-tag"
+    },
+    {
+        "display_name": "Bài đăng",
+        "route": "/admin/posts",
+        "icon": "bx bx-message-square-dots"
+    },
+    {
+        "display_name": "Báo cáo",
+        "route": "/admin/reports",
+        "icon": "bx bx-error"
+    },
+    {
+        "display_name": "Khiếu nại",
+        "route": "/admin/appeals",
+        "icon": "bx bx-hourglass"
     }
-    ,
-        {
-            "display_name": "Bài đăng",
-            "route": "/admin/posts",
-            "icon": "bx bx-notification"
-        }
 ]

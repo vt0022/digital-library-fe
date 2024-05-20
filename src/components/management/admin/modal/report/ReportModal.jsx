@@ -99,6 +99,8 @@ const ReportModal = (props) => {
                             <Textarea id="reason" rows={2} maxLength={1000} value={reason} className="focus:border-green-500 focus:ring-green-500" onChange={(e) => setReason(e.target.value)} />
                         </div>
                     )}
+
+                    <p className="text-sm font-normal text-gray-700">* Khi gỡ {target === "POST" ? "bài đăng" : "phản hồi"} này thì những báo cáo liên quan sẽ được xử lý tương tự theo</p>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button color="success" isProcessing={isLoading} disabled={isLoading || type === ""} onClick={handleReport}>

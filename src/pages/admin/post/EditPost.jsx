@@ -3,6 +3,7 @@ import { getAllLabels } from "@api/main/labelAPI";
 import { editAPost, getAPost, getRelatedPosts } from "@api/main/postAPI";
 import { getAllSubsections } from "@api/main/sectionAPI";
 import usePrivateAxios from "@api/usePrivateAxios";
+import Error404 from "@components/management/error/404Error";
 import SelectFilter from "@components/forum/select/SelectFilter";
 import { Button } from "flowbite-react";
 import moment from "moment";
@@ -30,6 +31,7 @@ const EditPost = () => {
     const [isSubsectionValid, setIsSubsectionValid] = useState(true);
     const [isTitleValid, setIsTitleValid] = useState(true);
     const [isContentValid, setIsContentValid] = useState(true);
+    const [notFound, setNotFound] = useState(false);
 
     const quill = useRef();
 
@@ -94,12 +96,17 @@ const EditPost = () => {
             const response = await getAPost(postId);
 
             if (response.status === 200) {
-                setTitle(response.data.title);
-                setContent(response.data.content);
-                setLabel(response.data.label && response.data.label.labelId);
-                setSubsection(response.data.subsection && response.data.subsection.subId);
-            } else if (response.status === 404) {
-                navigate("/error-404");
+                if (response.data.disabled || response.data?.label?.disabled || response.data?.subsection?.disabled) {
+                    setNotFound(true);
+                } else {
+                    setTitle(response.data.title);
+                    setContent(response.data.content);
+                    setLabel(response.data.label && response.data.label.labelId);
+                    setSubsection(response.data.subsection && response.data.subsection.subId);
+                    setNotFound(false);
+                }
+            } else {
+                setNotFound(true);
             }
         } catch (error) {
             navigate("/error-500");
@@ -206,6 +213,8 @@ const EditPost = () => {
     );
 
     const formats = ["header", "bold", "italic", "underline", "strike", "blockquote", "list", "bullet", "indent", "link", "image", "color", "clean"];
+
+    if (notFound) return <Error404 name="post" />;
 
     return (
         <>
@@ -321,7 +330,7 @@ const EditPost = () => {
                         <p className="text-sm text-gray-500 mb-2">Nêu ra đầy đủ nội dung để người đọc hiểu rõ bài đăng của bạn</p>
 
                         <div className="h-80">
-                            <ReactQuill ref={(el) => (quill.current = el)} theme="snow" modules={modules} fotmats={formats} className="h-full" value={content} onChange={(e) => setContent(e)} />
+                            <ReactQuill ref={(el) => (quill.current = el)} theme="snow" modules={modules} formats={formats} className="h-full" value={content} onChange={(e) => setContent(e)} />
                         </div>
 
                         {!isContentValid && <p className="text-sm text-red-500">Vui lòng nhập nội dung</p>}

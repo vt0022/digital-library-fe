@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getActiveSections } from "../../../api/main/sectionAPI";
-
-import Subsection from "../../../components/forum/card/Subsection";
+import { getActiveSections } from "@api/main/sectionAPI";
+import Subsection from "@components/forum/card/Subsection";
 import "./home.css";
 
-const Home = () => {
+const Home = ({ onPinSection }) => {
     const navigate = useNavigate();
 
     const [sectionList, setSectionList] = useState([]);
@@ -23,6 +22,10 @@ const Home = () => {
         }
     };
 
+      const handlePinClick = (subsection) => {
+          onPinSection(subsection);
+      };
+
     return (
         <>
             <div className="w-11/12 m-auto p-5">
@@ -35,7 +38,7 @@ const Home = () => {
                                         <p>{section.sectionName}</p>
                                     </div>
 
-                                    {section.subsections && section.subsections.map((subsection, index) => <Subsection key={index} subsection={subsection} />)}
+                                    {section.subsections && section.subsections.map((subsection, index) => <Subsection key={index} subsection={subsection} handlePinClick={() => handlePinClick(subsection)}/>)}
                                 </div>
                             </div>
                         ))}

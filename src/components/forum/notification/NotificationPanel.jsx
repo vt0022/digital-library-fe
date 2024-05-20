@@ -1,9 +1,26 @@
-import { getMyNotifications } from "@api/main/notificationAPI";
+import { countMyNotifications, getMyNotifications, readMyNotification } from "@api/main/notificationAPI";
 import usePrivateAxios from "@api/usePrivateAxios";
 import NotificationItem from "@components/forum/notification/NotificationItem";
 import { initFlowbite } from "flowbite";
 import { Tooltip } from "flowbite-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useInView } from "react-intersection-observer";
+import "./notification.css";
+
+const clickOutsideRef = (contentRef, toggleRef, callback) => {
+    document.addEventListener("mousedown", (e) => {
+        // user click toggle
+        if (toggleRef.current && toggleRef.current.contains(e.target)) {
+            contentRef.current.classList.toggle("active");
+        } else {
+            // user click outside toggle and content
+            if (contentRef.current && !contentRef.current.contains(e.target)) {
+                contentRef.current.classList.remove("active");
+                if (callback) callback();
+            }
+        }
+    });
+};
 
 const NotificationPanel = () => {
     initFlowbite();
@@ -11,13 +28,16 @@ const NotificationPanel = () => {
     usePrivateAxios();
 
     const [notificationList, setNotificationList] = useState([]);
-    const [size, setSize] = useState(10);
-    const [total, setTotal] = useState(0);
+    const [page, setPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const [unreadTotal, setUnreadTotal] = useState(0);
 
-    const dropdownRef = useRef(null);
+    const dropdownButtonRef = useRef(null);
+    const dropdownContentRef = useRef(null);
+    const { ref: loadMoreRef, inView } = useInView();
 
-        const user = JSON.parse(sessionStorage.getItem("profile"));
-        const accessToken = localStorage.getItem("accessToken");
+    const user = JSON.parse(sessionStorage.getItem("profile"));
+    const accessToken = localStorage.getItem("accessToken");
 
     // useEffect(() => {
     //     const observer = new MutationObserver((mutationsList) => {
@@ -42,29 +62,73 @@ const NotificationPanel = () => {
     // }, []);
 
     useEffect(() => {
-        if(user && accessToken){
+        if (user && accessToken) {
             getNotifications();
+            countNotifications();
         }
-    }, [size]);
+    }, [page]);
+
+    // useEffect(() => {
+    //     if (inView && page + 1 < totalPages) {
+    //         setPage((prevPage) => prevPage + 1);
+    //     }
+    // }, [inView, page]);
+
+    const resetPage = () => {
+        setPage(0);
+        setNotificationList([]);
+    };
+
+    // const handleToggleClick = useCallback(() => {
+    //     // Khi nút được click, gọi lại hàm clickOutsideRef để kiểm tra và thêm lớp active
+    clickOutsideRef(dropdownContentRef, dropdownButtonRef, resetPage);
+    // }, [dropdownContentRef, dropdownButtonRef, resetPage]);
 
     const getNotifications = async () => {
         try {
             const response = await getMyNotifications({
                 params: {
-                    size: size,
+                    page: page,
                 },
             });
-            setNotificationList(response.data.content);
-            setTotal(response.data.totalElements);
+
+            const isNewDataExisted = response.data.content.some((newItem) => notificationList.every((existingItem) => existingItem.notiId !== newItem.notiId));
+
+            if (isNewDataExisted) {
+                setNotificationList((prevNotifications) => [...prevNotifications, ...response.data.content]);
+            }
+
+            setTotalPages(response.data.totalPages);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const countNotifications = async () => {
+        try {
+            const response = await countMyNotifications();
+            setUnreadTotal(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const readNotification = async (notiId) => {
+        try {
+            const response = await readMyNotification(notiId);
+            if (response.status === 200) {
+                setNotificationList((prevNotifications) => prevNotifications.map((notification) => (notification.notiId === notiId ? { ...notification, read: true } : notification)));
+                countNotifications();
+            }
         } catch (error) {
             console.error(error);
         }
     };
 
     return (
-        <>
+        <div>
             <Tooltip content="Thông báo" placement="bottom" style="light">
-                <button id="dropdownNotificationButton" data-dropdown-toggle="dropdownNotification" className="relative inline-flex items-center text-sm font-medium text-center text-gray-500 hover:text-gray-900 focus:outline-none" type="button">
+                <button ref={dropdownButtonRef} className="relative inline-flex items-center text-sm font-medium text-center text-gray-500 hover:text-gray-900 focus:outline-none" type="button">
                     <svg className="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                         <g id="style=fill">
                             <g id="notification-bell">
@@ -86,23 +150,25 @@ const NotificationPanel = () => {
                         </g>
                     </svg>
 
-                    <div className="absolute flex items-center justify-center text-white bg-red-500 block w-full aspect-square rounded-full -top-3.5 start-3">
-                        <p className="text-xs">24</p>
-                    </div>
+                    {unreadTotal > 0 && (
+                        <div className="absolute flex items-center justify-center text-white bg-red-500 block w-full aspect-square rounded-full -top-3.5 start-3">
+                            <p className="text-xs">{unreadTotal}</p>
+                        </div>
+                    )}
                 </button>
             </Tooltip>
 
-            <div ref={dropdownRef} id="dropdownNotification" className="z-20 hidden w-full max-w-sm max-h-[75%] overflow-auto bg-white divide-y divide-gray-100 rounded-lg shadow" aria-labelledby="dropdownNotificationButton">
+            <div ref={dropdownContentRef} className="notification-dropdown z-20 w-full max-w-sm top-[10%] right-0 min-h-fit max-h-[80vh] overflow-auto bg-white divide-y divide-gray-100 rounded-lg shadow">
                 <div className="block px-4 py-2 font-medium text-center text-gray-700 rounded-t-lg bg-gray-50 text-lg">Thông báo</div>
 
                 <div className="divide-y divide-gray-100">
                     {notificationList.map((notification, index) => (
-                        <NotificationItem notification={notification} key={index} />
+                        <NotificationItem notification={notification} key={index} read={() => readNotification(notification.notiId)} />
                     ))}
                 </div>
 
                 <div className="block py-2 text-sm font-medium text-center text-gray-900 rounded-b-lg bg-gray-50 hover:bg-gray-100">
-                    {size > total ? (
+                    {page === totalPages - 1 ? (
                         <div className="inline-flex items-center hover:text-gray-600">
                             <svg className="w-4 h-4 me-2 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                                 <path
@@ -116,7 +182,9 @@ const NotificationPanel = () => {
                         <div
                             className="inline-flex items-center cursor-pointer hover:text-gray-600"
                             onClick={() => {
-                                if (size < total) setSize(size + 10);
+                                if (page + 1 < totalPages) {
+                                    setPage((prevPage) => prevPage + 1);
+                                }
                             }}>
                             <svg className="w-4 h-4 me-2 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 14">
                                 <path d="M10 0C4.612 0 0 5.336 0 7c0 1.742 3.546 7 10 7 6.454 0 10-5.258 10-7 0-1.664-4.612-7-10-7Zm0 10a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" />
@@ -126,7 +194,7 @@ const NotificationPanel = () => {
                     )}
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 

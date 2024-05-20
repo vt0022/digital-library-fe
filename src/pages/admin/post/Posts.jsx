@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
 
 const Posts = () => {
-    const tableHead = ["", "Tiêu đề", "Số phản hồi", "Số lượt thích", ""];
+    const tableHead = ["", "Tiêu đề", "Chuyên mục", "Nhãn", "Phản hồi", "Lượt thích", ""];
 
     const renderHead = (item, index) => (
         <th className="text-center" key={index}>
@@ -22,10 +22,16 @@ const Posts = () => {
 
     const renderBody = (item, index) => (
         <tr key={index} className="cursor-pointer" onClick={() => navigate(`/admin/posts/${item.postId}`)}>
-            <td className="w-1/12 min-w-1/12 text-center font-bold">{(currentPage - 1) * 2 + index + 1}</td>
-            <td className="w-4/12 min-w-4/12 text-center">{item.title}</td>
-            <td className="w-2/12 text-center">{item.totalReplies}</td>
-            <td className="w-2/12 text-center">{item.totalLikes}</td>
+            <td className="w-1/12 text-center font-bold">{(currentPage - 1) * 2 + index + 1}</td>
+            <td className="w-4/12 text-justify">{item.title}</td>
+            <td className="w-2/12 text-center">{item.subsection && item.subsection.subName}</td>
+            <td className="w-2/12 text-center">
+                <span className="px-3 py-1 rounded-2xl text-white text-xs" style={{ backgroundColor: item.label && item.label.color }}>
+                    {item.label && item.label.labelName}
+                </span>
+            </td>
+            <td className="w-1/12 text-center">{item.totalReplies}</td>
+            <td className="w-1/12 text-center">{item.totalLikes}</td>
             <td className="w-1/12 text-center">
                 <div className="flex space-x-0">
                     <ActionButton

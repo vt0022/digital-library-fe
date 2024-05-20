@@ -1,8 +1,9 @@
 import logo from "@assets/images/logo.png";
 import NotificationPanel from "@components/forum/notification/NotificationPanel";
+import { countMyNotifications } from "api/main/notificationAPI";
 import { initFlowbite } from "flowbite";
 import { Avatar, Button, Dropdown, Navbar, Tooltip } from "flowbite-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const TopBar = () => {

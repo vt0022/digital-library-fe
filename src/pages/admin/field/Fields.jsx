@@ -1,19 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-import FieldModal from "../../../components/management/admin/modal/field/FieldModal";
-import Table from "../../../components/management/table/Table";
-
-import ActionButton from "../../../components/management/action-button/ActionButton";
-
+import FieldModal from "@components/management/admin/modal/field/FieldModal";
+import Table from "@components/management/table/Table";
+import ActionButton from "@components/management/action-button/ActionButton";
 import { Badge, Button, Modal, Pagination, Spinner, Toast, Tooltip } from "flowbite-react";
-
-import { activateAField, deleteAField, getAllFields } from "../../../api/main/fieldAPI";
-import usePrivateAxios from "../../../api/usePrivateAxios";
-
+import { activateAField, deleteAField, getAllFields } from "@api/main/fieldAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
 import { HiCheck, HiDocumentRemove, HiOutlineCheck, HiX } from "react-icons/hi";
-
-import SelectFilter from "../../../components/management/select/SelectFilter";
+import SelectFilter from "@components/management/select/SelectFilter";
 
 let selectedPage = 0;
 
@@ -64,8 +58,8 @@ const Fields = () => {
                             e.stopPropagation();
                             handleEdit(item.fieldId);
                         }}
-                        icon="bx bx-edit"
-                        color="yellow"
+                        icon="bx bx-pencil"
+                        color="amber"
                         content="Chỉnh sửa lĩnh vực"
                     />
                     <ActionButton
@@ -232,13 +226,15 @@ const Fields = () => {
 
     return (
         <div className="w-4/5 m-auto">
-            <h2 className="page-header">Lĩnh vực</h2>
-            <Button color="gray" className="mb-7 mt-7 justify-self-end bg-white" style={{ boxShadow: "var(--box-shadow)", borderRadius: "var(--border-radius)" }} onClick={handleAdd}>
-                <i className="bx bxs-calendar-plus mr-3 text-xl hover:text-white" style={{ color: "var(--main-color)" }}></i>
-                Thêm lĩnh vực
-            </Button>
-
             <div className="row">
+                <div className="px-[15px]">
+                    <h2 className="page-header">Lĩnh vực</h2>
+                    <Button color="gray" className="mt-7 justify-self-end bg-white py-1.5" style={{ boxShadow: "var(--box-shadow)", borderRadius: "var(--border-radius)" }} onClick={handleAdd}>
+                        <i className="bx bxs-calendar-plus mr-3 text-xl hover:text-white" style={{ color: "var(--main-color)" }}></i>
+                        Tạo lĩnh vực
+                    </Button>
+                </div>
+
                 <div className="col-12">
                     <div className="card">
                         <div className="card__body flex items-end justify-between">

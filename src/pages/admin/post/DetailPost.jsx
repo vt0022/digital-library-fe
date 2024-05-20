@@ -1,21 +1,24 @@
-import { likePost } from "@api/main/postAPI";
-import { addAReply, deleteAReply, editAReply, getHistoryOfReply, getReplies } from "@api/main/replyAPI";
-import { likeReply } from "@api/main/replyAPI";
+import { uploadImageForReply } from "@api/main/imageAPI";
+import { deleteAPost, getAPost, getHistoryOfPost, likePost } from "@api/main/postAPI";
+import { addAReply, deleteAReply, editAReply, getAllRepliesOfPost, getHistoryOfReply, likeReply } from "@api/main/replyAPI";
 import usePrivateAxios from "@api/usePrivateAxios";
 import PostHistoryModal from "@components/forum/modal/PostHistoryModal";
 import ReplyHistoryModal from "@components/forum/modal/ReplyHistoryModal";
+import ReportModal from "@components/forum/modal/ReportModal";
+import Error404 from "@components/management/error/404Error";
 import DOMPurify from "dompurify";
-import { Avatar, Button, Modal, Pagination, Tooltip } from "flowbite-react";
+import { Avatar, Breadcrumb, Button, Modal, Pagination, Tooltip } from "flowbite-react";
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { render } from "react-dom";
-import { HiOutlinePencil, HiOutlineThumbUp, HiOutlineTrash, HiOutlineUser, HiOutlineX, HiReply, HiThumbUp } from "react-icons/hi";
+import { HiHome, HiOutlineThumbUp, HiOutlineUser, HiOutlineX, HiPencil, HiReply, HiThumbUp, HiTrash } from "react-icons/hi";
+import { IoEyeOff } from "react-icons/io5";
+import { LuEye } from "react-icons/lu";
+import { RiChatHistoryFill, RiChatHistoryLine } from "react-icons/ri";
 import { WiTime4 } from "react-icons/wi";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useNavigate, useParams } from "react-router-dom";
-import { uploadImageForReply } from "../../../api/main/imageAPI";
-import { deleteAPost, getAPost, getAPostForGuest, getHistoryOfPost } from "../../../api/main/postAPI";
 import "./post.css";
 
 const DetailPost = () => {
@@ -37,13 +40,18 @@ const DetailPost = () => {
     const [reply, setReply] = useState("");
     const [parentReplyId, setParentReplyId] = useState(null);
     const [replyId, setReplyId] = useState(null);
+    const [targetId, setTargetId] = useState(postId);
+    const [target, setTarget] = useState("POST");
     const [openPostModal, setOpenPostModal] = useState(false);
     const [openReplyModal, setOpenReplyModal] = useState(false);
     const [openPostHistoryModal, setOpenPostHistoryModal] = useState(false);
     const [openReplyHistoryModal, setOpenReplyHistoryModal] = useState(false);
+    const [openReportModal, setOpenReportModal] = useState(false);
     const [triggerPostModal, setTriggerPostModal] = useState(0);
     const [triggerReplyModal, setTriggerReplyModal] = useState(0);
+    const [triggerReportModal, setTriggerReportModal] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
+    const [notFound, setNotFound] = useState(false);
 
     let editedReply = "";
 
@@ -72,6 +80,9 @@ const DetailPost = () => {
 
             if (response.status === 200) {
                 setPost(response.data);
+                setNotFound(false);
+            } else {
+                setNotFound(true);
             }
         } catch (error) {
             navigate("/error-500");
@@ -80,7 +91,7 @@ const DetailPost = () => {
 
     const getPostReply = async () => {
         try {
-            const response = await getReplies(postId, {
+            const response = await getAllRepliesOfPost(postId, {
                 params: {
                     page: currentPage - 1,
                     size: 10,
@@ -170,7 +181,7 @@ const DetailPost = () => {
                 editQuill.current.getEditor().setText("");
 
                 const editReplySection = document.getElementById("edit-" + replyId);
-                const htmlContent = <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(response.data.content) }} id={`edit-${response.data.replyId}`} />;
+                const htmlContent = <div className="content-format" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(response.data.content) }} id={`edit-${response.data.replyId}`} />;
 
                 render(htmlContent, editReplySection);
             }
@@ -196,13 +207,29 @@ const DetailPost = () => {
     const handleDeleteReply = async () => {
         setIsLoading(true);
         try {
-            setIsLoading(false);
             const response = await deleteAReply(replyId);
             if (response.status === 200) getPostReply();
-            else setOpenPostModal(false);
+            else {
+                setIsLoading(false);
+                setOpenPostModal(false);
+            }
         } catch (error) {
             navigate("/error-500");
         }
+    };
+
+    const handleReportPost = () => {
+        setTarget("POST");
+        setTargetId(postId);
+        setOpenReportModal(true);
+        setTriggerReportModal(triggerReportModal + 1);
+    };
+
+    const handleReportReply = (replyId) => {
+        setTarget("REPLY");
+        setTargetId(replyId);
+        setOpenReportModal(true);
+        setTriggerReportModal(triggerReportModal + 1);
     };
 
     const handleReplySection = (parentReply) => {
@@ -215,12 +242,12 @@ const DetailPost = () => {
                 <div className="bg-gray-200 border-l-4 border-green-800">
                     <div className="text-red-600 font-medium bg-gray-300 p-3 flex justify-between">
                         <p>
-                            {parentReply.user.lastName} {parentReply.user.firstName}
+                            {parentReply.user && parentReply.user.lastName} {parentReply.user && parentReply.user.firstName}
                         </p>
                         <HiOutlineX className="h-5 w-5 cursor-pointer hover:text-orange-500" onClick={() => handleReplySection(null)} />
                     </div>
                     <div className="px-3">
-                        <div className="py-3" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(parentReply.content) }} />
+                        <div className="py-3 content-format" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(parentReply.content) }} />
                     </div>
                 </div>
             );
@@ -244,7 +271,7 @@ const DetailPost = () => {
 
         const editReplySection = document.getElementById("edit-" + reply.replyId);
 
-        const oldHtmlContent = <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(reply.content) }} id={`edit-${reply.replyId}`} />;
+        const oldHtmlContent = <div className="content-format" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(reply.content) }} id={`edit-${reply.replyId}`} />;
 
         const newHtmlContent = (
             <>
@@ -253,7 +280,7 @@ const DetailPost = () => {
                         ref={(el) => (editQuill.current = el)}
                         theme="snow"
                         modules={modulesForEdit}
-                        fotmats={formats}
+                        formats={formats}
                         value={reply.content}
                         onChange={(e) => {
                             editedReply = e;
@@ -262,7 +289,7 @@ const DetailPost = () => {
                     />
                 </div>
 
-                <div className="py-3 text-green-500 text-sm mt-2 flex justity-end space-x-3">
+                <div className="pt-3 text-green-500 text-sm mt-2 flex justity-end space-x-3">
                     <Button
                         className="ml-auto bg-green-400 enabled:hover:bg-green-500"
                         onClick={() => {
@@ -408,49 +435,69 @@ const DetailPost = () => {
 
     const formats = ["header", "bold", "italic", "underline", "strike", "blockquote", "list", "bullet", "indent", "link", "image", "color", "clean"];
 
+    if (notFound) return <Error404 name="post" />;
+
     return (
         <>
-            <div className="w-full m-auto min-h-screen h-max p-5 main-section">
-                <div className="items-center mb-5 w-full border-b border-black py-2">
+            <div className="w-[95%] m-auto min-h-screen h-max p-5 main-section">
+                <Breadcrumb aria-label="Post breadcrumb" className="breadcrumb cursor-pointer">
+                    <Breadcrumb.Item onClick={() => navigate("/forum")} icon={HiHome}>
+                        Trang chủ
+                    </Breadcrumb.Item>
+                    <Breadcrumb.Item onClick={() => navigate(`/forum/sections/${post && post.subsection && post.subsection.slug}`)}>{post && post.subsection && post.subsection.subName}</Breadcrumb.Item>
+                    <Breadcrumb.Item>
+                        {post && post.title.substring(0, 60)}
+                        {post && post.title.length > 60 ? "..." : ""}
+                    </Breadcrumb.Item>
+                </Breadcrumb>
+
+                <div className="items-center mb-5 mt-5 w-full border-b border-black py-2">
                     <p className="text-3xl font-normal">{post && post.title}</p>
 
-                    <div className="flex text-gray-400 mt-2  space-x-2">
-                        <div className="flex">
-                            <div className="flex items-center">
-                                <HiOutlineUser />
+                    <div className="flex text-gray-500 font-medium mt-2 justify-between">
+                        <div className="flex space-x-5">
+                            <div className="flex space-x-2 items-end">
+                                <div className="flex items-end text-xl mb-1">
+                                    <HiOutlineUser />
+                                </div>
+
+                                <p className="hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/users/${post.userPosted.userId}`)}>
+                                    {post && post.userPosted && post.userPosted.lastName} {post && post.userPosted && post.userPosted.firstName}
+                                </p>
                             </div>
 
-                            <p className="hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/users/${post.userPosted.userId}`)}>
-                                {post && post.userPosted && post.userPosted.lastName} {post && post.userPosted && post.userPosted.firstName}
-                            </p>
+                            <div className="flex space-x-2 items-end">
+                                <div className="flex items-end text-xl mb-1">
+                                    <WiTime4 />
+                                </div>
+
+                                <div>{post && post.updatedAt ? <p>{moment(post.updatedAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p> : <p>{moment(post?.createdAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p>}</div>
+                            </div>
+
+                            <div className="flex space-x-2 items-end">
+                                <div className="flex items-end text-xl mb-1">
+                                    <LuEye />
+                                </div>
+
+                                <p>{post && post.totalViews}</p>
+                            </div>
                         </div>
 
-                        <div className="flex">
-                            <div className="flex items-center">
-                                <WiTime4 />
-                            </div>
+                        <div className="items-end">
+                            {post && post.updatedAt && (
+                                <Tooltip content="Xem lịch sử chỉnh sửa" style="light">
+                                    <button
+                                        onClick={() => {
+                                            getPostHistory();
+                                            setTriggerPostModal(triggerPostModal + 1);
+                                            setOpenPostHistoryModal(true);
+                                        }}>
+                                        <RiChatHistoryLine className="text-xl mb-1 hover:text-teal-500 active:text-teal-400 cursor-pointer" />
+                                    </button>
+                                </Tooltip>
+                            )}
 
-                            <div>
-                                {post && post.updatedAt && (
-                                    <>
-                                        <p>
-                                            {moment(post.updatedAt).format("DD-MM-yyyy HH:mm")}{" "}
-                                            <span
-                                                className="text-gray-400 italic ml-5 hover:text-green-500 cursor-pointer"
-                                                onClick={() => {
-                                                    getPostHistory();
-                                                    setTriggerPostModal(triggerPostModal + 1);
-                                                    setOpenPostHistoryModal(true);
-                                                }}>
-                                                Đã chỉnh sửa
-                                            </span>
-                                        </p>
-
-                                        <PostHistoryModal triggerPostModal={triggerPostModal} openPostHistoryModal={openPostHistoryModal} postHistory={postHistory} />
-                                    </>
-                                )}
-                                {post && !post.updatedAt && <p>{moment(post.createdAt).format("DD-MM-yyyy HH:mm")}</p>}
-                            </div>
+                            <PostHistoryModal triggerPostModal={triggerPostModal} openPostHistoryModal={openPostHistoryModal} postHistory={postHistory} />
                         </div>
                     </div>
                 </div>
@@ -460,9 +507,26 @@ const DetailPost = () => {
                     </div>
                 )}
                 <div className="bg-white mt-2 p-5 rounded-lg grid gap-y-6 shadow-lg shadow-gray-300">
+                    {post && (post.disabled || post.labelDisabled || post.subsectionDisabled || post.sectionDisabled) && (
+                        <div className="w-full border rounded-lg bg-red-100 p-3 font-bold text-sm text-black">
+                            <div className="flex items-center space-x-3">
+                                <IoEyeOff className="text-xl mb-1" />
+                                <p>Bài đăng này đã bị ẩn vì (những) lý do sau: </p>
+                            </div>
+
+                            <div className="px-3 py-2">
+                                <ul class="list-disc pl-5">
+                                    {post.disabled && <li>Bài đăng đã bị gỡ</li>}
+                                    {post.labelDisabled && <li>Nhãn đã bị vô hiệu, bạn có thể chuyển sang nhãn khác</li>}
+                                    {post.sectionDisabled && <li>Mục chính chứa chuyên mục đã bị vô hiệu</li>}
+                                    {post.subsectionDisabled && <li>Chuyên mục đã bị vô hiệu, bạn có thể chuyển sang chuyên mục khác</li>}
+                                </ul>
+                            </div>
+                        </div>
+                    )}
                     <div className="w-full grid grid-cols-4 border border-gray-200 rounded-lg" id="post-section">
                         <div className="bg-gray-100 p-5">
-                            <Avatar alt="User" img={post && post.userPosted && post.userPosted.image ? post.userPosted.image : ""} rounded bordered size="lg" className="mb-4 mt-2" />
+                            <Avatar alt="User" img={post && post.userPosted && post.userPosted.image} rounded bordered size="lg" className="mb-4 mt-2" />
 
                             <div className="text-center text-sm hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/users/${post.userPosted.userId}`)}>
                                 {post && post.userPosted && post.userPosted.email.split("@")[0]}
@@ -472,47 +536,50 @@ const DetailPost = () => {
                                 {post && post.userPosted && post.userPosted.lastName} {post && post.userPosted && post.userPosted.firstName}
                             </div>
 
-                            <div className="flex justify-center mb-2">
-                                <Tooltip content={post && post.userPosted && post.userPosted.badge && post.userPosted.badge.badgeName}>
-                                    <Avatar alt="User" img={post && post.userPosted && post.userPosted.badge && post.userPosted.badge.image ? post.userPosted.badge.image : ""} rounded bordered />
-                                </Tooltip>
-                            </div>
-
-                            {/*<div className="m-auto text-center p-1 w-fit rounded-lg text-center font-medium text-white bg-gradient-to-r from-cyan-500 to-blue-500">{post && post.userPosted && post.userPosted.badge && post.userPosted.badge.badgeName}</div>*/}
+                            {post && post.userPosted && post.userPosted.badge && (
+                                <div className="flex justify-center mb-2">
+                                    <Tooltip content={post.userPosted.badge.badgeName}>
+                                        <Avatar alt="Badge" img={post.userPosted.badge.image} rounded />
+                                    </Tooltip>
+                                </div>
+                            )}
                         </div>
 
-                        <div className="col-span-3 bg-green-100 p-5">
-                            <div className="flex justify-between pb-2 border-b border-gray-200 text-gray-500 text-sm">
-                                {post && post.updatedAt && (
-                                    <p>
-                                        {moment(post.updatedAt).format("DD-MM-yyyy HH:mm")}{" "}
-                                        <span
-                                            className="text-gray-400 italic ml-5 hover:text-green-500 cursor-pointer"
-                                            onClick={() => {
-                                                getPostHistory();
-                                                setTriggerPostModal(triggerPostModal + 1);
-                                                setOpenPostHistoryModal(true);
-                                            }}>
-                                            Đã chỉnh sửa
-                                        </span>
-                                    </p>
-                                )}
-
-                                {post && !post.updatedAt && <p>{moment(post.createdAt).format("DD-MM-yyyy HH:mm")}</p>}
+                        <div className={`col-span-3 p-5 ${post && post.disabled ? "bg-red-100" : "bg-green-100"}`}>
+                            <div className="flex justify-between items-center pb-2 border-b border-gray-200 text-gray-500 text-sm">
+                                {post && post.updatedAt ? <p>{moment(post.updatedAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p> : <p>{moment(post?.createdAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p>}
 
                                 <div className="space-x-3 flex items-center">
-                                    <button className="bg-transparent" onClick={() => navigate(`/admin/posts/${post.postId}/edit`)}>
-                                        <HiOutlinePencil className="text-base hover:text-orange-500 active:text-orange-400 cursor-pointer" />
-                                    </button>
-                                    <button className="bg-transparent" onClick={() => setOpenPostModal(true)}>
-                                        <HiOutlineTrash className="text-base hover:text-red-500 active:text-red-400 cursor-pointer" />
-                                    </button>
+                                    {post && post.updatedAt && (
+                                        <Tooltip content="Xem lịch sử chỉnh sửa" style="light">
+                                            <button
+                                                onClick={() => {
+                                                    getPostHistory();
+                                                    setTriggerPostModal(triggerPostModal + 1);
+                                                    setOpenPostHistoryModal(true);
+                                                }}>
+                                                <RiChatHistoryFill className="text-base hover:text-teal-500 active:text-teal-400 cursor-pointer" />
+                                            </button>
+                                        </Tooltip>
+                                    )}
+
+                                    <Tooltip content="Chỉnh sửa bài đăng" style="light">
+                                        <button className="bg-transparent" onClick={() => navigate(`/forum/posts/${post.postId}/edit`)}>
+                                            <HiPencil className="text-base hover:text-yellow-500 active:text-yellow-400 cursor-pointer" />
+                                        </button>
+                                    </Tooltip>
+
+                                    <Tooltip content="Xoá bài đăng" style="light">
+                                        <button className="bg-transparent" onClick={() => setOpenPostModal(true)}>
+                                            <HiTrash className="text-base hover:text-red-500 active:text-red-400 cursor-pointer" />
+                                        </button>
+                                    </Tooltip>
 
                                     <p>#1</p>
                                 </div>
                             </div>
 
-                            <div className="py-3">{post && <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }} />}</div>
+                            <div className="py-3">{post && <div className="content-format" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }} />}</div>
 
                             <div className="flex justify-between py-3 text-green-500 text-sm">
                                 <div className="flex space-x-2 items-end">
@@ -544,57 +611,60 @@ const DetailPost = () => {
                             replyList.map((reply, index) => (
                                 <div className="w-full grid grid-cols-4 border border-gray-200 rounded-lg" key={index} id={reply.replyId}>
                                     <div className="bg-gray-100 p-5">
-                                        <Avatar alt="User" img={reply.user && reply.user.image ? reply.user.image : ""} rounded bordered size="lg" className="mb-4 mt-2" />
+                                        <Avatar alt="User" img={reply.user && reply.user.image} rounded bordered size="lg" className="mb-4 mt-2" />
 
-                                        <div className="text-center text-sm hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/users/${reply.user.userId}`)}>
+                                        <div className="text-center text-sm hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/users/${reply.user && reply.user.userId}`)}>
                                             {reply.user && reply.user.email.split("@")[0]}
                                         </div>
 
-                                        <div className="text-center font-semibold hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/users/${reply.user.userId}`)}>
+                                        <div className="text-center font-semibold hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/users/${reply?.user?.userId}`)}>
                                             {reply.user && reply.user.lastName} {reply.user && reply.user.firstName}
                                         </div>
 
-                                        <div className="flex justify-center mt-2">
-                                            <Tooltip content={post && post.userPosted && post.userPosted.badge && post.userPosted.badge.badgeName}>
-                                                <Avatar alt="User" img={reply.user && reply.user.badge && reply.user.badge.image ? reply.user.badge.image : ""} rounded bordered />
-                                            </Tooltip>
-                                        </div>
-
-                                        {/*<div className="m-auto text-center p-1 w-fit rounded-lg text-center font-medium text-white bg-gradient-to-r from-cyan-500 to-blue-500 mt-2">{reply.user && reply.user.badge && reply.user.badge.badgeName}</div>*/}
+                                        {reply.user && reply.user.badge && (
+                                            <div className="flex justify-center mt-2">
+                                                <Tooltip content={reply.user.badge.badgeName}>
+                                                    <Avatar alt="Badge" img={reply.user.badge.image} rounded />
+                                                </Tooltip>
+                                            </div>
+                                        )}
                                     </div>
 
-                                    <div className="col-span-3 p-5">
+                                    <div className={`col-span-3 p-5 ${reply.disabled && "bg-red-100"}`}>
                                         <div className="flex justify-between pb-2 border-b border-gray-200 text-gray-500 text-sm">
-                                            {!reply.updatedAt && <p>{moment(reply.createdAt).format("DD-MM-yyyy HH:mm")}</p>}
-                                            {reply.updatedAt && (
-                                                <p>
-                                                    {moment(reply.updatedAt).format("DD-MM-yyyy HH:mm")}
-                                                    <span
-                                                        className="text-gray-400 italic ml-5 hover:text-green-500 cursor-pointer"
-                                                        onClick={() => {
-                                                            getReplyHistory(reply.replyId);
-                                                            setReplyId(reply.replyId);
-                                                            setTriggerReplyModal(triggerReplyModal + 1);
-                                                            setOpenReplyHistoryModal(true);
-                                                        }}>
-                                                        Đã chỉnh sửa
-                                                    </span>
-                                                </p>
-                                            )}
+                                            {!reply.updatedAt ? <p>{moment(reply?.createdAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })} </p> : <p>{moment(reply.updatedAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p>}
 
                                             <div className="space-x-3 flex items-center">
-                                                <button className="bg-transparent" onClick={() => handleEditReplySection(reply)}>
-                                                    <HiOutlinePencil className="text-lg hover:text-orange-500 active:text-orange-400 cursor-pointer" />
-                                                </button>
+                                                {reply.updatedAt && (
+                                                    <Tooltip content="Xem lịch sử chỉnh sửa" style="light">
+                                                        <button
+                                                            onClick={() => {
+                                                                getReplyHistory(reply.replyId);
+                                                                setReplyId(reply.replyId);
+                                                                setTriggerReplyModal(triggerReplyModal + 1);
+                                                                setOpenReplyHistoryModal(true);
+                                                            }}>
+                                                            <RiChatHistoryFill className="text-base hover:text-teal-500 active:text-teal-400 cursor-pointer" />
+                                                        </button>
+                                                    </Tooltip>
+                                                )}
 
-                                                <button
-                                                    className="bg-transparent"
-                                                    onClick={() => {
-                                                        setOpenReplyModal(true);
-                                                        setReplyId(reply.replyId);
-                                                    }}>
-                                                    <HiOutlineTrash className="text-lg hover:text-red-500 active:text-red-400 cursor-pointer" />
-                                                </button>
+                                                <Tooltip content="Chỉnh sửa phản hồi" style="light">
+                                                    <button className="bg-transparent" onClick={() => handleEditReplySection(reply)}>
+                                                        <HiPencil className="text-lg hover:text-orange-500 active:text-orange-400 cursor-pointer" />
+                                                    </button>
+                                                </Tooltip>
+
+                                                <Tooltip content="Xoá phản hồi" style="light">
+                                                    <button
+                                                        className="bg-transparent"
+                                                        onClick={() => {
+                                                            setOpenReplyModal(true);
+                                                            setReplyId(reply.replyId);
+                                                        }}>
+                                                        <HiTrash className="text-lg hover:text-red-500 active:text-red-400 cursor-pointer" />
+                                                    </button>
+                                                </Tooltip>
 
                                                 <p>#{(currentPage - 1) * 10 + index + 2}</p>
                                             </div>
@@ -604,21 +674,21 @@ const DetailPost = () => {
                                             <div className="bg-gray-200 border-l-4 border-green-800 cursor-pointer mt-3" onClick={() => handleParentReplySection(reply.parentReply.replyId)}>
                                                 <div className="text-red-600 font-medium bg-gray-300 p-3">
                                                     <p>
-                                                        {reply.parentReply.user && reply.parentReply.user.lastName} {reply.parentReply.user && reply.parentReply.user.firstName}
+                                                        {reply?.parentReply?.user?.lastName} {reply?.parentReply?.user?.firstName}
                                                     </p>
                                                 </div>
 
                                                 <div className="px-3">
-                                                    <div className="py-3" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(reply.parentReply.content) }} />
+                                                    <div className="py-3 content-format" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(reply?.parentReply?.content) }} />
                                                 </div>
                                             </div>
                                         )}
 
                                         <div className="py-3">
-                                            <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(reply.content) }} id={`edit-${reply.replyId}`} />
+                                            <div className="content-format" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(reply.content) }} id={`edit-${reply.replyId}`} />
                                         </div>
 
-                                        <div className="flex justify-between py-3 text-green-500 text-sm">
+                                        <div className="flex justify-between text-green-500 text-sm">
                                             <div className="flex space-x-2 items-end">
                                                 {reply.liked && (
                                                     <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125  duration-150 bg-transparent" onClick={() => handleReplyLike(reply.replyId)}>
@@ -647,29 +717,31 @@ const DetailPost = () => {
 
                         <div className="w-full grid grid-cols-4 border border-gray-200 rounded-lg">
                             <div className="bg-gray-100 p-5">
-                                <Avatar alt="User" img={user && user.image ? user.image : ""} rounded bordered size="lg" className="mb-4 mt-2" />
+                                <Avatar alt="User" img={user && user.image} rounded bordered size="lg" className="mb-4 mt-2" />
 
-                                {user && (
-                                    <>
-                                        <div className="text-center text-sm">{user && user.email.split("@")[0]}</div>
+                                <div className="text-center text-sm">{user && user.email.split("@")[0]}</div>
 
-                                        <div className="text-center font-semibold">
-                                            {user && user.lastName} {user && user.firstName}
-                                        </div>
-                                    </>
+                                <div className="text-center font-semibold">
+                                    {user && user.lastName} {user && user.firstName}
+                                </div>
+
+                                {user && user.badge && (
+                                    <div className="flex justify-center mt-2">
+                                        <Tooltip content={user.badge.badgeName}>
+                                            <Avatar alt="Badge" img={user.badge.image} rounded />
+                                        </Tooltip>
+                                    </div>
                                 )}
-
-                                {!user && <div className="text-center font-semibold text-red-500">Khách</div>}
                             </div>
 
                             <div className="col-span-3 p-5" id="reply-section">
                                 <div id="parent-reply-section"></div>
 
                                 <div className="h-52">
-                                    <ReactQuill ref={(el) => (mainQuill.current = el)} theme="snow" modules={modules} fotmats={formats} value={reply} onChange={(e) => setReply(e)} className="h-full" />
+                                    <ReactQuill ref={(el) => (mainQuill.current = el)} theme="snow" modules={modules} formats={formats} value={reply} onChange={(e) => setReply(e)} className="h-full" />
                                 </div>
 
-                                <div className="py-3 text-green-500 text-sm mt-2">
+                                <div className="pt-3 text-green-500 text-sm mt-2">
                                     <Button
                                         className="ml-auto bg-green-400 enabled:hover:bg-green-500"
                                         onClick={() => {
@@ -690,11 +762,13 @@ const DetailPost = () => {
                 )}
             </div>
 
+            <ReportModal target={target} targetId={targetId} openReportModal={openReportModal} triggerModal={triggerReportModal} />
+
             <Modal show={openPostModal} size="md" onClose={() => setOpenPostModal(false)} popup>
                 <Modal.Header />
                 <Modal.Body>
                     <div className="text-center">
-                        <HiOutlineTrash className="mx-auto mb-4 h-14 w-14 text-red-600 dark:text-gray-200" />
+                        <HiTrash className="mx-auto mb-4 h-14 w-14 text-red-600 dark:text-gray-200" />
                         <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có chắc chắn muốn xoá bài viết này không?</h3>
                         <div className="flex justify-center gap-4">
                             <Button color="failure" isProcessing={isLoading} onClick={handleDeletePost}>
@@ -712,7 +786,7 @@ const DetailPost = () => {
                 <Modal.Header />
                 <Modal.Body>
                     <div className="text-center">
-                        <HiOutlineTrash className="mx-auto mb-4 h-14 w-14 text-red-600 dark:text-gray-200" />
+                        <HiTrash className="mx-auto mb-4 h-14 w-14 text-red-600 dark:text-gray-200" />
                         <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có chắc chắn muốn xoá phản hồi này không?</h3>
                         <div className="flex justify-center gap-4">
                             <Button color="failure" isProcessing={isLoading} onClick={handleDeleteReply}>

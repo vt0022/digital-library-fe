@@ -4,7 +4,7 @@ import { getLatestUsers } from "@api/main/userAPI";
 import usePrivateAxios from "@api/usePrivateAxios";
 import StatusCard from "@components/management/status-card/StatusCard";
 import Table from "@components/management/table/Table";
-import { Button, Datepicker, Radio, Select } from "flowbite-react";
+import { Button, Datepicker, Radio, Select, Tooltip } from "flowbite-react";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
@@ -93,14 +93,21 @@ const Dashboard = () => {
 
     const [totalDocuments, setTotalDocuments] = useState(0);
     const [totalPendingDocuments, setTotalPendingDocuments] = useState(0);
+    const [totalReviews, setTotalReviews] = useState(0);
+    const [totalPendingReviews, setTotalPendingReviews] = useState(0);
     const [totalUsers, setTotalUsers] = useState(0);
     const [totalCategories, setTotalCategories] = useState(0);
     const [totalFields, setTotalFields] = useState(0);
     const [totalOrganizations, setTotalOrganizations] = useState(0);
     const [totalPosts, setTotalPosts] = useState(0);
     const [totalReplies, setTotalReplies] = useState(0);
+    const [totalSections, setTotalSections] = useState(0);
     const [totalSubsections, setTotalSubsections] = useState(0);
     const [totalLabels, setTotalLabels] = useState(0);
+    const [totalPostReports, setTotalPostReports] = useState(0);
+    const [totalPostAppeals, setTotalPostAppeals] = useState(0);
+    const [totalReplyReports, setTotalReplyReports] = useState(0);
+    const [totalReplyAppeals, setTotalReplyAppeals] = useState(0);
     const [documentsByMonth, setDocumentsByMonth] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
     const [usersByMonth, setUsersByMonth] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
     const [postsByMonth, setPostsByMonth] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
@@ -113,6 +120,10 @@ const Dashboard = () => {
     const [postsByLabel, setPostsByLabel] = useState([]);
     const [repliesBySubsection, setRepliesBySubsection] = useState([]);
     const [repliesByLabel, setRepliesByLabel] = useState([]);
+    const [postReportsByReason, setPostReportsByReason] = useState([]);
+    const [replyReportsByReason, setReplyReportsByReason] = useState([]);
+    const [postAppealsByReason, setPostAppealsByReason] = useState([]);
+    const [replyAppealsByReason, setReplyAppealsByReason] = useState([]);
 
     const [latestUsers, setLatestUsers] = useState([]);
     const [latestDocuments, setLatestDocuments] = useState([]);
@@ -123,7 +134,7 @@ const Dashboard = () => {
     const [dateRange, setDateRange] = useState("all"); // ["all", "1month", "3months", "6months", "1year"]
     const [isGeneral, setIsGeneral] = useState(true);
 
-    const statusCards = [
+    const statusCardsForLibrary = [
         {
             icon: "bx bx-file",
             count: totalDocuments,
@@ -138,13 +149,13 @@ const Dashboard = () => {
         },
         {
             icon: "bx bxs-star-half",
-            count: 0,
+            count: totalReviews,
             title: "Đánh giá",
             link: "/admin/documents/pending",
         },
         {
             icon: "bx bx-time",
-            count: 0,
+            count: totalPendingReviews,
             title: "Đánh giá đang chờ",
             link: "/admin/documents/pending",
         },
@@ -155,27 +166,30 @@ const Dashboard = () => {
             link: "/admin/users",
         },
         {
-            icon: "bx bx-category",
+            icon: "bx bx-category-alt",
             count: totalCategories,
             title: "Danh mục",
             link: "/admin/users",
         },
         {
-            icon: "bx bx-bulb",
+            icon: "bx bx-cube",
             count: totalFields,
             title: "Lĩnh vực",
             link: "/admin/documents",
         },
         {
-            icon: "bx bxs-school",
+            icon: "bx bx-buildings",
             count: totalOrganizations,
             title: "Trường",
             link: "/admin/documents/pending",
         },
+    ];
+
+    const statusCardsForForum = [
         {
             icon: "bx bx-message-square-dots",
             count: totalPosts,
-            title: "Bài viết",
+            title: "Bài đăng",
             link: "/admin/users",
         },
         {
@@ -183,6 +197,12 @@ const Dashboard = () => {
             count: totalReplies,
             title: "Phản hồi",
             link: "/admin/documents",
+        },
+        {
+            icon: "bx bx-detail",
+            count: totalSections,
+            title: "Mục",
+            link: "/admin/documents/pending",
         },
         {
             icon: "bx bx-detail",
@@ -194,6 +214,30 @@ const Dashboard = () => {
             icon: "bx bx-purchase-tag",
             count: totalLabels,
             title: "Nhãn",
+            link: "/admin/users",
+        },
+        {
+            icon: "bx bx-error",
+            count: totalPostReports,
+            title: "Báo cáo bài đăng",
+            link: "/admin/documents",
+        },
+        {
+            icon: "bx bx-error",
+            count: totalReplyReports,
+            title: "Báo cáo phản hồi",
+            link: "/admin/documents/pending",
+        },
+        {
+            icon: "bx bx-hourglass",
+            count: totalPostAppeals,
+            title: "Khiếu nại bài đăng",
+            link: "/admin/documents/pending",
+        },
+        {
+            icon: "bx bx-hourglass",
+            count: totalReplyAppeals,
+            title: "Khiếu nại phản hồi",
             link: "/admin/users",
         },
     ];
@@ -259,10 +303,17 @@ const Dashboard = () => {
                 setTotalCategories(response.data.totalCategories);
                 setTotalFields(response.data.totalFields);
                 setTotalOrganizations(response.data.totalOrganizations);
+                setTotalReviews(response.data.totalReviews);
+                setTotalPendingReviews(response.data.totalPendingReviews);
                 setTotalPosts(response.data.totalPosts);
                 setTotalReplies(response.data.totalReplies);
+                setTotalSections(response.data.totalSections);
                 setTotalSubsections(response.data.totalSubsections);
                 setTotalLabels(response.data.totalLabels);
+                setTotalPostReports(response.data.totalPostReports);
+                setTotalPostAppeals(response.data.totalPostAppeals);
+                setTotalReplyReports(response.data.totalReplyReports);
+                setTotalReplyAppeals(response.data.totalReplyAppeals);
                 setDocumentsByCategory(response.data.documentsByCategory);
                 setDocumentsByField(response.data.documentsByField);
                 setDocumentsByOrganization(response.data.documentsByOrganization);
@@ -271,6 +322,10 @@ const Dashboard = () => {
                 setPostsByLabel(response.data.postsByLabel);
                 setRepliesBySubsection(response.data.repliesBySubsection);
                 setRepliesByLabel(response.data.repliesByLabel);
+                setPostReportsByReason(response.data.postReportsByReason);
+                setReplyReportsByReason(response.data.replyReportsByReason);
+                setPostAppealsByReason(response.data.postAppealsByReason);
+                setReplyAppealsByReason(response.data.replyAppealsByReason);
             }
         } catch (error) {
             console.log(error);
@@ -319,13 +374,18 @@ const Dashboard = () => {
     };
 
     return (
-        <div className="space-y-10">
+        <div className="space-y-5">
             <div className="row">
                 <h2 className="page-header px-[15px]">Tổng quan</h2>
 
+                <div class="flex items-center w-full px-[15px] mb-2">
+                    <span class="whitespace-nowrap text-2xl font-medium">Sơ lược theo giai đoạn</span>
+                    <span class="flex-grow border-t border-black"></span>
+                </div>
+
                 <div className="col-12">
                     <div className="card flex items-center space-x-10 justify-between">
-                        <div className="card__body min-w-1/4 w-fit flex space-x-5 items-center">
+                        <div className="card__body w-1/3 w-fit flex space-x-5 items-center">
                             <Radio id="date-range" name="isGeneral" value={true} onClick={() => setIsGeneral(true)} defaultChecked />
 
                             <Select id="countries" required className={`${!isGeneral ? "pointer-events-none opacity-50" : ""}`} onChange={(e) => setDateRange(e.target.value)}>
@@ -354,6 +414,7 @@ const Dashboard = () => {
                                         setStartDate(date);
                                     }}
                                     required
+                                    className="w-fit"
                                 />
 
                                 <GoDash />
@@ -380,12 +441,45 @@ const Dashboard = () => {
                     </div>
                 </div>
 
-                <div className="flex w-full grid grid-cols-4">
-                    {statusCards.map((item, index) => (
+                <div class="flex items-center w-full px-[15px] my-2">
+                    <span class="whitespace-nowrap text-xl font-medium">Số lượng tổng quát</span>
+                    <span class="flex-grow border-t border-black"></span>
+                </div>
+
+                <div class="flex items-center w-full px-[15px] my-2">
+                    <span class="whitespace-nowrap text-base font-medium">Thư viện</span>
+                    <span class="flex-grow border-t border-black"></span>
+                </div>
+
+                <div className="flex w-full grid grid-cols-5 gap-y-5 mb-7">
+                    {statusCardsForLibrary.map((item, index) => (
                         <div className="col-3 w-full" key={index}>
                             <StatusCard icon={item.icon} count={item.count} title={item.title} link={item.link} />
                         </div>
                     ))}
+                </div>
+
+                <div class="flex items-center w-full px-[15px] my-2">
+                    <span class="whitespace-nowrap text-base font-medium">Diễn đàn</span>
+                    <span class="flex-grow border-t border-black"></span>
+                </div>
+
+                <div className="flex w-full grid grid-cols-5 gap-y-5 mb-7">
+                    {statusCardsForForum.map((item, index) => (
+                        <div className="col-3 w-full" key={index}>
+                            <StatusCard icon={item.icon} count={item.count} title={item.title} link={item.link} />
+                        </div>
+                    ))}
+                </div>
+
+                <div class="flex items-center w-full px-[15px] my-2">
+                    <span class="whitespace-nowrap text-xl font-medium">Biểu đồ tổng quan</span>
+                    <span class="flex-grow border-t border-black"></span>
+                </div>
+
+                <div class="flex items-center w-full px-[15px] my-2">
+                    <span class="whitespace-nowrap text-base font-medium">Thư viện</span>
+                    <span class="flex-grow border-t border-black"></span>
                 </div>
 
                 <div className="flex w-full">
@@ -396,7 +490,13 @@ const Dashboard = () => {
                                     <p className="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
                                         Tài liệu theo danh mục
                                     </p>
-                                    <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
+                                    <Tooltip content="Không có dữ liệu" style="light">
+                                        <div className="h-full flex items-center justify-center">
+                                    <Tooltip content="Không có dữ liệu" style="light">
+                                        <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
+                                    </Tooltip>
+                                </div>
+                                    </Tooltip>
                                 </>
                             )}
 
@@ -426,7 +526,13 @@ const Dashboard = () => {
                                     <p className="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
                                         Tài liệu theo lĩnh vực
                                     </p>
-                                    <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
+                                    <Tooltip content="Không có dữ liệu" style="light">
+                                        <div className="h-full flex items-center justify-center">
+                                    <Tooltip content="Không có dữ liệu" style="light">
+                                        <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
+                                    </Tooltip>
+                                </div>
+                                    </Tooltip>
                                 </>
                             )}
 
@@ -448,36 +554,6 @@ const Dashboard = () => {
                             )}
                         </div>
                     </div>
-
-                    <div className="col-4 w-full">
-                        <div className="card full-height w-full flex flex-col">
-                            {Object.keys(documentsByOrganization).length === 0 && (
-                                <>
-                                    <p className="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
-                                        Tài liệu theo trường
-                                    </p>
-                                    <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
-                                </>
-                            )}
-
-                            {Object.keys(documentsByOrganization).length > 0 && (
-                                <Chart
-                                    options={{
-                                        ...pieOptions,
-                                        theme: { mode: themeReducer === "theme-mode-dark" ? "dark" : "light" },
-                                        labels: Object.keys(documentsByOrganization),
-                                        title: {
-                                            ...pieOptions.title,
-                                            text: "Tài liệu theo trường",
-                                        },
-                                    }}
-                                    series={Object.values(documentsByOrganization)}
-                                    type="pie"
-                                    height="300px"
-                                />
-                            )}
-                        </div>
-                    </div>
                 </div>
 
                 <div className="flex w-full">
@@ -488,7 +564,13 @@ const Dashboard = () => {
                                     <p className="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
                                         Người dùng theo trường
                                     </p>
-                                    <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
+                                    <Tooltip content="Không có dữ liệu" style="light">
+                                        <div className="h-full flex items-center justify-center">
+                                    <Tooltip content="Không có dữ liệu" style="light">
+                                        <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
+                                    </Tooltip>
+                                </div>
+                                    </Tooltip>
                                 </>
                             )}
 
@@ -513,12 +595,61 @@ const Dashboard = () => {
 
                     <div className="col-4 w-full">
                         <div className="card full-height w-full flex flex-col">
+                            {Object.keys(documentsByOrganization).length === 0 && (
+                                <>
+                                    <p className="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
+                                        Tài liệu theo trường
+                                    </p>
+                                    <Tooltip content="Không có dữ liệu" style="light">
+                                        <div className="h-full flex items-center justify-center">
+                                    <Tooltip content="Không có dữ liệu" style="light">
+                                        <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
+                                    </Tooltip>
+                                </div>
+                                    </Tooltip>
+                                </>
+                            )}
+
+                            {Object.keys(documentsByOrganization).length > 0 && (
+                                <Chart
+                                    options={{
+                                        ...pieOptions,
+                                        theme: { mode: themeReducer === "theme-mode-dark" ? "dark" : "light" },
+                                        labels: Object.keys(documentsByOrganization),
+                                        title: {
+                                            ...pieOptions.title,
+                                            text: "Tài liệu theo trường",
+                                        },
+                                    }}
+                                    series={Object.values(documentsByOrganization)}
+                                    type="pie"
+                                    height="300px"
+                                />
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center w-full px-[15px] my-2">
+                    <span class="whitespace-nowrap text-base font-medium">Diễn đàn</span>
+                    <span class="flex-grow border-t border-black"></span>
+                </div>
+
+                <div className="flex w-full">
+                    <div className="col-4 w-full">
+                        <div className="card full-height w-full flex flex-col">
                             {Object.keys(postsBySubsection).length === 0 && (
                                 <>
                                     <p className="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
                                         Bài đăng theo phân mục
                                     </p>
-                                    <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
+                                    <Tooltip content="Không có dữ liệu" style="light">
+                                        <div className="h-full flex items-center justify-center">
+                                    <Tooltip content="Không có dữ liệu" style="light">
+                                        <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
+                                    </Tooltip>
+                                </div>
+                                    </Tooltip>
                                 </>
                             )}
 
@@ -548,7 +679,13 @@ const Dashboard = () => {
                                     <p className="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
                                         Bài đăng theo nhãn
                                     </p>
-                                    <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
+                                    <Tooltip content="Không có dữ liệu" style="light">
+                                        <div className="h-full flex items-center justify-center">
+                                    <Tooltip content="Không có dữ liệu" style="light">
+                                        <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
+                                    </Tooltip>
+                                </div>
+                                    </Tooltip>
                                 </>
                             )}
 
@@ -580,7 +717,13 @@ const Dashboard = () => {
                                     <p className="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
                                         Phản hồi theo phân mục
                                     </p>
-                                    <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
+                                    <Tooltip content="Không có dữ liệu" style="light">
+                                        <div className="h-full flex items-center justify-center">
+                                    <Tooltip content="Không có dữ liệu" style="light">
+                                        <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
+                                    </Tooltip>
+                                </div>
+                                    </Tooltip>
                                 </>
                             )}
 
@@ -610,7 +753,13 @@ const Dashboard = () => {
                                     <p className="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
                                         Phản hồi theo nhãn
                                     </p>
-                                    <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
+                                    <Tooltip content="Không có dữ liệu" style="light">
+                                        <div className="h-full flex items-center justify-center">
+                                    <Tooltip content="Không có dữ liệu" style="light">
+                                        <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
+                                    </Tooltip>
+                                </div>
+                                    </Tooltip>
                                 </>
                             )}
 
@@ -633,9 +782,160 @@ const Dashboard = () => {
                         </div>
                     </div>
                 </div>
+
+                <div className="flex w-full">
+                    <div className="col-4 w-full">
+                        <div className="card full-height w-full flex flex-col">
+                            {Object.keys(postReportsByReason).length === 0 && (
+                                <>
+                                    <p className="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
+                                        Báo cáo bài đăng theo lý do
+                                    </p>
+                                    <Tooltip content="Không có dữ liệu" style="light">
+                                        <div className="h-full flex items-center justify-center">
+                                    <Tooltip content="Không có dữ liệu" style="light">
+                                        <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
+                                    </Tooltip>
+                                </div>
+                                    </Tooltip>
+                                </>
+                            )}
+
+                            {Object.keys(postReportsByReason).length > 0 && (
+                                <Chart
+                                    options={{
+                                        ...pieOptions,
+                                        theme: { mode: themeReducer === "theme-mode-dark" ? "dark" : "light", palette: "palette8" },
+                                        labels: Object.keys(postReportsByReason),
+                                        title: {
+                                            ...pieOptions.title,
+                                            text: "Báo cáo bài đăng theo lý do",
+                                        },
+                                    }}
+                                    series={Object.values(postReportsByReason)}
+                                    type="polarArea"
+                                    height="300px"
+                                />
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="col-4 w-full">
+                        <div className="card full-height w-full flex flex-col">
+                            {Object.keys(replyReportsByReason).length === 0 && (
+                                <>
+                                    <p className="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
+                                        Báo cáo phản hồi theo lý do
+                                    </p>
+                                    <Tooltip content="Không có dữ liệu" style="light">
+                                        <div className="h-full flex items-center justify-center">
+                                    <Tooltip content="Không có dữ liệu" style="light">
+                                        <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
+                                    </Tooltip>
+                                </div>
+                                    </Tooltip>
+                                </>
+                            )}
+
+                            {Object.keys(replyReportsByReason).length > 0 && (
+                                <Chart
+                                    options={{
+                                        ...pieOptions,
+                                        theme: { mode: themeReducer === "theme-mode-dark" ? "dark" : "light" },
+                                        labels: Object.keys(repliesByLabel),
+                                        title: {
+                                            ...pieOptions.title,
+                                            text: "Báo cáo phản hồi theo lý do",
+                                        },
+                                    }}
+                                    series={Object.values(replyReportsByReason)}
+                                    type="pie"
+                                    height="300px"
+                                />
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="flex w-full">
+                <div className="col-4 w-full">
+                    <div className="card full-height w-full flex flex-col">
+                        {Object.keys(postAppealsByReason).length === 0 && (
+                            <>
+                                <p className="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
+                                    Khiếu nại xử lý bài đăng theo lý do
+                                </p>
+                                <Tooltip content="Không có dữ liệu" style="light">
+                                    <div className="h-full flex items-center justify-center">
+                                    <Tooltip content="Không có dữ liệu" style="light">
+                                        <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
+                                    </Tooltip>
+                                </div>
+                                </Tooltip>
+                            </>
+                        )}
+
+                        {Object.keys(postAppealsByReason).length > 0 && (
+                            <Chart
+                                options={{
+                                    ...pieOptions,
+                                    theme: { mode: themeReducer === "theme-mode-dark" ? "dark" : "light", palette: "palette8" },
+                                    labels: Object.keys(postAppealsByReason),
+                                    title: {
+                                        ...pieOptions.title,
+                                        text: "Khiếu nại xử lý bài đăng theo lý do",
+                                    },
+                                }}
+                                series={Object.values(postAppealsByReason)}
+                                type="polarArea"
+                                height="300px"
+                            />
+                        )}
+                    </div>
+                </div>
+
+                <div className="col-4 w-full">
+                    <div className="card full-height w-full flex flex-col">
+                        {Object.keys(replyAppealsByReason).length === 0 && (
+                            <>
+                                <p className="font-bold text-[16px] text-gray-700 text-center" style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
+                                    Khiếu nại xử lý phản hồi theo lý do
+                                </p>
+                                <div className="h-full flex items-center justify-center">
+                                    <Tooltip content="Không có dữ liệu" style="light">
+                                        <TbMoodEmpty className="w-20 h-20 mx-auto text-amber-500 flex-1" />
+                                    </Tooltip>
+                                </div>
+                            </>
+                        )}
+
+                        {Object.keys(replyAppealsByReason).length > 0 && (
+                            <Chart
+                                options={{
+                                    ...pieOptions,
+                                    theme: { mode: themeReducer === "theme-mode-dark" ? "dark" : "light" },
+                                    labels: Object.keys(replyAppealsByReason),
+                                    title: {
+                                        ...pieOptions.title,
+                                        text: "Khiếu nại xử lý phản hồi theo lý do",
+                                    },
+                                }}
+                                series={Object.values(replyAppealsByReason)}
+                                type="pie"
+                                height="300px"
+                            />
+                        )}
+                    </div>
+                </div>
             </div>
 
             <div className="row">
+                <div class="flex items-center w-full px-[15px] mb-2">
+                    <span class="whitespace-nowrap text-2xl font-medium">Biểu đồ tổng quan theo từng năm</span>
+                    <span class="flex-grow border-t border-black"></span>
+                </div>
+
                 <div className="col-12">
                     <div className="card flex items-center space-x-10 justify-between">
                         <div className="card__body min-w-1/4 w-fit flex space-x-5 items-center">
@@ -699,6 +999,11 @@ const Dashboard = () => {
             </div>
 
             <div className="row">
+                <div class="flex items-center w-full px-[15px] mb-2">
+                    <span class="whitespace-nowrap text-2xl font-medium">Dữ liệu mới nhất trong tháng</span>
+                    <span class="flex-grow border-t border-black"></span>
+                </div>
+
                 <div className="flex w-full">
                     <div className="col-5">
                         <div className="card">

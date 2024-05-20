@@ -81,7 +81,7 @@ export const getPostsOfUser = async (userId, config) => {
     }
 };
 
-export const getPostsOfUserForAdmin = async (userId, config) => {
+export const getAllPostsOfUser = async (userId, config) => {
     try {
         const response = await privateAxios.get(`/posts/all/user/${userId}`, config);
         return response.data;

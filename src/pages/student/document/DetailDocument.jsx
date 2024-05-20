@@ -11,6 +11,7 @@ import DocumentCard from "../../../components/student/card/Card";
 import CollectionListModal from "../../../components/student/modal/CollectionListModal";
 import Review from "../../../components/student/review/Review";
 import { default as ReviewList } from "../../../components/student/review/ReviewList";
+import PageHead from "components/shared/head/PageHead";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.js", import.meta.url).toString();
 
@@ -258,6 +259,8 @@ const DetailDocument = () => {
                     <div className="pl-4 text-sm font-normal">{message}</div>
                 </Toast>
             )}
+
+            <PageHead title={doc && doc.docName} description={doc && doc.docIntroduction} imageUrl={doc && doc.thumbnail} url={window.location.href} />
 
             <div className="flex-1 p-4 bg-gray-50">
                 <div className="flex gap-5 w-full">

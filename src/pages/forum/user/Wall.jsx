@@ -1,6 +1,6 @@
 import { getBadgesOfUser } from "@api/main/badgeAPI";
 import { getPostsOfUser } from "@api/main/postAPI";
-import { getRepliesOfUser } from "@api/main/replyAPI";
+import { getViewableRepliesOfUser } from "@api/main/replyAPI";
 import { getAUser } from "@api/main/userAPI";
 import { initFlowbite } from "flowbite";
 import { Avatar, Button } from "flowbite-react";
@@ -70,7 +70,7 @@ const Wall = () => {
 
     const getReplyList = async () => {
         try {
-            const response = await getRepliesOfUser(userId, {
+            const response = await getViewableRepliesOfUser(userId, {
                 params: {
                     page: 0,
                     size: currentReplyPage * 5,

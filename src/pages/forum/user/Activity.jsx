@@ -1,16 +1,16 @@
 import { getBadgesOfUser } from "@api/main/badgeAPI";
-import { getPostLikes, getPostsOfUser } from "@api/main/postAPI";
-import { getRepliesOfUser, getReplyLikes } from "@api/main/replyAPI";
+import { getAllPostsOfUser, getPostLikes } from "@api/main/postAPI";
+import { getAllRepliesOfUser, getReplyLikes } from "@api/main/replyAPI";
 import { getAUser } from "@api/main/userAPI";
 import usePrivateAxios from "api/usePrivateAxios";
 import { initFlowbite } from "flowbite";
-import { Avatar, Pagination } from "flowbite-react";
+import { Avatar, Pagination, Popover } from "flowbite-react";
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
+import { RiErrorWarningLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import "react-tabs/style/react-tabs.css";
 import "./user.css";
-import mainImage from "@assets/images/404.svg";
 
 const Activity = () => {
     initFlowbite();
@@ -88,29 +88,29 @@ const Activity = () => {
         setCurrentReplyPage(1);
         setCurrentPostLikePage(1);
         setCurrentReplyLikePage(1);
-    }
+    };
 
     const resetPagesForReply = () => {
         setCurrentPostPage(1);
         setCurrentPostLikePage(1);
         setCurrentReplyLikePage(1);
-    }
+    };
 
     const resetPagesForPostLike = () => {
         setCurrentPostPage(1);
         setCurrentReplyPage(1);
         setCurrentReplyLikePage(1);
-    }
+    };
 
     const resetPagesForReplyLike = () => {
         setCurrentPostPage(1);
         setCurrentReplyPage(1);
         setCurrentPostLikePage(1);
-    }
+    };
 
     const getPostList = async () => {
         try {
-            const response = await getPostsOfUser(userId, {
+            const response = await getAllPostsOfUser(userId, {
                 params: {
                     page: currentPostPage - 1,
                     size: 10,
@@ -130,7 +130,7 @@ const Activity = () => {
 
     const getReplyList = async () => {
         try {
-            const response = await getRepliesOfUser(userId, {
+            const response = await getAllRepliesOfUser(userId, {
                 params: {
                     page: currentReplyPage - 1,
                     size: 10,
@@ -268,21 +268,58 @@ const Activity = () => {
 
                         {postList &&
                             postList.map((post, index) => (
-                                <div className="p-3 rounded-lg border" key={index}>
-                                    <div className="flex text-sm space-x-3 items-center">
-                                        <p>{post.totalLikes} lượt thích</p>
-                                        <p className="px-3 py-1 bg-green-500 rounded-md text-white">{post.totalReplies} phản hồi</p>
-                                        <p className="text-gray-500">{post.totalViews} lượt xem</p>
+                                <div className={`p-3 rounded-lg border space-y-2 ${(post.disabled || post.labelDisabled || post.subsectionDisabled || post.sectionDisabled) && "bg-red-100"}`} key={index}>
+                                    <div className="flex text-sm items-center justify-between">
+                                        <div className="flex space-x-3 items-center ">
+                                            <p>{post.totalLikes} lượt thích</p>
+                                            <p className="px-3 py-1 bg-green-500 rounded-md text-white">{post.totalReplies} phản hồi</p>
+                                            <p className="text-gray-500">{post.totalViews} lượt xem</p>
+                                        </div>
+
+                                        {(post.disabled || post.labelDisabled || post.subsectionDisabled || post.sectionDisabled) && (
+                                            <Popover
+                                                content={
+                                                    <div className="w-96 text-sm text-gray-500">
+                                                        <div className="border-b border-gray-200 bg-gray-100 px-3 py-2">
+                                                            <h3 className="font-semibold text-gray-900">Bài đăng này đã bị ẩn vì (những) lý do sau</h3>
+                                                        </div>
+                                                        <div className="px-3 py-2">
+                                                            <ul class="list-disc pl-5">
+                                                                {post.disabled && <li>Bài đăng đã bị gỡ</li>}
+                                                                {post.labelDisabled && <li>Nhãn đã bị vô hiệu, bạn có thể chuyển sang nhãn khác</li>}
+                                                                {post.subsectionDisabled && <li>Mục chính chứa chuyên mục đã bị vô hiệu</li>}
+                                                                {post.subsectionDisabled && <li>Chuyên mục đã bị vô hiệu, bạn có thể chuyển sang chuyên mục khác</li>}
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                trigger="hover">
+                                                <button>
+                                                    <RiErrorWarningLine className="text-red-500 text-xl" />
+                                                </button>
+                                            </Popover>
+                                        )}
                                     </div>
 
-                                    <p className="font-medium text-lg text-sky-700 cursor-pointer mt-2" onClick={() => navigate(`/forum/posts/${post.postId}`)}>
+                                    <p className="font-medium text-lg text-sky-700 cursor-pointer" onClick={() => navigate(`/forum/posts/${post.postId}`)}>
                                         {post.title}
                                     </p>
 
-                                    <p className="text-sm text-gray-600 text-right">
-                                        <span className="text-xs">đăng vào </span>
-                                        {moment(post.createdAt).calendar({ sameElse: "DD/MM/YYYY HH:mm" })}
-                                    </p>
+                                    <div className="flex justify-between">
+                                        <div className="flex space-x-5 text-xs">
+                                            {post.subsection && <p className="px-3 py-1 rounded-md bg-teal-300 text-white">{post.subsection.subName}</p>}
+                                            {post.label && (
+                                                <p className="px-3 py-1 rounded-md text-white" style={{ backgroundColor: post.label.color }}>
+                                                    #{post.label.labelName}
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        <p className="text-sm text-gray-600 text-right">
+                                            <span className="text-xs">đăng vào </span>
+                                            {moment(post.createdAt).calendar({ sameElse: "DD/MM/YYYY HH:mm" })}
+                                        </p>
+                                    </div>
                                 </div>
                             ))}
 
@@ -296,16 +333,38 @@ const Activity = () => {
 
                         {replyList &&
                             replyList.map((reply, index) => (
-                                <div className="p-3 rounded-lg border" key={index}>
-                                    <div className="flex text-sm space-x-3 items-center">
+                                <div className={`p-3 rounded-lg border space-y-1 ${(reply.disabled || reply.postDisabled) && "bg-red-100"}`} key={index}>
+                                    <div className="flex text-sm space-x-3 items-center justify-between">
                                         <p className="px-3 py-1 bg-green-500 rounded-md text-white">{reply.totalLikes} lượt thích</p>
+
+                                        {(reply.disabled || reply.postDisabled) && (
+                                            <Popover
+                                                content={
+                                                    <div className="w-80 text-sm text-gray-500">
+                                                        <div className="border-b border-gray-200 bg-gray-100 px-3 py-2">
+                                                            <h3 className="font-semibold text-gray-900">Bình luận này đã bị ẩn vì (những) lý do sau</h3>
+                                                        </div>
+                                                        <div className="px-3 py-2">
+                                                            <ul class="list-disc pl-5">
+                                                                {reply.disabled && <li>Bình luận đã bị gỡ</li>}
+                                                                {reply.postDisabled && <li>Bài đăng đã bị ẩn</li>}
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                trigger="hover">
+                                                <button>
+                                                    <RiErrorWarningLine className="text-red-500 text-xl" />
+                                                </button>
+                                            </Popover>
+                                        )}
                                     </div>
 
-                                    <p className="font-medium text-lg text-sky-700 cursor-pointer mt-2" onClick={() => navigate(`/forum/posts/${reply.post && reply.post.postId}`)}>
+                                    <p className="font-medium text-lg text-sky-700 cursor-pointer" onClick={() => navigate(`/forum/posts/${reply.post && reply.post.postId}`)}>
                                         {reply.post && reply.post.title}
                                     </p>
 
-                                    <p className="text-sm truncate whitespace-normal line-clamp-2 mt-2">{reply.content && reply.content.replace(/(<([^>]+)>)/gi, "")}</p>
+                                    <p className="text-sm truncate whitespace-normal line-clamp-2">{reply.content && reply.content.replace(/(<([^>]+)>)/gi, "")}</p>
 
                                     <p className="text-sm text-gray-600 text-right">
                                         <span className="text-xs">gửi vào </span>

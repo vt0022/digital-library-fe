@@ -20,7 +20,7 @@
         "icon": "bx bxs-star-half"
     },
     {
-        "display_name": "Phê duyệt",
+        "display_name": "Duyệt tài liệu",
         "route": "/manager/documents/pending",
         "icon": "bx bx-notification"
     }

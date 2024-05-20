@@ -46,7 +46,7 @@ const RootRouters = () => {
 
             <Route path="/forum/*" element={<Forum />} />
 
-            <Route path="/" element={<Home />} />
+            <Route path="/" exact element={<Home />} />
             <Route path="/*" element={<Main />} />
         </Routes>
     );

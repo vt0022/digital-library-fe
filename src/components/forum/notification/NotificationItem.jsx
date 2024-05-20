@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import "./notification.css";
 
 const NotificationItem = (props) => {
-    const { notification } = props;
+    const { notification, read } = props;
 
     const navigate = useNavigate();
 
@@ -80,24 +80,30 @@ const NotificationItem = (props) => {
         switch (notification && notification.type) {
             case "REWARD_BADGE":
                 navigate(`/forum/users/${notification && notification.recipient && notification.recipient.userId}`);
+                if(!notification.read) read()
                 break;
             case "REPLY":
                 navigate(`/forum/posts/${notification && notification.reply && notification.reply.post && notification.reply.post.postId}`);
+                if (!notification.read) read();
                 break;
             case "LIKE_REPLY":
                 navigate(`/forum/posts/${notification && notification.reply && notification.reply.post && notification.reply.post.postId}`);
+                if (!notification.read) read();
                 break;
             case "LIKE_POST":
                 navigate(`/forum/posts/${notification && notification.post && notification.post.postId}`);
+                if (!notification.read) read();
                 break;
             case "WARN_POST":
                 handleClickWarnPost();
+                if (!notification.read) read();
                 break;
             case "WARN_REPLY":
                 handleClickWarnReply();
+                if (!notification.read) read();
                 break;
             default:
-                return "#";
+                if(!notification.read) read();
         }
     };
 

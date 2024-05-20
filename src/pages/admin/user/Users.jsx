@@ -101,9 +101,9 @@ const Users = () => {
             </td> */}
             <td className="text-center">
                 <div className="flex space-x-0">
-                    <ActionButton onClick={() => handleDetail(item.userId)} icon="bx bxs-user-detail" color="green" content="Xem chi tiết người dùng" />
-                    <ActionButton onClick={() => handleEdit(item.userId)} icon="bx bxs-user-check" color="yellow" content="Chỉnh sửa người dùng" />
-                    <ActionButton onClick={() => handleDelete(item.userId)} icon="bx bxs-user-x" color="red" content="Xoá người dùng" />
+                    <ActionButton onClick={() => handleDetail(item.userId)} icon="bx bx-show-alt" color="green" content="Xem chi tiết người dùng" />
+                    <ActionButton onClick={() => handleEdit(item.userId)} icon="bx bx-pencil" color="amber" content="Chỉnh sửa người dùng" />
+                    <ActionButton onClick={() => handleDelete(item.userId)} icon="bx bx-trash" color="red" content="Xoá người dùng" />
                 </div>
             </td>
         </tr>
@@ -291,13 +291,15 @@ const Users = () => {
 
     return (
         <div>
-            <h2 className="page-header">{isLatestRoute ? "Người dùng mới" : "Người dùng"}</h2>
-            <Button color="gray" className="mb-7 mt-7 justify-self-end bg-white" style={{ boxShadow: "var(--box-shadow)", borderRadius: "var(--border-radius)" }} onClick={handleAdd}>
-                <i className="bx bxs-calendar-plus mr-3 text-xl hover:text-white" style={{ color: "var(--main-color)" }}></i>
-                Thêm người dùng
-            </Button>
-
             <div className="row">
+                <div className="px-[15px]">
+                    <h2 className="page-header">{isLatestRoute ? "Người dùng mới" : "Người dùng"}</h2>
+                    <Button color="gray" className="mt-7 justify-self-end bg-white py-1.5" style={{ boxShadow: "var(--box-shadow)", borderRadius: "var(--border-radius)" }} onClick={handleAdd}>
+                        <i className="bx bxs-calendar-plus mr-3 text-xl hover:text-white" style={{ color: "var(--main-color)" }}></i>
+                        Thêm người dùng
+                    </Button>
+                </div>
+
                 <div className="col-12">
                     <div className="card">
                         <div className="card__body">

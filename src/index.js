@@ -36,8 +36,8 @@ import App from "./App";
 import "./index.css";
 
 import "flowbite";
+import { Bounce, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from "react-toastify";
 
 const store = createStore(rootReducer);
 
@@ -49,7 +49,8 @@ root.render(
     <Provider store={store}>
         <React.StrictMode>
             <App />
-            <ToastContainer />
+
+            <ToastContainer position="bottom-center" autoClose={4000} hideProgressBar={false} newestOnTop={false} closeOnClick={false} rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover={false} theme="light" transition={Bounce} />
         </React.StrictMode>
     </Provider>,
 );

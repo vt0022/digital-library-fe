@@ -1,6 +1,6 @@
 import moment from "moment";
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { HiBadgeCheck, HiOutlineEye, HiOutlineHeart, HiOutlineCalendar } from "react-icons/hi";
 
@@ -12,9 +12,9 @@ const FullCard = (props) => {
 
     return (
         <>
-            <div
+            <Link to={`/documents/${slug}`}
                 className="flex w-full rounded-lg h-[11.5rem] border-gray-50 border shadow-lg bg-white cursor-pointer hover:bg-green-100 focus:bg-green-50 active:bg-green-50 focus:border-green-200 active:border-green-200 focus:border-2 active:border-2"
-                onClick={() => navigate(`/documents/${slug}`)}>
+                >
                 <div className="w-2/12 rounded-lg m-4 shadow-lg border ">
                     <img src={thumbnail} className="h-full w-full object-cover m-auto rounded-lg" alt={docName} />
                 </div>
@@ -50,7 +50,7 @@ const FullCard = (props) => {
                         <h5 className="text-md mt-2 font-medium tracking-tight text-green-400 dark:text-white">Xem nhiều</h5>
                     </div>
                 )}
-            </div>
+            </Link>
         </>
     );
 };

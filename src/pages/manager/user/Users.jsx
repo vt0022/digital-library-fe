@@ -100,9 +100,9 @@ const ManagerUsers = () => {
             </td> */}
             <td className="text-center">
                 <div className="flex space-x-0">
-                    <ActionButton onClick={() => handleDetail(item.userId)} icon="bx bxs-user-detail" color="green" content="Xem chi tiết người dùng" />
-                    <ActionButton onClick={() => handleEdit(item.userId)} icon="bx bxs-user-check" color="yellow" content="Chỉnh sửa người dùng" />
-                    <ActionButton onClick={() => handleDelete(item.userId)} icon="bx bxs-user-x" color="red" content="Xoá người dùng" />
+                    <ActionButton onClick={() => handleDetail(item.userId)} icon="bx bx-show-alt" color="green" content="Xem chi tiết người dùng" />
+                    <ActionButton onClick={() => handleEdit(item.userId)} icon="bx bx-pencil" color="amber" content="Chỉnh sửa người dùng" />
+                    <ActionButton onClick={() => handleDelete(item.userId)} icon="bx bx-trash" color="red" content="Xoá người dùng" />
                 </div>
             </td>
         </tr>

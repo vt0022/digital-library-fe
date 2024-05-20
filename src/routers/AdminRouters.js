@@ -51,7 +51,7 @@ const ManagementRoutes = () => {
             <Route path="/documents" element={<Documents />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/home" element={<Dashboard />} />
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/" exact element={<Dashboard />} />
             <Route path="*" element={<Page404 />} />
         </Routes>
     );

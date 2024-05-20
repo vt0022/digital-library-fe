@@ -1,6 +1,7 @@
+import Error404 from "@components/forum/error/404Error";
 import { Button, Toast } from "flowbite-react";
 import moment from "moment";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { HiOutlineCheck, HiOutlinePencilAlt, HiX } from "react-icons/hi";
 import ReactQuill from "react-quill";
 import { useNavigate, useParams } from "react-router-dom";
@@ -31,6 +32,7 @@ const EditPost = () => {
     const [isSubsectionValid, setIsSubsectionValid] = useState(true);
     const [isTitleValid, setIsTitleValid] = useState(true);
     const [isContentValid, setIsContentValid] = useState(true);
+    const [notNull, setNotNull] = useState(false);
 
     const quill = useRef();
 
@@ -83,17 +85,18 @@ const EditPost = () => {
             const response = await getAPost(postId);
 
             if (response.status === 200) {
-                if (!response.data.my) {
-                    navigate("/error-404");
+                if (!response.data.my || response.data.disabled || response.data?.label?.disabled || response.data?.subsection?.disabled) {
+                    setNotNull(true);
                 } else {
+                    setNotNull(false);
                     setPost(response.data);
                     setTitle(response.data.title);
                     setContent(response.data.content);
                     setLabel(response.data.label && response.data.label.labelId);
                     setSubsection(response.data.subsection && response.data.subsection.subId);
                 }
-            } else if (response.status === 404) {
-                navigate("/error-404");
+            } else {
+                setNotNull(true);
             }
         } catch (error) {
             navigate("/error-500");
@@ -207,24 +210,10 @@ const EditPost = () => {
 
     const formats = ["header", "bold", "italic", "underline", "strike", "blockquote", "list", "bullet", "indent", "link", "image", "color", "clean"];
 
+    if (!notNull) return <Error404 name="post" />;
+
     return (
         <>
-            {/* <div className="flex items-center">
-                {status === -1 && (
-                    <Toast className="left-1/2 w-100 fixed z-50 shadow-md shadow-gray-300 bg-amber-50">
-                        <HiX className="h-5 w-5 text-amber-400" />
-                        <div className="pl-4 text-sm font-normal">Đã xảy ra lỗi! Xin vui lòng thử lại!</div>
-                    </Toast>
-                )}
-
-                {status === 1 && (
-                    <Toast className="left-1/2 fixed w-100 z-50 shadow-md shadow-gray-300 bg-green-50">
-                        <HiOutlineCheck className="h-5 w-5 text-green-600" />
-                        <div className="pl-4 text-sm">Tải lên thành công!</div>
-                    </Toast>
-                )}
-            </div> */}
-
             {status === -1 && (
                 <Toast className="top-1/5 right-5 w-100 fixed z-50">
                     <HiX className="h-5 w-5 text-amber-400 dark:text-amber-300" />
@@ -351,7 +340,7 @@ const EditPost = () => {
                         <p className="text-sm text-gray-500 mb-2">Nêu ra đầy đủ nội dung để người đọc hiểu rõ bài đăng của bạn</p>
 
                         <div className="h-80">
-                            <ReactQuill ref={(el) => (quill.current = el)} theme="snow" modules={modules} fotmats={formats} className="h-full" value={content} onChange={(e) => setContent(e)} />
+                            <ReactQuill ref={(el) => (quill.current = el)} theme="snow" modules={modules} formats={formats} className="h-full" value={content} onChange={(e) => setContent(e)} />
                         </div>
 
                         {!isContentValid && <p className="text-sm text-red-500">Vui lòng nhập nội dung</p>}

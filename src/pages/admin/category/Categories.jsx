@@ -1,19 +1,13 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-
-import CategoryModal from "../../../components/management/admin/modal/category/CategoryModal";
-import Table from "../../../components/management/table/Table";
-
-import ActionButton from "../../../components/management/action-button/ActionButton";
-
+import { activateACategory, deleteACategory, getAllCategories } from "@api/main/categoryAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
+import ActionButton from "@components/management/action-button/ActionButton";
+import CategoryModal from "@components/management/admin/modal/category/CategoryModal";
+import SelectFilter from "@components/management/select/SelectFilter";
+import Table from "@components/management/table/Table";
 import { Badge, Button, Modal, Pagination, Spinner, Toast, Tooltip } from "flowbite-react";
-
-import { activateACategory, deleteACategory, getAllCategories } from "../../../api/main/categoryAPI";
-import usePrivateAxios from "../../../api/usePrivateAxios";
-
+import { useEffect, useState } from "react";
 import { HiCheck, HiDocumentRemove, HiOutlineCheck, HiX } from "react-icons/hi";
-
-import SelectFilter from "../../../components/management/select/SelectFilter";
+import { useNavigate } from "react-router-dom";
 
 let selectedPage = 0;
 
@@ -64,8 +58,8 @@ const Categories = () => {
                             e.stopPropagation();
                             handleEdit(item.categoryId);
                         }}
-                        icon="bx bx-edit"
-                        color="yellow"
+                        icon="bx bx-pencil"
+                        color="amber"
                         content="Chỉnh sửa danh mục"
                     />
                     <ActionButton
@@ -232,13 +226,15 @@ const Categories = () => {
 
     return (
         <div className="w-4/5 m-auto">
-            <h2 className="page-header">Danh mục</h2>
-            <Button color="gray" className="mb-7 mt-7 justify-self-end bg-white" style={{ boxShadow: "var(--box-shadow)", borderRadius: "var(--border-radius)" }} onClick={handleAdd}>
-                <i className="bx bxs-calendar-plus mr-3 text-xl hover:text-white" style={{ color: "var(--main-color)" }}></i>
-                Thêm danh mục
-            </Button>
-
             <div className="row">
+                <div className="px-[15px]">
+                    <h2 className="page-header">Danh mục</h2>
+                    <Button color="gray" className="mt-7 justify-self-end bg-white py-1.5" style={{ boxShadow: "var(--box-shadow)", borderRadius: "var(--border-radius)" }} onClick={handleAdd}>
+                        <i className="bx bxs-calendar-plus mr-3 text-xl hover:text-white" style={{ color: "var(--main-color)" }}></i>
+                        Tạo danh mục
+                    </Button>
+                </div>
+
                 <div className="col-12">
                     <div className="card">
                         <div className="card__body flex items-end justify-between">

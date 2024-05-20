@@ -45,6 +45,15 @@ export const handlePostReport = async (postReportId, config) => {
     }
 };
 
+export const getRelatedPostReport = async (postReportId) => {
+    try {
+        const response = await privateAxios.get(`/reports/post/${postReportId}/check`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const getAllReplyReports = async (config) => {
     try {
         const response = await privateAxios.get("/reports/reply", config);
@@ -84,6 +93,15 @@ export const deleteReplyReport = async (replyReportId) => {
 export const handleReplyReport = async (replyReportId, config) => {
     try {
         const response = await privateAxios.post(`/reports/reply/${replyReportId}/handle`, "", config);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getRelatedReplyReport = async (replyReportId) => {
+    try {
+        const response = await privateAxios.get(`/reports/reply/${replyReportId}/check`);
         return response.data;
     } catch (error) {
         throw error;

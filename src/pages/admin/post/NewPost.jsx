@@ -298,7 +298,7 @@ const NewPost = () => {
                         <p className="text-sm text-gray-500 mb-2">Nêu ra đầy đủ nội dung để người đọc hiểu rõ bài đăng của bạn</p>
 
                         <div className="h-80">
-                            <ReactQuill ref={(el) => (quill.current = el)} theme="snow" modules={modules} fotmats={formats} className="h-full border-gray-400" value={content} onChange={(e) => setContent(e)} />
+                            <ReactQuill ref={(el) => (quill.current = el)} theme="snow" modules={modules} formats={formats} className="h-full border-gray-400" value={content} onChange={(e) => setContent(e)} />
                         </div>
 
                         {!isContentValid && <p className="text-sm text-red-500">Vui lòng nhập nội dung</p>}

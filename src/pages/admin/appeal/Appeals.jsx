@@ -5,6 +5,7 @@ import reportReasons from "@assets/json-data/report_reasons.json";
 import ActionButton from "@components/management/action-button/ActionButton";
 import SelectFilter from "@components/management/select/SelectFilter";
 import Table from "@components/management/table/Table";
+import DetailAppealModal from "components/management/admin/modal/report/DetailAppealModal";
 import DOMPurify from "dompurify";
 import { Button, Modal, Pagination, Spinner } from "flowbite-react";
 import moment from "moment";
@@ -55,7 +56,6 @@ const Appeals = () => {
                     <ActionButton
                         onClick={(e) => {
                             e.stopPropagation();
-                            if (item.status === "PENDING") readThisAppeal(item.appealId);
                             handleView(item);
                         }}
                         icon="bx bx-show-alt"
@@ -65,12 +65,10 @@ const Appeals = () => {
 
                     {(item.status === "PENDING" || item.status === "REVIEWED") && (
                         <>
-                            {" "}
                             <ActionButton
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    if (item.status === "PENDING") readThisAppeal(item.appealId);
-                                    handleRestore(item.appealId);
+                                    handleRestore(item);
                                 }}
                                 icon="bx bx-reset"
                                 color="amber"
@@ -79,8 +77,7 @@ const Appeals = () => {
                             <ActionButton
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    if (item.status === "PENDING") readThisAppeal(item.appealId);
-                                    handleRemain(item.appealId);
+                                    handleRemain(item);
                                 }}
                                 icon="bx bx-transfer"
                                 color="orange"
@@ -155,25 +152,33 @@ const Appeals = () => {
         return item ? item.value : "";
     };
 
-    const handleView = (item) => {
-        if (target === "POST") setContent(item.postReport && item.postReport.post);
-        else setContent(item.replyReport && item.replyReport.reply);
+        const onCloseViewModal = () => {
+            setOpenViewModal(false);
+        };
+
+    const handleView = (appeal) => {
+        if (appeal.status === "PENDING") readThisAppeal(appeal.appealId);
+        console.log(appeal)
+        setContent(appeal);
         setOpenViewModal(true);
     };
 
-    const handleRemain = (appealId) => {
+    const handleRemain = (appeal) => {
+        if (appeal.status === "PENDING") readThisAppeal(appeal.appealId);
         setOpenRemainModal(true);
-        setAppealId(appealId);
+        setAppealId(appeal.appealId);
     };
 
-    const handleRestore = (appealId) => {
+    const handleRestore = (appeal) => {
+                                    if (appeal.status === "PENDING") readThisAppeal(appeal.appealId);
         setOpenRestoreModal(true);
-        setAppealId(appealId);
+        setAppealId(appeal.appealId);
     };
 
-    const handleDeleteAppeal = (appealId) => {
+    const handleDeleteAppeal = (appeal) => {
+        if (appeal.status === "PENDING") readThisAppeal(appeal.appealId);
         setOpenDeleteAppealModal(true);
-        setAppealId(appealId);
+        setAppealId(appeal.appealId);
     };
 
     const onPageChange = (page) => {
@@ -288,7 +293,7 @@ const Appeals = () => {
                         <div className="card__body flex space-x-10 items-end justify-between">
                             <div className="flex space-x-5 items-end">
                                 <SelectFilter
-                                    selectName="Loại vi phạm"
+                                    selectName="Lý do khiếu nại"
                                     options={appealReasons}
                                     selectedValue={type}
                                     onChangeHandler={(e) => {
@@ -398,30 +403,7 @@ const Appeals = () => {
                 </Modal.Body>
             </Modal>
 
-            <Modal show={openViewModal} size="lg" onClose={() => setOpenViewModal(false)} className="z-40">
-                <Modal.Header>{target === "POST" ? "Bài đăng " : "Phản hồi "} được khiếu nại</Modal.Header>
-                <Modal.Body>
-                    {target === "POST" ? (
-                        <>
-                            <div className="border-b pb-2 mb-5 text-lg font-medium cursor-pointer hover:text-green-500" onClick={() => window.open(`/admin/posts/${content.postId}`, "_blank")}>
-                                {content.title}
-                            </div>
-
-                            <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content.content) }} />
-                        </>
-                    ) : (
-                        <>
-                            <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content.content) }} />
-
-                            <div className="mt-5 text-sm">Thuộc về bài đăng</div>
-
-                            <div className="border-t pt-2 text-lg font-medium cursor-pointer hover:text-green-500" onClick={() => window.open(`/admin/posts/${content.post && content.post.postId}`, "_blank")}>
-                                {content.post && content.post.title}
-                            </div>
-                        </>
-                    )}
-                </Modal.Body>
-            </Modal>
+            <DetailAppealModal target={target} content={content} openViewModal={openViewModal} onCloseViewModal={onCloseViewModal} />
         </div>
     );
 };

@@ -1,11 +1,11 @@
-import { deletePostReport, deleteReplyReport, getAllPostReports, getAllReplyReports, handlePostReport, readPostReport, readReplyReport } from "@api/main/reportAPI";
+import { deletePostReport, deleteReplyReport, getAllPostReports, getAllReplyReports, getRelatedPostReport, getRelatedReplyReport, handlePostReport, readPostReport, readReplyReport } from "@api/main/reportAPI";
 import usePrivateAxios from "@api/usePrivateAxios";
 import reportReasons from "@assets/json-data/report_reasons.json";
 import ActionButton from "@components/management/action-button/ActionButton";
 import ReportModal from "@components/management/admin/modal/report/ReportModal";
 import SelectFilter from "@components/management/select/SelectFilter";
 import Table from "@components/management/table/Table";
-import DOMPurify from "dompurify";
+import DetailReportModal from "components/management/admin/modal/report/DetailReportModal";
 import { Button, Modal, Pagination, Spinner } from "flowbite-react";
 import moment from "moment";
 import { useEffect, useState } from "react";
@@ -30,10 +30,12 @@ const Reports = () => {
     );
 
     const renderBody = (item, index) => (
-        <tr key={index} className={`cursor-pointer ${item.read ? "bg-gray-100" : ""}`} onClick={() => navigate("/admin/labels/" + item.slug)}>
+        <tr key={index} className="cursor-pointer text-sm">
             <td className="w-1/12 text-center font-bold">{(currentPage - 1) * 2 + index + 1}</td>
 
-            <td className="w-3/12 ">{target === "POST" ? item.post && item.post.title : item.reply && item.reply.content.replace(/(<([^>]+)>)/gi, "")}</td>
+            <td className="w-3/12">
+                <p className="w-full truncate whitespace-normal line-clamp-3">{target === "POST" ? item.post && item.post.title : item.reply && item.reply.content.replace(/(<([^>]+)>)/gi, "")}</p>
+            </td>
 
             <td className="w-2/12 font-medium text-center">{findReasonByType(item.type)}</td>
 
@@ -41,12 +43,12 @@ const Reports = () => {
                 {item.user && item.user.lastName} {item.user && item.user.firstName}
             </td>
 
-            <td className="w-1/12 text-center">{moment(item.reportedAt).calendar()}</td>
+            <td className="w-2/12 text-center">{moment(item.reportedAt).calendar()}</td>
 
-            <td className="w-2/12 text-center">
-                {item.status === "PENDING" && <p className="m-auto text-sm text-white bg-violet-500 px-3 py-1 rounded-2xl w-fit">Đang chờ</p>}
-                {item.status === "REVIEWED" && <p className="m-auto text-sm text-white bg-sky-500 px-3 py-1 rounded-2xl w-fit">Đã đọc</p>}
-                {item.status === "DISABLED" && <p className="m-auto text-sm text-white bg-amber-500 px-3 py-1 rounded-2xl w-fit">Đã gỡ nội dung</p>}
+            <td className="w-1/12 text-center text-xs">
+                {item.status === "PENDING" && <p className="m-auto text-white bg-violet-500 px-3 py-1 rounded-2xl w-fit">Đang chờ</p>}
+                {item.status === "REVIEWED" && <p className="m-auto text-white bg-sky-500 px-3 py-1 rounded-2xl w-fit">Đã đọc</p>}
+                {item.status === "DISABLED" && <p className="m-auto text-white bg-amber-500 px-3 py-1 rounded-2xl w-fit">Đã gỡ nội dung</p>}
                 {/* {item.status === "DELETED" && <p className="text-sm text-white bg-amber-500 px-3 py-2">Đang chờ</p>} */}
             </td>
 
@@ -55,26 +57,25 @@ const Reports = () => {
                     <ActionButton
                         onClick={(e) => {
                             e.stopPropagation();
-                            setContent(item.reply && item.reply.content);
-                            if (item.status === "PENDING") readThisReport(item.reportId);
-                            handleView(item.post && item.post.postId);
+                            handleView(item);
                         }}
                         icon="bx bx-show-alt"
                         color="green"
                         content="Xem nội dung"
                     />
 
-                    <ActionButton
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            if (item.status === "PENDING") readThisReport(item.reportId);
-                            handleDisableTarget(item.reportId);
-                        }}
-                        icon="bx bx-error-circle"
-                        color="amber"
-                        content="Gỡ nội dung"
-                    />
-
+                    {(item.status === "PENDING" || item.status === "REVIEWED") && (
+                        <ActionButton
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleDisableTarget(item);
+                            }}
+                            icon="bx bx-error-circle"
+                            color="amber"
+                            content="Gỡ nội dung"
+                        />
+                    )}
+                    
                     {/* <ActionButton
                         onClick={(e) => {
                             e.stopPropagation();
@@ -85,12 +86,10 @@ const Reports = () => {
                         color="orange"
                         content="Xoá nội dung"
                     /> */}
-
                     <ActionButton
                         onClick={(e) => {
                             e.stopPropagation();
-                            if (item.status === "PENDING") readThisReport(item.reportId);
-                            handleDeleteReport(item.reportId);
+                            handleDeleteReport(item);
                         }}
                         icon="bx bx-trash"
                         color="red"
@@ -122,6 +121,7 @@ const Reports = () => {
     const [reportList, setReportList] = useState([]);
     const [reportId, setReportId] = useState("");
     const [content, setContent] = useState("");
+    const [relatedContent, setRelatedContent] = useState([]);
     const [action, setAction] = useState("disable");
 
     const [openReportModal, setOpenReportModal] = useState(false);
@@ -148,21 +148,25 @@ const Reports = () => {
         return item ? item.value : "";
     };
 
-    const handleView = (postId) => {
-        if (target === "POST") window.open(`/admin/posts/${postId}`, "_blank");
-        else setOpenViewModal(true);
+    const handleView = (report) => {
+        if (report.status === "PENDING") readThisReport(report.reportId);
+        setContent(report);
+        getRelatedReports(report.reportId);
+        setOpenViewModal(true);
     };
 
-    const handleDisableTarget = (reportId) => {
+    const handleDisableTarget = (report) => {
+        if (report.status === "PENDING") readThisReport(report.reportId);
         setOpenReportModal(true);
         setTriggerReportModal(triggerReportModal + 1);
-        setReportId(reportId);
+        setReportId(report.reportId);
         setAction("disable");
     };
 
-    const handleDeleteReport = (reportId) => {
+    const handleDeleteReport = (report) => {
         setOpenDeleteReportModal(true);
-        setReportId(reportId);
+        setReportId(report.reportId);
+        if (report.status === "PENDING") readThisReport(report.reportId);
     };
 
     const handleDeleteTarget = (reportId) => {
@@ -174,6 +178,10 @@ const Reports = () => {
 
     const onPageChange = (page) => {
         setCurrentPage(page);
+    };
+
+    const onCloseViewModal = () => {
+        setOpenViewModal(false);
     };
 
     const getReportList = async (page) => {
@@ -195,6 +203,20 @@ const Reports = () => {
                 setTotalPages(response.data.totalPages);
             } else {
                 toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
+            }
+        } catch (error) {
+            navigate("/error-500");
+        }
+    };
+
+    const getRelatedReports = async (reportId) => {
+        try {
+            let response = null;
+            if (target === "POST") response = await getRelatedPostReport(reportId);
+            else response = await getRelatedReplyReport(reportId);
+
+            if (response.status === 200) {
+                setRelatedContent(response.data);
             }
         } catch (error) {
             navigate("/error-500");
@@ -341,6 +363,8 @@ const Reports = () => {
 
             <ReportModal target={target} reportId={reportId} action={action} openReportModal={openReportModal} triggerReportModal={triggerReportModal} refresh={refresh} />
 
+            <DetailReportModal target={target} content={content} relatedContent={relatedContent} openViewModal={openViewModal} onCloseViewModal={onCloseViewModal} handleView={handleView} />
+
             <Modal show={openDeleteReportModal} size="md" onClose={() => setOpenDeleteReportModal(false)} popup className="z-40">
                 <Modal.Header />
                 <Modal.Body>
@@ -356,13 +380,6 @@ const Reports = () => {
                             </Button>
                         </div>
                     </div>
-                </Modal.Body>
-            </Modal>
-
-            <Modal show={openViewModal} size="md" onClose={() => setOpenViewModal(false)} className="z-40">
-                <Modal.Header>Nội dung bị báo cáo</Modal.Header>
-                <Modal.Body>
-                    <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }} />
                 </Modal.Body>
             </Modal>
         </div>

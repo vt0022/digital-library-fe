@@ -63,7 +63,7 @@ const DetailDocument = () => {
                                     <p className="ml-2 text-sm font-bold text-justify text-gray-900 dark:text-white">{document && document.averageRating}</p>
                                 </Rating>
 
-                                <p className="max-w-md mb-2 mt-4 text-gray-700 dark:text-gray-400 text-sm">{document && document.docIntroduction}</p>
+                                <p className="max-w-md mb-2 mt-4 text-gray-700 dark:text-gray-400 text-sm text-justify">{document && document.docIntroduction}</p>
                             </div>
 
                             <div className="mb-5">

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { Button, Modal, Tooltip } from "flowbite-react";
 import { CgExtensionRemove } from "react-icons/cg";
@@ -25,10 +25,7 @@ const DocumentCard = (props) => {
     return (
         <>
             {/* <Tooltip content={docName} style="light" className="w-full"> */}
-            <div
-                className="rounded-lg h-[21rem] w-full border-gray-200 border shadow-lg bg-white cursor-pointer hover:bg-green-100 focus:bg-green-50 active:bg-green-50 focus:border-green-200 active:border-green-200 focus:border-2 active:border-2"
-                title={docName}
-                onClick={() => navigate(`/documents/${slug}`)}>
+            <Link to={`/documents/${slug}`} className="rounded-lg h-[21rem] w-full border-gray-200 border shadow-lg bg-white cursor-pointer hover:bg-green-100 focus:bg-green-50 active:bg-green-50 focus:border-green-200 active:border-green-200 focus:border-2 active:border-2" title={docName}>
                 <div className="rounded-lg m-3">
                     <img src={thumbnail} className="h-[12rem] w-full object-cover rounded-lg m-auto" alt={docName} />
                 </div>
@@ -41,7 +38,7 @@ const DocumentCard = (props) => {
                     <div className="flex gap-2 pb-1.5 ">
                         <div className="flex items-center font-bold">
                             <HiHeart className="w-5 h-5 mr-1 text-gray-800 dark:text-white" />
-                            <span className="block text-base font-medium dark:text-white">{totalFavorite}</span>
+                            <span className="block text-base font-medium">{totalFavorite}</span>
                         </div>
 
                         <div className="flex items-center font-bold">
@@ -146,7 +143,7 @@ const DocumentCard = (props) => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </Link>
             <p className="title">{docName}</p>
             {/* </Tooltip> */}
 

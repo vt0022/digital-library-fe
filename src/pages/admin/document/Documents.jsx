@@ -60,9 +60,9 @@ const Documents = () => {
             </td>
             <td className="text-center">
                 <div className="flex space-x-0">
-                    <ActionButton onClick={() => handleDetail(item.slug)} icon="bx bxs-calendar" color="green" content="Xem chi tiết tài liệu" />
-                    <ActionButton onClick={() => handleEdit(item.slug)} icon="bx bxs-calendar-edit" color="yellow" content="Chỉnh sửa tài liệu" />
-                    <ActionButton onClick={() => handleDelete(item.docId)} icon="bx bxs-calendar-x" color="red" content="Xoá tài liệu" />
+                    <ActionButton onClick={() => handleDetail(item.slug)} icon="bx bx-show-alt" color="green" content="Xem chi tiết tài liệu" />
+                    <ActionButton onClick={() => handleEdit(item.slug)} icon="bx bx-pencil" color="amber" content="Chỉnh sửa tài liệu" />
+                    <ActionButton onClick={() => handleDelete(item.docId)} icon="bx bx-trash" color="red" content="Xoá tài liệu" />
                 </div>
             </td>
         </tr>
@@ -289,17 +289,16 @@ const Documents = () => {
 
     return (
         <div>
-            <h2 className="page-header">{isLatestRoute ? "tài liệu mới" : "tài liệu"}</h2>
-            <div className="flex h-fit">
-                <div>
-                    <Button color="gray" className="mb-7 mt-7 justify-self-end bg-white" style={{ boxShadow: "var(--box-shadow)", borderRadius: "var(--border-radius)" }} onClick={() => navigate("/admin/documents/new")}>
+            <div className="row">
+                <div className="px-[15px]">
+                    <h2 className="page-header">{isLatestRoute ? "tài liệu mới" : "tài liệu"}</h2>
+
+                    <Button color="gray" className="mt-7 justify-self-end bg-white py-1.5" style={{ boxShadow: "var(--box-shadow)", borderRadius: "var(--border-radius)" }} onClick={() => navigate("/admin/documents/new")}>
                         <i className="bx bxs-calendar-plus mr-3 text-xl hover:text-white" style={{ color: "var(--main-color)" }}></i>
                         Thêm tài liệu
                     </Button>
                 </div>
-            </div>
 
-            <div className="row">
                 <div className="col-12">
                     <div className="card">
                         <div className="card__body">
@@ -389,11 +388,7 @@ const Documents = () => {
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <div className="row">
-                <div className="col-12">
                     <div className="card">
                         <div className="card__body">
                             {documentList.length === 0 && <p className="mt-2 mb-4 font-medium">Không có kết quả!</p>}

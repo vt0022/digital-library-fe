@@ -1,21 +1,15 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-
+import { getAccessibleCategories } from "@api/main/categoryAPI";
+import { searchDocumentsForGuest, searchDocumentsForStudent } from "@api/main/documentAPI";
+import { getAccessibleFields } from "@api/main/fieldAPI";
+import { getAccessibleOrganizations } from "@api/main/organizationAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
+import sortOptions from "@assets/json-data/sortOptions.json";
+import FullCard from "@components/student/card/FullCard";
+import SelectFilter from "@components/student/select/SelectFilter";
 import { Pagination, Spinner } from "flowbite-react";
-
+import React, { useEffect, useState } from "react";
 import { HiX } from "react-icons/hi";
-
-import FullCard from "../../../components/student/card/FullCard";
-import SelectFilter from "../../../components/student/select/SelectFilter";
-
-import { getAccessibleCategories } from "../../../api/main/categoryAPI";
-import { searchDocumentsForGuest, searchDocumentsForStudent } from "../../../api/main/documentAPI";
-import { getAccessibleFields } from "../../../api/main/fieldAPI";
-import { getAccessibleOrganizations } from "../../../api/main/organizationAPI";
-
-import sortOptions from "../../../assets/json-data/sortOptions.json";
-
-import usePrivateAxios from "../../../api/usePrivateAxios";
+import { useNavigate, useParams } from "react-router-dom";
 
 let selectedPage = 0;
 
@@ -223,7 +217,7 @@ const ListDocument = () => {
                             name="orgName"
                             field="slug"
                             required
-                            className="max-w-1/4"
+                            className="max-w-2/4"
                         />
                     </div>
                 </div>

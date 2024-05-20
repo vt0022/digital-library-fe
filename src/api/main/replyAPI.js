@@ -1,8 +1,17 @@
 import axios, { privateAxios } from "../axios";
 
-export const getReplies = async (postId, config) => {
+export const getViewableRepliesOfPost = async (postId, config) => {
     try {
         const response = await privateAxios.get(`/posts/${postId}/replies`, config);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getAllRepliesOfPost = async (postId, config) => {
+    try {
+        const response = await privateAxios.get(`/posts/${postId}/replies/all`, config);
         return response.data;
     } catch (error) {
         throw error;
@@ -45,7 +54,16 @@ export const deleteAReply = async (replyId) => {
     }
 };
 
-export const getRepliesOfUser = async (userId, config) => {
+export const getAllRepliesOfUser = async (userId, config) => {
+    try {
+        const response = await privateAxios.get(`/replies/all/user/${userId}`, config);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getViewableRepliesOfUser = async (userId, config) => {
     try {
         const response = await axios.get(`/replies/user/${userId}`, config);
         return response.data;
@@ -53,6 +71,7 @@ export const getRepliesOfUser = async (userId, config) => {
         throw error;
     }
 };
+
 
 
 export const getHistoryOfReply = async (replyId) => {
