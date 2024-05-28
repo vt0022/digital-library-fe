@@ -1,22 +1,16 @@
 import { useEffect, useState } from "react";
 import { useMatch, useNavigate } from "react-router-dom";
-
-import SelectFilter from "../../../components/management/select/SelectFilter";
-import Table from "../../../components/management/table/Table";
-
-import ActionButton from "../../../components/management/action-button/ActionButton";
-
+import SelectFilter from "@components/management/select/SelectFilter";
+import Table from "@components/management/table/Table";
+import ActionButton from "@components/management/action-button/ActionButton";
 import { Badge, Button, Modal, Pagination, Spinner, Toast } from "flowbite-react";
 import { HiCheck, HiDocumentRemove, HiOutlineCheck, HiOutlineDotsHorizontal, HiX } from "react-icons/hi";
-
-import { deleteADocument, getDocumentsByOrganizations, getLatestDocumentsByOrganization } from "../../../api/main/documentAPI";
-import usePrivateAxios from "../../../api/usePrivateAxios";
-
-import { getAllCategories } from "../../../api/main/categoryAPI";
-import { getAllFields } from "../../../api/main/fieldAPI";
-
-import scopeList from "../../../assets/json-data/scopes.json";
-import verifiedStatusList from "../../../assets/json-data/verified_status_list.json";
+import { deleteADocument, getDocumentsByOrganizations, getLatestDocumentsByOrganization } from "@api/main/documentAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
+import { getAllCategories } from "@api/main/categoryAPI";
+import { getAllFields } from "@api/main/fieldAPI";
+import scopeList from "@assets/json-data/scopes.json";
+import verifiedStatusList from "@assets/json-data/verified_status_list.json";
 
 let selectedPage = 0;
 
@@ -62,7 +56,7 @@ const ManagerDocuments = () => {
                 <div className="flex space-x-0">
                     <ActionButton onClick={() => handleDetail(item.slug)} icon="bx bx-show-alt" color="green" content="Xem chi tiết tài liệu" />
                     <ActionButton onClick={() => handleEdit(item.slug)} icon="bx bx-pencil" color="amber" content="Chỉnh sửa tài liệu" />
-                    <ActionButton onClick={() => handleDelete(item.docId)} icon="bx bx-show" color="red" content="Xoá tài liệu" />
+                    <ActionButton onClick={() => handleDelete(item.docId)} icon="bx bx-trash" color="red" content="Xoá tài liệu" />
                 </div>
             </td>
         </tr>
@@ -263,17 +257,16 @@ const ManagerDocuments = () => {
 
     return (
         <div>
-            <h2 className="page-header">{isLatestRoute ? "tài liệu mới" : "tài liệu"}</h2>
-            <div className="flex h-fit">
-                <div>
-                    <Button color="gray" className="mb-7 justify-self-end bg-white" style={{ boxShadow: "var(--box-shadow)", borderRadius: "var(--border-radius)" }} onClick={() => navigate("/manager/documents/new")}>
+            <div className="row">
+                <div className="px-[15px]">
+                    <h2 className="page-header">{isLatestRoute ? "tài liệu mới" : "tài liệu"}</h2>
+
+                    <Button color="gray" className="mt-7 justify-self-end bg-white py-1.5" style={{ boxShadow: "var(--box-shadow)", borderRadius: "var(--border-radius)" }} onClick={() => navigate("/manager/documents/new")}>
                         <i className="bx bxs-calendar-plus mr-3 text-xl hover:text-white" style={{ color: "var(--main-color)" }}></i>
                         Thêm tài liệu
                     </Button>
                 </div>
-            </div>
 
-            <div className="row">
                 <div className="col-12">
                     <div className="card">
                         <div className="card__body">
@@ -349,11 +342,7 @@ const ManagerDocuments = () => {
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <div className="row">
-                <div className="col-12">
                     <div className="card">
                         <div className="card__body">
                             {documentList.length === 0 && <p className="mt-2 mb-4 font-medium">Không có kết quả!</p>}

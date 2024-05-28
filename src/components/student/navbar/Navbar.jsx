@@ -1,12 +1,10 @@
-import React from "react";
+import logo from "@assets/images/logo.png";
+import { Avatar, Button, Dropdown, Navbar } from "flowbite-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-import { Avatar, Button, Dropdown, Navbar } from "flowbite-react";
-
-import logo from "../../../assets/images/logo.png";
 const CustomNavbar = () => {
     const navigate = useNavigate();
-    
+
     const location = useLocation();
 
     const currentPath = location.pathname;
@@ -21,10 +19,10 @@ const CustomNavbar = () => {
                 </Navbar.Brand>
             </div>
 
-            <div className="flex items-center gap-x-[5%] w-2/3 justify-end">
+            <div className="flex items-center gap-x-[5%] w-4/5 justify-end">
                 <div className="flex md:order-2 mr-10">
                     {user && (
-                        <Dropdown arrowIcon={false} inline label={<Avatar alt={user.lastName} img={user.image ? user.image : ""} rounded bordered />}>
+                        <Dropdown arrowIcon={false} inline label={<Avatar alt={user.lastName} img={user.image} rounded />}>
                             <Dropdown.Header>
                                 <span className="block text-lg font-normal text-green-400 mb-3">
                                     {user.lastName} {user.firstName}
@@ -66,7 +64,10 @@ const CustomNavbar = () => {
                         Danh mục
                     </Navbar.Link>
                     <Navbar.Link as={Link} to="/collections" active={currentPath === "/collections"} className={`text-base md:active:text-green-400 md:hover:text-green-500 ${currentPath === "/collections" ? "md:text-green-400" : ""}`}>
-                        Khám phá
+                        Bộ sưu tập
+                    </Navbar.Link>
+                    <Navbar.Link as={Link} to="/forum" active={currentPath === "/forum"} className={`text-base md:active:text-green-400 md:hover:text-green-500 ${currentPath === "/forum" ? "md:text-green-400" : ""}`}>
+                        Diễn đàn
                     </Navbar.Link>
                 </Navbar.Collapse>
             </div>

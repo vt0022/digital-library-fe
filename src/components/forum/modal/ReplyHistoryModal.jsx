@@ -12,7 +12,6 @@ const ReplyHistoryModal = (props) => {
     useEffect(() => {
         if (triggerReplyModal !== 0 && openModal === false) {
             setOpenModal(true);
-            console.log("A");
         }
     }, [triggerReplyModal]);
 

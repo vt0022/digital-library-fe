@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-import KeyCard from "../../../components/student/card/KeyCard";
-
-import categoryImage from "../../../assets/images/category.webp";
-
-import { getAccessibleCategories } from "../../../api/main/categoryAPI";
+import KeyCard from "@components/student/card/KeyCard";
+import categoryImage from "@assets/images/category.webp";
+import { getAccessibleCategories } from "@api/main/categoryAPI";
 
 const ListCategories = () => {
 

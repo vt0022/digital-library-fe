@@ -18,7 +18,7 @@ const Reports = () => {
         { name: "Đang chờ", value: "PENDING" },
         { name: "Đã đọc", value: "REVIEWED" },
         { name: "Đã gỡ nội dung", value: "DISABLED" },
-        { name: "Đã xoá nội dung", value: "DELETED" },
+        // { name: "Đã xoá nội dung", value: "DELETED" },
     ];
 
     const tableHead = ["", "Nội dung", "Loại vi phạm", "Người báo báo", "Thời gian", "Trạng thái", ""];
@@ -86,7 +86,7 @@ const Reports = () => {
                         color="orange"
                         content="Xoá nội dung"
                     /> */}
-                    <ActionButton
+                    {/* <ActionButton
                         onClick={(e) => {
                             e.stopPropagation();
                             handleDeleteReport(item);
@@ -94,7 +94,7 @@ const Reports = () => {
                         icon="bx bx-trash"
                         color="red"
                         content="Xoá báo cáo"
-                    />
+                    /> */}
                 </div>
             </td>
         </tr>
@@ -131,7 +131,7 @@ const Reports = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isFetching, setIsFetching] = useState(false);
 
-    const [status, setStatus] = useState("all");
+    const [status, setStatus] = useState("PENDING");
     const [type, setType] = useState("all");
     const [target, setTarget] = useState("POST");
 

@@ -46,9 +46,18 @@ export const getAUser = async (userId, config) => {
     }
 };
 
-export const deleteAUser = async (userId, config) => {
+export const enableAUser = async (userId) => {
     try {
-        const response = await privateAxios.delete(`/users/${userId}`, config);
+        const response = await privateAxios.put(`/users/${userId}/enable`, "");
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const disableAUser = async (userId) => {
+    try {
+        const response = await privateAxios.put(`/users/${userId}/disable`, "");
         return response.data;
     } catch (error) {
         throw error;

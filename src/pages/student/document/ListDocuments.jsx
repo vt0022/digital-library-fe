@@ -6,8 +6,8 @@ import usePrivateAxios from "@api/usePrivateAxios";
 import sortOptions from "@assets/json-data/sortOptions.json";
 import FullCard from "@components/student/card/FullCard";
 import SelectFilter from "@components/student/select/SelectFilter";
-import { Pagination, Spinner } from "flowbite-react";
-import React, { useEffect, useState } from "react";
+import { Pagination, Spinner, Tooltip } from "flowbite-react";
+import { useEffect, useState } from "react";
 import { HiX } from "react-icons/hi";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -172,6 +172,12 @@ const ListDocument = () => {
         setSearch("");
     };
 
+    const handleClearFilter = () => {
+        setCategory("all");
+        setField("all");
+        setOrganization("all");
+    };
+
     const handleDetail = (slug) => {
         navigate(`/documents/${slug}`);
     };
@@ -180,7 +186,7 @@ const ListDocument = () => {
         <>
             <div className="flex-1 p-4 bg-gray-50 h-full">
                 <div className="rounded-lg bg-white py-5 px-10 w-full">
-                    <div className="flex justify-between gap-5">
+                    <div className="flex items-end justify-between gap-5">
                         <SelectFilter
                             selectName="Danh mục"
                             options={categoryList}
@@ -219,6 +225,14 @@ const ListDocument = () => {
                             required
                             className="max-w-2/4"
                         />
+
+                        <Tooltip content="Xoá bộ lọc" style="light">
+                            <div
+                                className="text-green-400 rounded-full border h-fit p-3 mb-2 cursor-pointer hover:bg-green-400 active:border-2 hover:text-white active:border-2 active:border-green-100"
+                                onClick={handleClearFilter}>
+                                <HiX className=" w-4 h-4" />
+                            </div>
+                        </Tooltip>
                     </div>
                 </div>
 
@@ -235,12 +249,14 @@ const ListDocument = () => {
                                 </div>
                             </div>
                         </div>
-                        <div
-                            className="text-green-400 rounded-full border h-full p-3 cursor-pointer ml-2 hover:bg-green-400 active:border-2
-                        hover:text-white active:border-2 active:border-green-100"
-                            onClick={handleClearSearch}>
-                            <HiX className=" w-4 h-4" />
-                        </div>
+
+                        <Tooltip content="Xoá tìm kiếm" style="light">
+                            <div
+                                className="text-green-400 rounded-full border h-full p-3 cursor-pointer ml-2 hover:bg-green-400 active:border-2 hover:text-white active:border-2 active:border-green-100"
+                                onClick={handleClearSearch}>
+                                <HiX className=" w-4 h-4" />
+                            </div>
+                        </Tooltip>
 
                         <div className="flex ml-auto w-fit items-center">
                             <label htmlFor="hs-select-label" className="block text-sm font-medium mr-2 dark:text-white">
@@ -268,7 +284,18 @@ const ListDocument = () => {
 
                     <div className="flex flex-col gap-y-5">
                         {documentList.map((document, index) => (
-                            <FullCard key={index} docName={document.docName} docIntroduction={document.docIntroduction} thumbnail={document.thumbnail} totalView={document.totalView} totalFavorite={document.totalFavorite} updatedAt={document.updatedAt} slug={document.slug} />
+                            <FullCard
+                                key={index}
+                                docName={document.docName}
+                                docIntroduction={document.docIntroduction}
+                                thumbnail={document.thumbnail}
+                                totalView={document.totalView}
+                                totalFavorite={document.totalFavorite}
+                                isContributed={document.contributed}
+                                averageRating={document.averageRating}
+                                updatedAt={document.updatedAt}
+                                slug={document.slug}
+                            />
                         ))}
                     </div>
 

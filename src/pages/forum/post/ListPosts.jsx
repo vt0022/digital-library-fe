@@ -1,11 +1,12 @@
+import { getActiveLabels } from "@api/main/labelAPI";
+import { getAllPosts } from "@api/main/postAPI";
+import PageHead from "@components/shared/head/PageHead";
+import SelectFilter from "@components/student/select/SelectFilter";
 import { Avatar, Button, Pagination, Spinner } from "flowbite-react";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { getActiveLabels } from "../../../api/main/labelAPI";
-import { getAllPosts } from "../../../api/main/postAPI";
-import SelectFilter from "../../../components/student/select/SelectFilter";
 
 const ListPosts = () => {
     const navigate = useNavigate();
@@ -64,10 +65,22 @@ const ListPosts = () => {
     useEffect(() => {
         setCurrentPage(1);
         getPostList(currentPage);
-    }, [order, query, labelSelect]);
+    }, [order, query, labelSelect, section]);
+
+    useEffect(() => {
+        setLabelSelect(label);
+    }, [label]);
+
+    useEffect(() => {
+        setLabelSelect("");
+    }, [section]);
 
     useEffect(() => {
         getPostList(currentPage);
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
     }, [currentPage, query]);
 
     const onPageChange = (page) => setCurrentPage(page);
@@ -106,6 +119,8 @@ const ListPosts = () => {
 
     return (
         <>
+            <PageHead title={"Danh sách bài đăng" + (section === "" ? "" : "của chuyên mục " + section)} description={"Danh sách bài đăng" + (section === "" ? "" : "của " + section)} url={window.location.href} origin="forum" />
+
             <div className="w-11/12 m-auto p-5">
                 <div className="w-fit flex justify-end ml-auto items-center mb-2 ">
                     <Button className="bg-green-400 enabled:hover:bg-green-500 shadow-lg shadow-gray-300" onClick={() => navigate("/forum/posts/new")}>
@@ -175,14 +190,22 @@ const ListPosts = () => {
                                             <td className="pl-4 h-full">
                                                 <div className="flex space-x-3 items-center h-full">
                                                     <div>
-                                                        <Avatar alt="User" img={post.userPosted.image ? post.userPosted.image : ""} rounded size="sm" />
+                                                        <Avatar alt="User" img={post.userPosted.image} rounded size="md" />
                                                     </div>
 
                                                     <div>
                                                         <p className="text-lg truncate whitespace-normal line-clamp-2 font-medium text-green-600 hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/posts/${post.postId}`)}>
-                                                            <span className="text-white rounded-md text-sm p-1 font-normal" style={{ backgroundColor: post.label && post.label.color }} onClick={(e) => e.stopPropagation()}>
-                                                                {post.label && post.label.labelName}
-                                                            </span>{" "}
+                                                            {post.label && (
+                                                                <span
+                                                                    className="text-white rounded-md text-xs p-1 font-medium"
+                                                                    style={{ backgroundColor: post.label && post.label.color }}
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        navigate(`/forum/labels/${post.label.slug}`);
+                                                                    }}>
+                                                                    #{post.label && post.label.labelName}
+                                                                </span>
+                                                            )}{" "}
                                                             {post.title}
                                                         </p>
 

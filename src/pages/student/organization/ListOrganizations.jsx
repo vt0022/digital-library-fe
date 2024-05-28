@@ -63,7 +63,7 @@ const ListOrganizations = () => {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-5 mb-20 place-items-center">
+                    <div className="flex flex-wrap items-end justify-center space-x-5 space-y-5 mb-20">
                         {organizationList.map((organization) => (
                             <OrganizationCard key={organization.orgId} orgName={organization.orgName} slug={organization.slug} />
                         ))}

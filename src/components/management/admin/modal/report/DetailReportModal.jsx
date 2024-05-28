@@ -25,7 +25,7 @@ const DetailReportModal = (props) => {
                 <div ref={topModal} className="space-y-5">
                     <div className="rounded-lg bg-gray-100 p-3 flex flex-col space-y-2">
                         <p className="text-sm font-medium text-gray-600">Tài liệu</p>
-                        <div onClick={() => window.open(`/admin/posts/${target === "POST" ? content.post && content.post.postId : content.reply && content.reply.post && content.reply.post.postId}`, "_blank")} className="text-lg font-medium text-green-500 hover:text-green-600">
+                        <div onClick={() => window.open(`/admin/posts/${target === "POST" ? content.post && content.post.postId : content.reply && content.reply.post && content.reply.post.postId}`, "_blank")} className="text-lg font-medium text-green-500 hover:text-green-600 cursor-pointer">
                             {target === "POST" ? content.post && content.post.title : content.reply && content.reply.post && content.reply.post.title}
                         </div>
                     </div>

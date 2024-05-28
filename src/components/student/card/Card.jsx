@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { Button, Modal, Tooltip } from "flowbite-react";
@@ -8,7 +8,7 @@ import { HiBookmark, HiEye, HiHeart, HiOutlineLightBulb, HiOutlinePencilAlt, HiO
 import "./card.css";
 
 const DocumentCard = (props) => {
-    const { docName, slug, thumbnail, totalView, totalFavorite, type, action, reason} = props;
+    const { docName, slug, thumbnail, totalView, totalFavorite, type, action, reason } = props;
 
     const [openModal, setOpenModal] = useState(false);
 
@@ -52,6 +52,7 @@ const DocumentCard = (props) => {
                                     <HiHeart
                                         className="w-8 h-8 text-red-500 hover:text-red-300 active:text-red-200"
                                         onClick={(e) => {
+                                            e.preventDefault();
                                             e.stopPropagation();
                                             action();
                                         }}
@@ -64,6 +65,7 @@ const DocumentCard = (props) => {
                                     <HiBookmark
                                         className="w-8 h-8 text-green-500 hover:text-green-300 active:text-green-200"
                                         onClick={(e) => {
+                                            e.preventDefault();
                                             e.stopPropagation();
                                             action();
                                         }}
@@ -77,6 +79,7 @@ const DocumentCard = (props) => {
                                         <HiOutlinePencilAlt
                                             className="w-7 h-7 text-yellow-500 hover:text-yellow-300 active:text-yellow-200 mr-2"
                                             onClick={(e) => {
+                                                e.preventDefault();
                                                 e.stopPropagation();
                                                 handleEdit();
                                             }}
@@ -87,6 +90,7 @@ const DocumentCard = (props) => {
                                         <HiOutlineTrash
                                             className="w-7 h-7 text-red-500 hover:text-red-300 active:text-red-200"
                                             onClick={(e) => {
+                                                e.preventDefault();
                                                 e.stopPropagation();
                                                 action();
                                             }}
@@ -101,6 +105,7 @@ const DocumentCard = (props) => {
                                         <HiOutlinePencilAlt
                                             className="w-7 h-7 text-yellow-500 hover:text-yellow-300 active:text-yellow-200 mr-2"
                                             onClick={(e) => {
+                                                e.preventDefault();
                                                 e.stopPropagation();
                                                 handleEdit();
                                             }}
@@ -111,6 +116,7 @@ const DocumentCard = (props) => {
                                         <HiOutlineTrash
                                             className="w-7 h-7 text-red-500 hover:text-red-300 active:text-red-200"
                                             onClick={(e) => {
+                                                e.preventDefault();
                                                 e.stopPropagation();
                                                 action();
                                             }}
@@ -121,6 +127,7 @@ const DocumentCard = (props) => {
                                         <HiOutlineLightBulb
                                             className="w-7 h-7 text-orange-500 hover:text-orange-300 active:text-orange-200 ml-2"
                                             onClick={(e) => {
+                                                e.preventDefault();
                                                 e.stopPropagation();
                                                 handleViewReason();
                                             }}
@@ -134,6 +141,7 @@ const DocumentCard = (props) => {
                                     <CgExtensionRemove
                                         className="w-8 h-8 text-red-500 hover:text-red-300 active:text-red-200"
                                         onClick={(e) => {
+                                            e.preventDefault();
                                             e.stopPropagation();
                                             action();
                                         }}

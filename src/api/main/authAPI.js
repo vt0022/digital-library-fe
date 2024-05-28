@@ -6,22 +6,36 @@ const LOGOUT_URL = "/auth/logout";
 const SEND_EMAIL_URL = "/auth/sendEmail";
 const VERIFY_URL = "/auth/verify";
 
-
 export const logout = async (config) => {
     try {
         const response = await axios.post(LOGOUT_URL, "", config);
         return response.data;
-
     } catch (error) {
         throw error;
     }
-
 };
 
-
-export const login = async (data, config) => {
+export const login = async (data) => {
     try {
-        const response = await axios.post(LOGIN_URL, data, config);
+        const response = await axios.post("/auth/login", data);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const loginWithGoogle = async (data) => {
+    try {
+        const response = await axios.post("/auth/login/google", data);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const signupWithGoogle = async (data) => {
+    try {
+        const response = await axios.post("/auth/signup/google", data);
         return response.data;
     } catch (error) {
         throw error;
@@ -47,7 +61,6 @@ export const register = async (data, config) => {
     }
 };
 
-
 export const sendEmail = async (config) => {
     try {
         const response = await axios.post(SEND_EMAIL_URL, "", config);
@@ -65,4 +78,3 @@ export const verify = async (config) => {
         throw error;
     }
 };
-

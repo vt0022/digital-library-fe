@@ -1,58 +1,66 @@
+import { getAllOrganizations } from "@api/main/organizationAPI";
+import { disableAUser, enableAUser, getAllUsers, getLatestUsers } from "@api/main/userAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
+import ActionButton from "@components/management/action-button/ActionButton";
+import UserModal from "@components/management/admin/modal/user/UserModal";
+import SelectFilter from "@components/management/select/SelectFilter";
+import Table from "@components/management/table/Table";
+import { Avatar, Badge, Button, Modal, Pagination, Spinner, Tooltip } from "flowbite-react";
 import { useEffect, useState } from "react";
+import { HiCheck, HiOutlineBadgeCheck, HiX } from "react-icons/hi";
+import { MdBlock } from "react-icons/md";
 import { useMatch, useNavigate } from "react-router-dom";
+import { Bounce, toast } from "react-toastify";
 
-import ActionButton from "../../../components/management/action-button/ActionButton";
-import Table from "../../../components/management/table/Table";
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
-import { Badge, Button, Modal, Pagination, Spinner, Toast } from "flowbite-react";
-import { HiDocumentRemove, HiOutlineBadgeCheck, HiOutlineCheck, HiX } from "react-icons/hi";
+const roleList = {
+    ROLE_ADMIN: "Admin",
+    ROLE_STUDENT: "Sinh viên",
+    ROLE_MANAGER: "Quản lý",
+};
 
-import { getAllOrganizations } from "../../../api/main/organizationAPI";
-import { deleteAUser, getAllUsers, getLatestUsers } from "../../../api/main/userAPI";
-import usePrivateAxios from "../../../api/usePrivateAxios";
-import profileImage from "../../../assets/images/default_profile.jpg";
-import UserModal from "../../../components/management/admin/modal/user/UserModal";
-import SelectFilter from "../../../components/management/select/SelectFilter";
+const disabledStatus = [
+    { name: "Đang hoạt động", value: "false" },
+    { name: "Đã chặn", value: "true" },
+];
 
-let selectedPage = 0;
+const genderData = [
+    { name: "Nam", value: "0" },
+    { name: "Nữ", value: "1" },
+    { name: "Khác", value: "2" },
+];
+
+const roleData = [
+    {
+        name: "Admin",
+        value: "ROLE_ADMIN",
+        color: "cyan",
+    },
+    {
+        name: "Sinh viên",
+        value: "ROLE_STUDENT",
+        color: "green",
+    },
+    {
+        name: "Quản lý",
+        value: "ROLE_MANAGER",
+        color: "pink",
+    },
+];
 
 const Users = () => {
-    const tableHead = ["", "Ảnh", "Họ", "Tên", "Email", "Vai trò", ""];
-
-    const roleList = {
-        ROLE_ADMIN: "ADMIN",
-        ROLE_STUDENT: "SINH VIÊN",
-        ROLE_MANAGER: "QUẢN LÝ",
-    };
-
-    const deletedStatus = [
-        { name: "Đang hoạt động", value: "false" },
-        { name: "Đã vô hiệu", value: "true" },
-    ];
-
-    const genderData = [
-        { name: "Nam", value: "0" },
-        { name: "Nữ", value: "1" },
-        { name: "Khác", value: "2" },
-    ];
-
-    const roleData = [
-        {
-            name: "Admin",
-            value: "ROLE_ADMIN",
-            color: "cyan",
-        },
-        {
-            name: "Sinh viên",
-            value: "ROLE_STUDENT",
-            color: "green",
-        },
-        {
-            name: "Quản lý",
-            value: "ROLE_MANAGER",
-            color: "pink",
-        },
-    ];
+    const tableHead = ["", "Ảnh", "Họ", "Tên", "Email", "Vai trò", "Trạng thái", ""];
 
     const renderHead = (item, index) => (
         <th key={index} className="text-center">
@@ -63,21 +71,21 @@ const Users = () => {
     const renderBody = (item, index) => (
         <tr key={index} className="cursor-pointer">
             <td className="text-center font-bold" onClick={() => handleDetail(item.userId)}>
-                {selectedPage * 15 + index + 1}
+                {(currentPage - 1) * 10 + index + 1}
             </td>
-            <td className="max-w-xs flex justify-center items-center" onClick={() => handleDetail(item.userId)}>
-                <img src={item.image ? item.image : profileImage} alt="Profile" className="rounded-full h-12 w-12 text-center" />
+            <td className="w-1/12 w-full flex justify-center items-center" onClick={() => handleDetail(item.userId)}>
+                <Avatar img={item.image} alt="Profile" size="md" rounded />
             </td>
-            <td className="max-w-xs text-center" onClick={() => handleDetail(item.userId)}>
+            <td className="w-2/12 text-center text-sm" onClick={() => handleDetail(item.userId)}>
                 {item.lastName}
             </td>
-            <td className="max-w-xs text-center" onClick={() => handleDetail(item.userId)}>
+            <td className="w-2/12 text-center text-sm" onClick={() => handleDetail(item.userId)}>
                 {item.firstName}
             </td>
-            <td className="max-w-xs text-center" onClick={() => handleDetail(item.userId)}>
+            <td className="w-2/12 text-center text-sm" onClick={() => handleDetail(item.userId)}>
                 {item.email}
             </td>
-            <td className="max-w-xs text-center" onClick={() => handleDetail(item.userId)}>
+            <td className="w-2/12 text-center" onClick={() => handleDetail(item.userId)}>
                 <div className="m-auto w-fit">
                     {item.role && (
                         <Badge icon={HiOutlineBadgeCheck} className="w-fit h-full" color={roleData.find((role) => role.value === item.role.roleName)?.color || ""}>
@@ -86,24 +94,32 @@ const Users = () => {
                     )}
                 </div>
             </td>
-            {/* <td className="max-w-xs text-center" onClick={() => handleDetail(item.userId)}>
+            <td className="w-2/12 text-center" onClick={() => handleDetail(item.userId)}>
                 <div className="m-auto w-fit">
-                    {item.deleted ? (
-                        <Badge color="warning" icon={HiX}>
-                            Đã vô hiệu
-                        </Badge>
+                    {item.disabled ? (
+                        <Tooltip content="Kích hoạt người dùng" style="light">
+                            <Badge
+                                color="warning"
+                                icon={HiX}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleEnable(item.userId);
+                                }}>
+                                Đã vô hiệu
+                            </Badge>
+                        </Tooltip>
                     ) : (
                         <Badge icon={HiCheck} color="success">
                             Đang hoạt động
                         </Badge>
                     )}
                 </div>
-            </td> */}
-            <td className="text-center">
+            </td>
+            <td className="w-1/12 text-center">
                 <div className="flex space-x-0">
                     <ActionButton onClick={() => handleDetail(item.userId)} icon="bx bx-show-alt" color="green" content="Xem chi tiết người dùng" />
                     <ActionButton onClick={() => handleEdit(item.userId)} icon="bx bx-pencil" color="amber" content="Chỉnh sửa người dùng" />
-                    <ActionButton onClick={() => handleDelete(item.userId)} icon="bx bx-trash" color="red" content="Xoá người dùng" />
+                    {!item.disabled && <ActionButton onClick={() => handleDisable(item.userId)} icon="bx bx-x-circle" color="red" content="Chặn người dùng" />}
                 </div>
             </td>
         </tr>
@@ -130,9 +146,13 @@ const Users = () => {
         setTriggerModal(triggerModal + 1);
     };
 
-    const handleDelete = (userId) => {
+    const handleDisable = (userId) => {
         setOpenModal(true);
         setUserId(userId);
+    };
+
+    const handleEnable = (userId) => {
+        enableUser(userId);
     };
 
     usePrivateAxios();
@@ -146,12 +166,11 @@ const Users = () => {
     const [openModal, setOpenModal] = useState(false);
     const [isCreatingNew, setIsCreatingNew] = useState(true);
     const [triggerModal, setTriggerModal] = useState(0);
-    const [status, setStatus] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [isFetching, setIsFetching] = useState(false);
 
     const [search, setSearch] = useState("");
-    const [deleted, setDeleted] = useState("all");
+    const [disabled, setDisabled] = useState("all");
     const [gender, setGender] = useState("all");
     const [organization, setOrganization] = useState("all");
     const [role, setRole] = useState("all");
@@ -170,16 +189,11 @@ const Users = () => {
         setCurrentPage(1);
         if (isLatestRoute) getLatestUserList(currentPage);
         else getUserList(currentPage);
-    }, [gender, deleted, role, search, organization]);
+    }, [gender, disabled, role, search, organization]);
 
     const onPageChange = (page) => {
         setCurrentPage(page);
-        selectedPage = page - 1;
     };
-
-    useEffect(() => {
-        selectedPage = currentPage - 1;
-    }, [currentPage]);
 
     const getOrganizationList = async () => {
         try {
@@ -189,15 +203,14 @@ const Users = () => {
                     page: 0,
                     size: 1000,
                     s: "",
-                    deleted: "all",
+                    disabled: "all",
                 },
             });
 
             setIsFetching(false);
+
             if (response.status === 200) {
                 setOrganizationList(response.data.content);
-            } else {
-                //navigate("/admin/login");
             }
         } catch (error) {
             console.log(error);
@@ -210,20 +223,20 @@ const Users = () => {
             const response = await getAllUsers({
                 params: {
                     page: page - 1,
-                    size: 15,
-                    deleted: deleted,
+                    size: 10,
+                    disabled: disabled,
                     gender: gender,
                     organization: organization,
                     role: role,
                     s: search,
                 },
             });
+
             setIsFetching(false);
+
             if (response.status === 200) {
                 setUserList(response.data.content);
                 setTotalPages(response.data.totalPages);
-            } else {
-                // navigate("/admin/login");
             }
         } catch (error) {
             console.log(error);
@@ -237,46 +250,71 @@ const Users = () => {
                 params: {
                     page: page - 1,
                     size: 15,
-                    deleted: deleted,
+                    disabled: disabled,
                     gender: gender,
                     organization: organization,
                     role: role,
                     s: search,
                 },
             });
+
             setIsFetching(false);
+
             if (response.status === 200) {
                 setUserList(response.data.content);
                 setTotalPages(response.data.totalPages);
-            } else {
-                // navigate("/admin/login");
             }
         } catch (error) {
             console.log(error);
         }
     };
 
-    const deleteUser = async (userId) => {
+    const disableUser = async (userId) => {
         setIsLoading(true);
+
         try {
-            const response = await deleteAUser(userId);
+            const response = await disableAUser(userId);
+
             setIsLoading(false);
+
             setOpenModal(false);
+
             if (response.status === 200) {
                 setCurrentPage(1);
-                selectedPage = 0;
-                if (isLatestRoute) getLatestUserList(currentPage);
-                else getUserList(currentPage);
+                if (isLatestRoute) {
+                    getLatestUserList(currentPage);
+                } else {
+                    getUserList(currentPage);
+                }
 
-                setStatus(1);
-                setTimeout(() => {
-                    setStatus(0);
-                }, 4000);
+                toast.success(<p className="pr-2">Chặn người dùng thành công!</p>, toastOptions);
             } else {
-                setStatus(-1);
-                setTimeout(() => {
-                    setStatus(0);
-                }, 4000);
+                toast.error(<p className="pr-2">Đã xảy ra lỗi, vui lòng thử lại!</p>, toastOptions);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const enableUser = async (userId) => {
+        setIsLoading(true);
+
+        try {
+            const response = await enableAUser(userId);
+
+            setIsLoading(false);
+
+            if (response.status === 200) {
+                setCurrentPage(1);
+                if (isLatestRoute) {
+                    getLatestUserList(currentPage);
+                } else {
+                    getUserList(currentPage);
+                }
+
+                toast.success(<p className="pr-2">Kích hoạt người dùng thành công!</p>, toastOptions);
+            } else {
+                toast.error(<p className="pr-2">Đã xảy ra lỗi, vui lòng thử lại!</p>, toastOptions);
             }
         } catch (error) {
             console.log(error);
@@ -284,7 +322,6 @@ const Users = () => {
     };
 
     const refreshUserList = () => {
-        selectedPage = 0;
         setCurrentPage(1);
         isLatestRoute ? getLatestUserList(currentPage) : getUserList(currentPage);
     };
@@ -303,60 +340,7 @@ const Users = () => {
                 <div className="col-12">
                     <div className="card">
                         <div className="card__body">
-                            <div className="flex items-end justify-between gap-5">
-                                {/* <SelectFilter
-                                    selectName="Trạng thái"
-                                    options={deletedStatus}
-                                    selectedValue={deleted}
-                                    onChangeHandler={(e) => {
-                                        setCurrentPage(1);
-                                        setDeleted(e.target.value);
-                                    }}
-                                    name="name"
-                                    field="value"
-                                    required
-                                /> */}
-
-                                <SelectFilter
-                                    selectName="Giới tính"
-                                    options={genderData}
-                                    selectedValue={gender}
-                                    onChangeHandler={(e) => {
-                                        setCurrentPage(1);
-                                        setGender(e.target.value);
-                                    }}
-                                    name="name"
-                                    field="value"
-                                    required
-                                />
-
-                                <SelectFilter
-                                    selectName="Vai trò"
-                                    options={roleData}
-                                    selectedValue={role}
-                                    onChangeHandler={(e) => {
-                                        setCurrentPage(1);
-                                        setRole(e.target.value);
-                                    }}
-                                    name="name"
-                                    field="value"
-                                    required
-                                />
-
-                                <SelectFilter
-                                    selectName="Trường"
-                                    options={organizationList}
-                                    selectedValue={organization}
-                                    onChangeHandler={(e) => {
-                                        setCurrentPage(1);
-                                        setOrganization(e.target.value);
-                                    }}
-                                    name="orgName"
-                                    field="slug"
-                                    required
-                                    className="max-w-1/4"
-                                />
-
+                            <div className="flex items-center justify-ends gap-5">
                                 <div className="relative rounded-lg mb-2 w-1/4 ml-auto ">
                                     <input
                                         type="text"
@@ -377,6 +361,61 @@ const Users = () => {
                                         </svg>
                                     </div>
                                 </div>
+                            </div>
+
+                            <div className="flex items-end justify-between gap-5">
+                                <SelectFilter
+                                    selectName="Vai trò"
+                                    options={roleData}
+                                    selectedValue={role}
+                                    onChangeHandler={(e) => {
+                                        setCurrentPage(1);
+                                        setRole(e.target.value);
+                                    }}
+                                    name="name"
+                                    field="value"
+                                    required
+                                />
+
+                                <SelectFilter
+                                    selectName="Trạng thái"
+                                    options={disabledStatus}
+                                    selectedValue={disabled}
+                                    onChangeHandler={(e) => {
+                                        setCurrentPage(1);
+                                        setDisabled(e.target.value);
+                                    }}
+                                    name="name"
+                                    field="value"
+                                    required
+                                />
+
+                                <SelectFilter
+                                    selectName="Giới tính"
+                                    options={genderData}
+                                    selectedValue={gender}
+                                    onChangeHandler={(e) => {
+                                        setCurrentPage(1);
+                                        setGender(e.target.value);
+                                    }}
+                                    name="name"
+                                    field="value"
+                                    required
+                                />
+
+                                <SelectFilter
+                                    selectName="Trường"
+                                    options={organizationList}
+                                    selectedValue={organization}
+                                    onChangeHandler={(e) => {
+                                        setCurrentPage(1);
+                                        setOrganization(e.target.value);
+                                    }}
+                                    name="orgName"
+                                    field="slug"
+                                    required
+                                    className="max-w-1/4"
+                                />
                             </div>
 
                             <div className="mt-4"></div>
@@ -402,10 +441,10 @@ const Users = () => {
                 <Modal.Header />
                 <Modal.Body>
                     <div className="text-center">
-                        <HiDocumentRemove className="mx-auto mb-4 h-14 w-14 text-red-600 dark:text-gray-200" />
-                        <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có chắc chắn muốn xoá người dùng này không?</h3>
+                        <MdBlock className="mx-auto mb-4 h-14 w-14 text-red-600 dark:text-gray-200" />
+                        <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có chắc chắn muốn chặn người dùng này không?</h3>
                         <div className="flex justify-center gap-4">
-                            <Button color="failure" isProcessing={isLoading} onClick={() => deleteUser(userId)}>
+                            <Button color="failure" isProcessing={isLoading} onClick={() => disableUser(userId)}>
                                 Chắc chắn
                             </Button>
                             <Button color="gray" disabled={isLoading} onClick={() => setOpenModal(false)}>
@@ -417,20 +456,6 @@ const Users = () => {
             </Modal>
 
             <UserModal openUserModal={openUserModal} userId={userId} isCreatingNew={isCreatingNew} triggerModal={triggerModal} refreshUserList={refreshUserList} />
-
-            {status === -1 && (
-                <Toast className="top-1/4 right-5 w-100 fixed">
-                    <HiX className="h-5 w-5 bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200" />
-                    <div className="pl-4 text-sm font-normal">Đã xảy ra lỗi! Xin vui lòng thử lại!</div>
-                </Toast>
-            )}
-
-            {status === 1 && (
-                <Toast className="top-1/4 right-5 fixed w-100">
-                    <HiOutlineCheck className="h-5 w-5 bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200" />
-                    <div className="pl-4 text-sm font-normal">Xoá người dùng thành công!</div>
-                </Toast>
-            )}
         </div>
     );
 };

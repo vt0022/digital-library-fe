@@ -85,7 +85,7 @@ const Appeals = () => {
                             />
                         </>
                     )}
-
+{/* 
                     <ActionButton
                         onClick={(e) => {
                             e.stopPropagation();
@@ -95,7 +95,7 @@ const Appeals = () => {
                         icon="bx bx-trash"
                         color="red"
                         content="Xoá khiếu nại"
-                    />
+                    /> */}
                 </div>
             </td>
         </tr>
@@ -130,7 +130,7 @@ const Appeals = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isFetching, setIsFetching] = useState(false);
 
-    const [status, setStatus] = useState("all");
+    const [status, setStatus] = useState("PENDING");
     const [type, setType] = useState("all");
     const [target, setTarget] = useState("POST");
 
@@ -158,7 +158,6 @@ const Appeals = () => {
 
     const handleView = (appeal) => {
         if (appeal.status === "PENDING") readThisAppeal(appeal.appealId);
-        console.log(appeal)
         setContent(appeal);
         setOpenViewModal(true);
     };

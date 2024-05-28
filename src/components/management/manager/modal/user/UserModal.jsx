@@ -1,16 +1,14 @@
 import { Button, Datepicker, FileInput, Label, Modal, TextInput, Toast } from "flowbite-react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { HiChevronLeft, HiChevronUp, HiOutlineCheck, HiX } from "react-icons/hi";
 
 import Select from "../../../select/Select";
 
-import { useSelector } from "react-redux";
-
 import { createUser, getAUser, updateUser } from "../../../../../api/main/userAPI";
 import usePrivateAxios from "../../../../../api/usePrivateAxios";
 
-import profileImage from "../../../../../assets/images/default_profile.jpg";
 import moment from "moment/moment";
+import profileImage from "../../../../../assets/images/default_profile.jpg";
 
 const UserModal = (props) => {
     usePrivateAxios();
@@ -19,7 +17,7 @@ const UserModal = (props) => {
 
     // const currentUser = useSelector((state) => state.LoginReducer.user);
     const currentUser = JSON.parse(sessionStorage.getItem("profile"));
-    
+
     const genderList = [
         { id: 0, name: "Nam" },
         { id: 1, name: "Nữ" },
@@ -36,8 +34,7 @@ const UserModal = (props) => {
     const [gender, setGender] = useState(0);
     const [dateOfBirth, setDateOfBirth] = useState(new Date());
     const [email, setEmail] = useState("");
-    const [phone, setPhone] = useState("");
-    const [roleId, setRoleId] = useState("");
+    const [roleId, setRoleId] = useState("c0a801b9-8ac0-1a60-818a-c04a8f950035");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [imageFile, setImageFile] = useState(null);
@@ -49,9 +46,7 @@ const UserModal = (props) => {
     const [isLastNameValid, setIsLastNameValid] = useState(true);
     const [isFirstNameValid, setIsFirstNameValid] = useState(true);
     const [isEmailValid, setIsEmailValid] = useState(true);
-    const [isPhoneValid, setIsPhoneValid] = useState(true);
     const [isDateOfBirthValid, setIsDateOfBirthValid] = useState(true);
-    const [isRoleValid, setIsRoleValid] = useState(true);
     const [isPasswordValid, setIsPasswordValid] = useState(true);
     const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(true);
     const [isFileValid, setIsFileValid] = useState(true);
@@ -78,8 +73,6 @@ const UserModal = (props) => {
         setGender(0);
         //setDateOfBirth(new Date());
         setEmail("");
-        setPhone("");
-        setRoleId("");
         setPassword("");
         setConfirmPassword("");
         setFileMessage("");
@@ -97,8 +90,6 @@ const UserModal = (props) => {
                 setGender(user.gender);
                 setDateOfBirth(new Date(user.dateOfBirth));
                 setEmail(user.email);
-                setPhone(user.phone);
-                user.role ? setRoleId(user.role.id) : setRoleId("");
             } else {
             }
         } catch (error) {
@@ -126,21 +117,11 @@ const UserModal = (props) => {
         else setIsEmailValid(true);
     };
 
-    const validatePhone = () => {
-        if (phone === "" || phone.trim() === "") setIsPhoneValid(false);
-        else setIsPhoneValid(true);
-    };
-
     const validateDateOfBirth = () => {
         const fifteenYearsAgo = new Date();
         fifteenYearsAgo.setFullYear(new Date().getFullYear() - 15);
         if (dateOfBirth > fifteenYearsAgo) setIsDateOfBirthValid(false);
         else setIsDateOfBirthValid(true);
-    };
-
-    const validateRole = () => {
-        if (roleId === "" || roleId.trim() === "") setIsRoleValid(false);
-        else setIsRoleValid(true);
     };
 
     const validatePassword = () => {
@@ -180,14 +161,12 @@ const UserModal = (props) => {
         validateLastName();
         validateFirstName();
         validateEmail();
-        validatePhone();
         validateDateOfBirth();
-        validateRole();
         validatePassword();
         validateConfirmPassword();
         setIsFileValid(validateFile());
 
-        if (!isLastNameValid || !isFirstNameValid || !isEmailValid || !isPhoneValid || !isDateOfBirthValid || !isRoleValid || !isPasswordValid || !isConfirmPasswordValid || !validateFile()) {
+        if (!isLastNameValid || !isFirstNameValid || !isEmailValid || !isDateOfBirthValid || !isPasswordValid || !isConfirmPasswordValid || !validateFile()) {
             return false;
         } else return true;
     };
@@ -203,7 +182,6 @@ const UserModal = (props) => {
                     firstName: firstName,
                     lastName: lastName,
                     email: email,
-                    phone: phone,
                     gender: gender,
                     dateOfBirth: dateOfBirth,
                     orgId: currentUser.organization.orgId,
@@ -232,11 +210,9 @@ const UserModal = (props) => {
                     setFirstName("");
                     setLastName("");
                     setEmail("");
-                    setPhone("");
                     setPassword("");
                     setConfirmPassword("");
                     setImage(profileImage);
-                    setRoleId("");
                     setGender(0);
                     setStatus(1);
 
@@ -290,8 +266,8 @@ const UserModal = (props) => {
                 <Modal.Body>
                     <div className="space-y-6">
                         <h3 className="text-3xl font-medium text-gray-900 dark:text-white">
-                            {isCreatingNew && "Thêm người dùng mới"}
-                            {!isCreatingNew && "Cập nhật người dùng"}
+                            {isCreatingNew && "Thêm sinh viên mới"}
+                            {!isCreatingNew && "Cập nhật sinh viên"}
                         </h3>
 
                         <form onSubmit={handleSubmit}>
@@ -362,27 +338,14 @@ const UserModal = (props) => {
                             </div>
 
                             <div className="mb-6">
-                                <div className="mb-2 block">
-                                    <Label htmlFor="phone" value="Số điện thoại" />
-                                </div>
-                                <TextInput id="phone" value={phone} placeholder="0123456789" required onChange={(e) => setPhone(e.target.value)} maxLength={11} />
-                                {!isPhoneValid && <p className="block mt-2 text-sm font-medium text-red-600 italic">* Vui lòng nhập số điện thoại</p>}
-                            </div>
-
-                            <div className="mb-6">
-                                <Select
-                                    selectName="Vai trò"
-                                    options={roleList}
-                                    selectedValue={roleId}
-                                    onChangeHandler={(e) => {
-                                        setRoleId(e.target.value);
-                                    }}
-                                    name="roleName"
-                                    field="id"
-                                    required
-                                    className="mb-4"
-                                />
-                                {!isRoleValid && <p className="block mt-2 text-sm font-medium text-red-600 italic">* Vui lòng chọn vai trò</p>}
+                                <label htmlFor="hs-select-label" className="block text-sm font-medium mb-2 dark:text-white">
+                                    Vai trò
+                                </label>
+                                <select id="role" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" disabled>
+                                    <option selected value="c0a801b9-8ac0-1a60-818a-c04a8f950035">
+                                        Sinh viên
+                                    </option>
+                                </select>
                             </div>
 
                             <div className="mb-6">

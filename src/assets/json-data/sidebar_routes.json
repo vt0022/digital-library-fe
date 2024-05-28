@@ -45,7 +45,7 @@
         "icon": ""
     },
     {
-        "display_name": "Mục",
+        "display_name": "Mục chính",
         "route": "/admin/sections",
         "icon": "bx bx-book-content"
     },

@@ -1,41 +1,80 @@
+import { approveADocument, getPendingDocuments } from "@api/main/documentAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
+import ActionButton from "@components/management/action-button/ActionButton";
+import SelectFilter from "@components/management/select/SelectFilter";
+import Table from "@components/management/table/Table";
+import { Badge, Button, Label, Modal, Pagination, Spinner, TextInput } from "flowbite-react";
+import moment from "moment";
 import { useEffect, useState } from "react";
+import { BiNotification } from "react-icons/bi";
+import { HiCheck, HiX } from "react-icons/hi";
+import { HiDocumentCheck } from "react-icons/hi2";
+import { MdRemoveDone } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-
-import ActionButton from "../../../components/management/action-button/ActionButton";
-import Table from "../../../components/management/table/Table";
-
-import { Button, Label, Modal, Pagination, Spinner, TextInput, Toast } from "flowbite-react";
-import { HiDocumentRemove, HiOutlineCheck, HiX } from "react-icons/hi";
-
-import { approveADocument, getPendingDocuments } from "../../../api/main/documentAPI";
-import usePrivateAxios from "../../../api/usePrivateAxios";
-
-let selectedPage = 0;
+import { Bounce, toast } from "react-toastify";
 
 const ManagerPendingDocuments = () => {
-    const tableHead = ["", "Tên", "Giới thiệu", ""];
+    const verifiedStatus = [
+        { name: "Chưa phê duyệt", value: 0 },
+        { name: "Đã phê duyệt", value: 1 },
+        { name: "Từ chối", value: -1 },
+    ];
+
+    const toastOptions = {
+        position: "bottom-center",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+    };
+
+    const tableHead = ["", "Tên", "Giới thiệu", "Trạng thái", ""];
 
     const renderHead = (item, index) => (
-        <th key={index} className="text-center">
+        <th key={index} className="cursor-pointer text-center">
             {item}
         </th>
     );
 
     const renderBody = (item, index) => (
         <tr key={index} className="cursor-pointer">
-            <td className="text-center font-bold" onClick={() => handleDetail(item.slug)}>
-                {selectedPage * 10 + index + 1}
+            <td className="w-1/12 text-center font-bold" onClick={() => handleDetail(item.slug)}>
+                {(currentPage - 1) * 10 + index + 1}
             </td>
-            <td className="max-w-xs" onClick={() => handleDetail(item.slug)}>
+            <td className="w-3/12" onClick={() => handleDetail(item.slug)}>
                 {item.docName}
             </td>
-            <td className="max-w-xl" onClick={() => handleDetail(item.slug)}>
+            <td className="w-5/12" onClick={() => handleDetail(item.slug)}>
                 <p className="truncate whitespace-normal leading-6 line-clamp-3">{item.docIntroduction}</p>
             </td>
-            <td className="text-center">
+            <td className="w-2/12" onClick={() => handleDetail(item.slug)}>
+                <div className="m-auto w-fit">
+                    {item.verifiedStatus === -1 && (
+                        <Badge color="failure" icon={HiX}>
+                            Từ chối
+                        </Badge>
+                    )}
+                    {item.verifiedStatus === 1 && (
+                        <Badge color="success" icon={HiCheck}>
+                            Chấp nhận
+                        </Badge>
+                    )}
+                    {item.verifiedStatus === 0 && (
+                        <Badge color="warning" icon={BiNotification}>
+                            Đang chờ
+                        </Badge>
+                    )}
+                </div>
+            </td>
+            <td className="w-1/12 text-center">
                 <div className="flex space-x-0">
-                    <ActionButton onClick={() => handleDetail(item.slug)} icon="bx bx-show" color="sky" content="Xem chi tiết tài liệu" />
-                    <ActionButton onClick={() => handleApprove(item.docId)} icon="bx bxs-check-shield" color="green" content="Duyệt tài liệu" />
+                    <ActionButton onClick={() => handleDetail(item.slug)} icon="bx bx-show-alt" color="green" content="Xem chi tiết" />
+                    {item.verifiedStatus === 0 && <ActionButton onClick={() => handleApprove(item)} icon="bx bx-check-double" color="teal" content="Phê duyệt" />}
+                    {item.verifiedStatus !== 0 && <ActionButton onClick={() => handleReapprove(item)} icon="bx bx-revision" color="indigo" content="Phê duyệt lại" />}
                 </div>
             </td>
         </tr>
@@ -46,34 +85,43 @@ const ManagerPendingDocuments = () => {
     usePrivateAxios();
 
     const handleDetail = (slug) => {
-        navigate(`/manager/documents/${slug}`);
+        window.open(`/admin/documents/${slug}`, "_blank");
     };
 
-    const handleApprove = (docId) => {
+    const handleApprove = (doc) => {
         setOpenAppoveModal(true);
-        setDocId(docId);
+        setDoc(doc);
+        setReason("");
+    };
+
+    const handleReapprove = (doc) => {
+        setOpenAppoveModal(true);
+        setDoc(doc);
+        setReason(doc.note);
     };
 
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [documentList, setDocumentList] = useState([]);
-
     const [openAppoveModal, setOpenAppoveModal] = useState(false);
     const [openRejectModal, setOpenRejectModal] = useState(false);
     const [reason, setReason] = useState("");
-    const [message, setMessage] = useState("");
-    const [status, setStatus] = useState(0);
+    const [status, setStatus] = useState("all");
     const [isLoading, setIsLoading] = useState(false);
-    const [docId, setDocId] = useState("");
+    const [doc, setDoc] = useState("");
     const [isFetching, setIsFetching] = useState(false);
 
     useEffect(() => {
         getDocumentList(currentPage);
     }, [currentPage]);
 
+    useEffect(() => {
+        setCurrentPage(1);
+        getDocumentList(1);
+    }, [status]);
+
     const onPageChange = (page) => {
         setCurrentPage(page);
-        selectedPage = page - 1;
     };
 
     const getDocumentList = async (page) => {
@@ -83,15 +131,17 @@ const ManagerPendingDocuments = () => {
                 params: {
                     page: page - 1,
                     size: 10,
-                    order: "docId",
+                    status: status,
                 },
             });
+
             setIsFetching(false);
+
             if (response.status === 200) {
                 setDocumentList(response.data.content);
                 setTotalPages(response.data.totalPages);
             } else {
-                // navigate("/manager/login");
+                // navigate("/admin/login");
             }
         } catch (error) {
             console.log(error);
@@ -116,24 +166,12 @@ const ManagerPendingDocuments = () => {
             }
 
             if (response.status === 200) {
-                setStatus(1);
-
-                if (approvedStatus) setMessage("Đã chấp nhận tài liệu!");
-                else setMessage("Đã từ chối tài liệu!");
-
-                setTimeout(() => {
-                    setStatus(0);
-                }, 4000);
-
+                if (approvedStatus) toast.success(<p className="pr-2">Đã chấp nhận tài liệu!</p>, toastOptions);
+                else toast.success(<p className="pr-2">Đã từ chối tài liệu!</p>, toastOptions);
                 getDocumentList(1);
                 setCurrentPage(1);
-                selectedPage = 0;
             } else {
-                setStatus(-1);
-                setMessage("Đã xảy ra lỗi! Xin vui lòng thử lại!");
-                setTimeout(() => {
-                    setStatus(0);
-                }, 4000);
+                toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
             }
         } catch (error) {
             console.log(error);
@@ -142,18 +180,41 @@ const ManagerPendingDocuments = () => {
 
     return (
         <div>
-            <h2 className="page-header">tài liệu đang chờ</h2>
             <div className="row">
+                <div className="px-[15px]">
+                    <h2 className="page-header">Tài liệu được chia sẻ bởi người dùng</h2>
+                </div>
+
                 <div className="col-12">
+                    <div className="card">
+                        <div className="card__body">
+                            <div className="flex flex-wrap justify-between">
+                                <SelectFilter
+                                    selectName="Trạng thái"
+                                    options={verifiedStatus}
+                                    selectedValue={status}
+                                    onChangeHandler={(e) => {
+                                        setStatus(e.target.value);
+                                    }}
+                                    name="name"
+                                    field="value"
+                                    required
+                                />
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="card">
                         <div className="card__body">
                             <Table totalPages="10" headData={tableHead} renderHead={(item, index) => renderHead(item, index)} bodyData={documentList} renderBody={(item, index) => renderBody(item, index)} />
 
-                            {isFetching && <Spinner color="success" className="flex items-center w-full mb-2 mt-2" style={{ color: "var(--main-color)" }} />}
+                            {isFetching && <Spinner className="flex items-center w-full mb-2 mt-2" style={{ color: "var(--main-color)" }} />}
 
-                            <div className="flex overflow-x-auto sm:justify-center">
-                                <Pagination previousLabel="" nextLabel="" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} showIcons />
-                            </div>
+                            {totalPages > 1 && (
+                                <div className="flex overflow-x-auto sm:justify-center">
+                                    <Pagination previousLabel="" nextLabel="" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} showIcons />
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -163,12 +224,42 @@ const ManagerPendingDocuments = () => {
                 <Modal.Header />
                 <Modal.Body>
                     <div className="text-center">
-                        <HiDocumentRemove className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
-                        <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Thao tác phê duyệt</h3>
-                        <div className="flex justify-center gap-4">
-                            <Button color="success" isProcessing={isLoading} onClick={() => approveDocument(docId, true)}>
-                                Chấp nhận
-                            </Button>
+                        <HiDocumentCheck className="mx-auto mb-4 h-14 w-14 text-emerald-500" />
+                        <h3 className="mb-4 text-2xl font-medium text-gray-600">Duyệt tài liệu</h3>
+
+                        {doc && doc.verifiedStatus !== 0 && (
+                            <div className="text-sm text-justify pl-10 space-y-2">
+                                <p>
+                                    Tài liệu này đã{" "}
+                                    <span className="font-medium">
+                                        {doc && doc.verifiedStatus === 1 && "được chấp nhận"}
+                                        {doc && doc.verifiedStatus === -1 && "bị từ chối"}
+                                    </span>
+                                </p>
+                                {doc && doc.verifiedStatus === -1 && (
+                                    <p>
+                                        Thời gian: <span className="font-medium">{doc && doc.note}</span>
+                                    </p>
+                                )}
+                                <p>
+                                    Thời gian: <span className="font-medium">{moment(doc && doc.verifiedAt).format("DD/MM/YYYY HH:mm")}</span>
+                                </p>
+                                <p>
+                                    Người duyệt:{" "}
+                                    <span className="font-medium">
+                                        {doc && doc.userVerified && doc.userVerified.lastName} {doc && doc.userVerified && doc.userVerified.firstName}
+                                    </span>
+                                </p>
+                            </div>
+                        )}
+
+                        <div className="flex justify-center gap-4 mt-7">
+                            {doc && doc.verifiedStatus !== 1 && (
+                                <Button color="success" isProcessing={isLoading} onClick={() => approveDocument(doc && doc.docId, true)}>
+                                    Chấp nhận
+                                </Button>
+                            )}
+
                             <Button
                                 color="warning"
                                 disabled={isLoading}
@@ -176,8 +267,9 @@ const ManagerPendingDocuments = () => {
                                     setOpenRejectModal(true);
                                     setOpenAppoveModal(false);
                                 }}>
-                                Từ chối
+                                {doc && doc.verifiedStatus === -1 ? "Chỉnh sửa lý do" : "Từ chối"}
                             </Button>
+
                             <Button color="gray" disabled={isLoading} onClick={() => setOpenAppoveModal(false)}>
                                 Huỷ bỏ
                             </Button>
@@ -190,8 +282,8 @@ const ManagerPendingDocuments = () => {
                 <Modal.Header />
                 <Modal.Body>
                     <div className="text-center">
-                        <HiDocumentRemove className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
-                        <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có chắc chắn muốn từ chối tài liệu này không?</h3>
+                        <MdRemoveDone className="mx-auto mb-4 h-14 w-14 text-red-400" />
+                        <h3 className="mb-5 text-2xl font-medium text-gray-600">Bạn có chắc chắn muốn từ chối tài liệu này không?</h3>
                         <div className="mb-4">
                             <div className="mb-2 block">
                                 <Label htmlFor="reason" value="Lý do" />
@@ -199,7 +291,7 @@ const ManagerPendingDocuments = () => {
                             <TextInput id="reason" placeholder="Nhập lý do..." value={reason} onChange={(event) => setReason(event.target.value)} required />
                         </div>
                         <div className="flex justify-center gap-4">
-                            <Button color="warning" isProcessing={isLoading} onClick={() => approveDocument(docId, false)}>
+                            <Button color="warning" isProcessing={isLoading} onClick={() => approveDocument(doc && doc.docId, false)}>
                                 Từ chối
                             </Button>
                             <Button color="gray" disabled={isLoading} onClick={() => setOpenRejectModal(false)}>
@@ -209,20 +301,6 @@ const ManagerPendingDocuments = () => {
                     </div>
                 </Modal.Body>
             </Modal>
-
-            {status === -1 && (
-                <Toast className="top-1/4 right-5 w-100 fixed">
-                    <HiX className="h-5 w-5 bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200" />
-                    <div className="pl-4 text-sm font-normal">{message}</div>
-                </Toast>
-            )}
-
-            {status === 1 && (
-                <Toast className="top-1/4 right-5 fixed w-100">
-                    <HiOutlineCheck className="h-5 w-5 bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200" />
-                    <div className="pl-4 text-sm font-normal">{message}</div>
-                </Toast>
-            )}
         </div>
     );
 };

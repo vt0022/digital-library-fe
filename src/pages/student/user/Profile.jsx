@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { Button, Datepicker, FileInput, Label, TextInput, Toast } from "flowbite-react";
 import { HiAdjustments, HiOutlineCheck, HiX } from "react-icons/hi";
-
 import moment from "moment";
-
-import Select from "../../../components/management/select/Select";
-
-import { getProfile, updateAvatar, updatePassword, updateProfile } from "../../../api/main/userAPI";
-import usePrivateAxios from "../../../api/usePrivateAxios";
-import profileImage from "../../../assets/images/default_profile.jpg";
+import Select from "@components/management/select/Select";
+import { getProfile, updateAvatar, updatePassword, updateProfile } from "@api/main/userAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
+import profileImage from "@assets/images/default_profile.jpg";
 
 let selectedPage = 0;
 

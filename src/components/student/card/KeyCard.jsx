@@ -1,11 +1,7 @@
+import colors from "@assets/json-data/colors.json";
 import { useState } from "react";
-
-import { useNavigate } from "react-router-dom";
-
 import { HiOutlineBookOpen, HiOutlineTag } from "react-icons/hi";
-
-import colors from "../../../assets/json-data/colors.json";
-
+import { useNavigate } from "react-router-dom";
 import "./card.css";
 
 const KeyCard = (props) => {

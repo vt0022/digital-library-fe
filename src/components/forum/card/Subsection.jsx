@@ -21,7 +21,7 @@ const Subsection = (props) => {
     
     const checkPinned = () => {
         const pinnedSubsections = JSON.parse(localStorage.getItem("pinned_subsections")) || [];
-        setIsPinned( pinnedSubsections.some((item) => JSON.stringify(item) === JSON.stringify(subsection)));
+        setIsPinned( pinnedSubsections.some((item) => JSON.stringify(item.subId) === JSON.stringify(subsection.subId)));
     };
 
     return (

@@ -9,10 +9,10 @@ const Forum = () => {
 
     const handlePinSection = (section) => {
         setPinnedSections((prevPinnedSections) => {
-            const isSectionPinned = prevPinnedSections.some((item) => JSON.stringify(item) === JSON.stringify(section));
+            const isSectionPinned = prevPinnedSections.some((item) => JSON.stringify(item.subId) === JSON.stringify(section.subId));
             let updatedPinnedSections;
             if (isSectionPinned) {
-                updatedPinnedSections = prevPinnedSections.filter((item) => JSON.stringify(item) !== JSON.stringify(section));
+                updatedPinnedSections = prevPinnedSections.filter((item) => JSON.stringify(item.subId) !== JSON.stringify(section.subId));
             } else {
                 updatedPinnedSections = [...prevPinnedSections, section];
             }

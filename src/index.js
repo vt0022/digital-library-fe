@@ -35,6 +35,7 @@ import App from "./App";
 
 import "./index.css";
 
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import "flowbite";
 import { Bounce, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -47,16 +48,14 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
     <Provider store={store}>
-        <React.StrictMode>
-            <App />
+        <GoogleOAuthProvider clientId="355480575905-okvgom422abg0ecf8u9mfi4p35sp867n.apps.googleusercontent.com">
+            <React.StrictMode>
+                <App />
 
-            <ToastContainer position="bottom-center" autoClose={4000} hideProgressBar={false} newestOnTop={false} closeOnClick={false} rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover={false} theme="light" transition={Bounce} />
-        </React.StrictMode>
+                <ToastContainer position="bottom-center" autoClose={4000} hideProgressBar={false} newestOnTop={false} closeOnClick={false} rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover={false} theme="light" transition={Bounce} />
+            </React.StrictMode>
+        </GoogleOAuthProvider>
     </Provider>,
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-
-reportWebVitals();
+// reportWebVitals(console.log);

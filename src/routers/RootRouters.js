@@ -1,23 +1,26 @@
+import usePrivateAxios from "@api/usePrivateAxios";
+import AdminLayout from "@components/management/layout/AdminLayout";
+import ManagerLayout from "@components/management/layout/ManagerLayout";
+import AdminForgotPassword from "@pages/admin/auth/forgot-password/ForgotPassword";
+import AdminLogin from "@pages/admin/auth/login/Login";
+import AdminNewPassword from "@pages/admin/auth/new-password/NewPassword";
+import AdminVerifyOTP from "@pages/admin/auth/verifyotp/VerifyOTP";
+import Forum from "@pages/forum/main/Forum";
+import ManagerForgotPassword from "@pages/manager/auth/forgot-password/ForgotPassword";
+import ManagerLogin from "@pages/manager/auth/login/Login";
+import ManagerNewPassword from "@pages/manager/auth/new-password/NewPassword";
+import ManagerVerifyOTP from "@pages/manager/auth/verifyotp/VerifyOTP";
+import Home from "@pages/student/Home";
+import Main from "@pages/student/Main";
+import StudentForgotPassword from "@pages/student/auth/forgot-password/ForgotPassword";
+import StudentLogin from "@pages/student/auth/login/Login";
+import StudentNewPassword from "@pages/student/auth/new-password/NewPassword";
+import StudentSignup from "@pages/student/auth/signup/Signup";
+import StudentVerifyOTP from "@pages/student/auth/verifyotp/VerifyOTP";
+import Error404 from "@pages/student/error/Error404";
+import Error500 from "@pages/student/error/Error500";
 import { Route, Routes, useLocation } from "react-router-dom";
-import AdminLayout from "./../components/management/layout/AdminLayout";
-
-import usePrivateAxios from "./../api/usePrivateAxios";
-import AdminForgotPassword from "./../pages/admin/auth/ForgotPassword";
-import AdminLogin from "./../pages/admin/auth/Login";
-import ManagerForgotPassword from "./../pages/manager/auth/ForgotPassword";
-import ManagerLogin from "./../pages/manager/auth/Login";
-
 import "./../App.css";
-
-import Forum from "../pages/forum/main/Forum";
-import ManagerLayout from "./../components/management/layout/ManagerLayout";
-import Home from "./../pages/student/Home";
-import Main from "./../pages/student/Main";
-import StudentForgotPassword from "./../pages/student/auth/ForgotPassword";
-import StudentLogin from "./../pages/student/auth/Login";
-import StudentRegister from "./../pages/student/auth/Register";
-import Error404 from "./../pages/student/error/Error404";
-import Error500 from "./../pages/student/error/Error500";
 
 const RootRouters = () => {
     usePrivateAxios();
@@ -27,14 +30,20 @@ const RootRouters = () => {
     return (
         <Routes>
             <Route path="/login" element={<StudentLogin />} />
-            <Route path="/register" element={<StudentRegister />} />
+            <Route path="/verify" element={<StudentVerifyOTP />} />
+            <Route path="/register" element={<StudentSignup />} />
+            <Route path="/new-password" element={<StudentNewPassword />} />
             <Route path="/forgot-password" element={<StudentForgotPassword />} />
 
-            <Route path="/admin/forgot-password" element={<AdminForgotPassword />} />
             <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/verify" element={<AdminVerifyOTP />} />
+            <Route path="/admin/new-password" element={<AdminNewPassword />} />
+            <Route path="/admin/forgot-password" element={<AdminForgotPassword />} />
 
-            <Route path="/manager/forgot-password" element={<ManagerForgotPassword />} />
             <Route path="/manager/login" element={<ManagerLogin />} />
+            <Route path="/manager/verify" element={<ManagerVerifyOTP />} />
+            <Route path="/manager/new-password" element={<ManagerNewPassword />} />
+            <Route path="/manager/forgot-password" element={<ManagerForgotPassword />} />
 
             <Route path="/admin/*" element={<AdminLayout />} />
             <Route path="/manager/*" element={<ManagerLayout />} />

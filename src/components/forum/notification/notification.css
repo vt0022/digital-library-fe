@@ -1,6 +1,6 @@
 .noti-avatar [data-testid="flowbite-avatar-img"] {
-    width: 6rem !important;
-    height: 6rem !important;
+    width: 3.5rem !important;
+    height: 3.5rem !important;
 }
 
 .notification-dropdown {

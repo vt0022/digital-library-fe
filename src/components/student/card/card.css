@@ -19,11 +19,12 @@
 }
 
 .collection-card:hover {
-    box-shadow: 0 0 25px -5px var(--hover-color), 0 8px 10px -6px var(--hover-color) !important;
+    box-shadow: 0 4px 6px -1px var(--hover-color), 0 2px 4px -2px var(--hover-color) !important;
 }
 
 .collection-name {
     color: var(--active-color) !important;
+    margin-top: 20px !important;
 }
 
 .collection-name:hover {

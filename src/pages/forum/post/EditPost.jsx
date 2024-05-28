@@ -1,4 +1,5 @@
 import Error404 from "@components/forum/error/404Error";
+import PageHead from "components/shared/head/PageHead";
 import { Button, Toast } from "flowbite-react";
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -32,7 +33,7 @@ const EditPost = () => {
     const [isSubsectionValid, setIsSubsectionValid] = useState(true);
     const [isTitleValid, setIsTitleValid] = useState(true);
     const [isContentValid, setIsContentValid] = useState(true);
-    const [notNull, setNotNull] = useState(false);
+    const [notFound, setNotFound] = useState(false);
 
     const quill = useRef();
 
@@ -85,10 +86,10 @@ const EditPost = () => {
             const response = await getAPost(postId);
 
             if (response.status === 200) {
-                if (!response.data.my || response.data.disabled || response.data?.label?.disabled || response.data?.subsection?.disabled) {
-                    setNotNull(true);
+                if (response.data.disabled || response.data.labelDisabled || response.data.subsectionDisabled || response.data.sectionDisabled || !response.data.my) {
+                    setNotFound(true);
                 } else {
-                    setNotNull(false);
+                    setNotFound(false);
                     setPost(response.data);
                     setTitle(response.data.title);
                     setContent(response.data.content);
@@ -96,7 +97,7 @@ const EditPost = () => {
                     setSubsection(response.data.subsection && response.data.subsection.subId);
                 }
             } else {
-                setNotNull(true);
+                setNotFound(true);
             }
         } catch (error) {
             navigate("/error-500");
@@ -210,7 +211,7 @@ const EditPost = () => {
 
     const formats = ["header", "bold", "italic", "underline", "strike", "blockquote", "list", "bullet", "indent", "link", "image", "color", "clean"];
 
-    if (!notNull) return <Error404 name="post" />;
+    if (notFound) return <Error404 name="post" />;
 
     return (
         <>
@@ -227,6 +228,8 @@ const EditPost = () => {
                     <div className="pl-4 text-sm font-normal">Chỉnh sửa thành công!</div>
                 </Toast>
             )}
+
+            <PageHead title={`Chỉnh sửa bài đăng - ${post && post.title}`} description={post && post.content.replace(/(<([^>]+)>)/gi, "")} url={window.location.href} origin="forum" />
 
             <div className="w-5/6 m-auto min-h-screen h-max mt-5 p-5">
                 <div className="items-center mb-5 w-full border-b border-black py-2">

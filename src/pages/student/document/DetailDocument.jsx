@@ -1,19 +1,37 @@
-import { Button, Toast } from "flowbite-react";
+import { getADocument, getADocumentForGuest, getRelatedDocuments, likeDocument, saveDocument, unlikeDocument, unsaveDocument } from "@api/main/documentAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
+import DocumentCard from "@components/student/card/Card";
+import CollectionListModal from "@components/student/modal/CollectionListModal";
+import Review from "@components/student/review/Review";
+import { default as ReviewList } from "@components/student/review/ReviewList";
+import { verifyRecaptcha } from "api/main/recaptchaAPI";
+import PageHead from "components/shared/head/PageHead";
+import { Button, Modal } from "flowbite-react";
 import moment from "moment/moment";
-import React, { useEffect, useRef, useState } from "react";
-import { HiHeart, HiOutlineBookmark, HiOutlineCalendar, HiOutlineCheck, HiOutlineCloudDownload, HiOutlineColorSwatch, HiOutlineEye, HiOutlineHeart, HiOutlineLibrary, HiOutlinePaperAirplane, HiOutlineReply, HiOutlineTag, HiX } from "react-icons/hi";
-import { RiAddFill } from "react-icons/ri";
+import { useEffect, useRef, useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
+import { FaUserCheck } from "react-icons/fa";
+import { HiHeart, HiOutlineBookmark, HiOutlineCalendar, HiOutlineCloudDownload, HiOutlineColorSwatch, HiOutlineEye, HiOutlineHeart, HiOutlineLibrary, HiOutlinePaperAirplane, HiOutlineReply, HiOutlineTag } from "react-icons/hi";
+import { RiAddFill, RiRobot2Fill } from "react-icons/ri";
 import { pdfjs } from "react-pdf";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { getADocument, getADocumentForGuest, getRelatedDocuments, likeDocument, saveDocument } from "../../../api/main/documentAPI";
-import usePrivateAxios from "../../../api/usePrivateAxios";
-import DocumentCard from "../../../components/student/card/Card";
-import CollectionListModal from "../../../components/student/modal/CollectionListModal";
-import Review from "../../../components/student/review/Review";
-import { default as ReviewList } from "../../../components/student/review/ReviewList";
-import PageHead from "components/shared/head/PageHead";
+import { Bounce, toast } from "react-toastify";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.js", import.meta.url).toString();
+
+const SITE_KEY = process.env.REACT_APP_SITE_KEY;
+
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const DetailDocument = () => {
     const { slug } = useParams();
@@ -22,14 +40,15 @@ const DetailDocument = () => {
 
     usePrivateAxios();
 
+    const recaptchaRef = useRef(null);
     const collectionRef = useRef(null);
 
     const [doc, setDocument] = useState(null);
     const [documentList, setDocumentList] = useState([]);
-    const [message, setMessage] = useState("Đã xảy ra lỗi! Vui lòng thử lại!");
-    const [status, setStatus] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [isOpenModal, setIsOpenModal] = useState(false);
+    const [isopenDownloadModal, setIsOpenDownloadModal] = useState(false);
+    const [isRecaptchaValid, setIsRecaptchaValid] = useState(false);
     const [pdf, setPdf] = useState(null);
     const [data, setData] = useState([]);
     const [pdfString, setPdfString] = useState("");
@@ -92,8 +111,6 @@ const DetailDocument = () => {
     // };
 
     const getDocumentBySlug = async () => {
-        const accessToken = localStorage.getItem("accessToken");
-        const user = JSON.parse(sessionStorage.getItem("profile"));
         try {
             let response = null;
 
@@ -129,27 +146,29 @@ const DetailDocument = () => {
             const response = await likeDocument(slug);
 
             if (response.status === 200) {
-                if (response.message === "Unlike document successfully") {
-                    getDocumentBySlug();
-                    setMessage("Đã xoá khỏi danh sách yêu thích!");
-                } else {
-                    getDocumentBySlug();
-                    setMessage("Đã thêm vào danh sách yêu thích!");
-                }
+                toast.success(<p className="pr-2">Đã thêm vào danh sách yêu thích!</p>, toastOptions);
+
                 getDocumentBySlug();
-                setStatus(1);
-                setTimeout(() => {
-                    setStatus(0);
-                }, 4000);
             } else {
-                setStatus(-1);
-                setMessage("Đã xảy ra lỗi! Vui lòng thử lại!");
-                setTimeout(() => {
-                    setStatus(0);
-                }, 4000);
+                toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
             }
         } catch (error) {
-            navigate("/error-500");
+            toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
+        }
+    };
+
+    const handleUnlike = async () => {
+        try {
+            const response = await unlikeDocument(slug);
+
+            if (response.status === 200) {
+                toast.success(<p className="pr-2">Đã xoá khỏi danh sách yêu thích!</p>, toastOptions);
+                getDocumentBySlug();
+            } else {
+                toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
+            }
+        } catch (error) {
+            toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
         }
     };
 
@@ -158,38 +177,59 @@ const DetailDocument = () => {
             const response = await saveDocument(slug);
 
             if (response.status === 200) {
-                if (response.message === "Unsave document successfully") {
-                    getDocumentBySlug();
-                    setMessage("Đã xoá khỏi danh sách đã lưu!");
-                } else {
-                    getDocumentBySlug();
-                    setMessage("Đã thêm vào danh sách đã lưu!");
-                }
-                setStatus(1);
-                setTimeout(() => {
-                    setStatus(0);
-                }, 4000);
+                toast.success(<p className="pr-2">Đã thêm vào danh sách đã lưu!</p>, toastOptions);
+                getDocumentBySlug();
             } else {
-                setStatus(-1);
-                setMessage("Đã xảy ra lỗi! Vui lòng thử lại!");
-                setTimeout(() => {
-                    setStatus(0);
-                }, 4000);
+                toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
             }
         } catch (error) {
-            // navigate to 500
+            toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
         }
+    };
+
+    const handleUnsave = async () => {
+        try {
+            const response = await unsaveDocument(slug);
+
+            if (response.status === 200) {
+                toast.success(<p className="pr-2">Đã xoá khỏi danh sách yêu thích!</p>, toastOptions);
+                getDocumentBySlug();
+            } else {
+                toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
+            }
+        } catch (error) {
+            toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
+        }
+    };
+
+    const handleVerifyRecaptcha = async () => {
+        try {
+            setIsLoading(true);
+
+            const response = await verifyRecaptcha({
+                params: {
+                    recaptchaResponse: recaptchaRef.current?.getValue(),
+                },
+            });
+
+            setIsLoading(false);
+
+            if (response.status === 200) {
+                setIsOpenDownloadModal(false);
+                handleDownload();
+            } else {
+                toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
+                recaptchaRef.current.reset();
+            }
+        } catch (error) {}
     };
 
     const handleDownload = () => {
         if (doc && doc.downloadUrl) {
             window.location.href = doc.downloadUrl;
+            toast.success(<p className="pr-2">Đang tải tài liệu xuống!</p>, toastOptions);
         } else {
-            setStatus(-1);
-            setMessage("Liên kết tải xuống đã bị hỏng! Xin lỗi vì sự bất tiện này!");
-            setTimeout(() => {
-                setStatus(0);
-            }, 4000);
+            toast.error(<p className="pr-2">Liên kết tải xuống đã bị hỏng! Xin lỗi vì sự bất tiện này!</p>, toastOptions);
         }
     };
 
@@ -213,53 +253,31 @@ const DetailDocument = () => {
     };
 
     const onAddToCollectionSuccess = () => {
-        setStatus(1);
-        setMessage("Thêm vào bộ sưu tập thành công!");
-        setTimeout(() => {
-            setStatus(0);
-        }, 4000);
+        toast.success(<p className="pr-2">Thêm vào bộ sưu tập thành công!</p>, toastOptions);
     };
 
     const onAddToCollectionFailure = () => {
-        setStatus(-1);
-        setMessage("Có lỗi xảy ra! Vui lòng thử lại!");
-        setTimeout(() => {
-            setStatus(0);
-        }, 4000);
+        toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
     };
 
     const onAddReviewSuccess = () => {
-        setStatus(1);
-        setMessage("Đánh giá của bạn sẽ được duyệt trước khi hiển thị!");
-        setTimeout(() => {
-            setStatus(0);
-        }, 4000);
+        toast.success(<p className="pr-2">Đánh giá của bạn sẽ được duyệt trước khi hiển thị!</p>, toastOptions);
     };
 
     const onAddReviewFailure = () => {
-        setStatus(-1);
-        setMessage("Có lỗi xảy ra! Vui lòng thử lại!");
-        setTimeout(() => {
-            setStatus(0);
-        }, 4000);
+        toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
+    };
+
+    const checkRecaptchaValid = (value) => {
+        if (value) {
+            setIsRecaptchaValid(true);
+        } else {
+            setIsRecaptchaValid(false);
+        }
     };
 
     return (
         <>
-            {status === -1 && (
-                <Toast className="top-1/4 right-5 w-100 fixed z-50">
-                    <HiX className="h-5 w-5 bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200" />
-                    <div className="pl-4 text-sm font-normal">{message}</div>
-                </Toast>
-            )}
-
-            {status === 1 && (
-                <Toast className="top-1/4 right-5 fixed w-100 z-50">
-                    <HiOutlineCheck className="h-5 w-5 bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200" />
-                    <div className="pl-4 text-sm font-normal">{message}</div>
-                </Toast>
-            )}
-
             <PageHead title={doc && doc.docName} description={doc && doc.docIntroduction} imageUrl={doc && doc.thumbnail} url={window.location.href} />
 
             <div className="flex-1 p-4 bg-gray-50">
@@ -342,7 +360,13 @@ const DetailDocument = () => {
 
                 <div className="flex gap-5 w-full mt-5 mb-5 h-full">
                     <div className="bg-white rounded-lg shadow-md w-3/4 h-[700px] relative">
-                        <iframe width="100%" height="700px" className="rounded-lg" title="Tài liệu PDF" src={doc && doc.viewUrl + "#toolbar=0"}></iframe>
+                        <div className="w-full h-[700px] relative">
+                            <iframe width="100%" height="700px" className="rounded-lg" title="Tài liệu PDF" src={doc && doc.viewUrl + "#page=10"} frameborder="0" seamless=""></iframe>
+
+                            <div className="w-[80px] h-[80px] absolute opacity-0 right-0 top-0"></div>
+                        </div>
+
+                        <iframe class="pdf-embed" src="https://docs.google.com/viewer?url=https://drive.google.com/uc?id=1oNvF1dnKd0Q-inR15gth2EST3f3XyZZa&embedded=true"></iframe>
 
                         {isOpenModal && (
                             <div ref={collectionRef}>
@@ -364,17 +388,17 @@ const DetailDocument = () => {
 
                     <div className="w-1/4 fixed right-4 sticky">
                         <div className="flex flex-col gap-y-5 p-3 w-auto">
-                            <Button pill className="bg-white text-lg text-gray-700 enabled:hover:bg-red-50 enabled:active:bg-red-100 focus:border focus:ring-0 focus:bg-white border border-solid shadow-lg" onClick={handleLike}>
+                            <Button pill className="bg-white text-lg text-gray-700 enabled:hover:bg-red-50 enabled:active:bg-red-100 focus:border focus:ring-0 focus:bg-white border border-solid shadow-lg" onClick={doc && doc.liked ? handleUnlike : handleLike}>
                                 {doc && doc.liked ? <HiHeart className="mr-2 h-7 w-7 text-red-500" /> : <HiOutlineHeart className="mr-2 h-7 w-7 text-red-500" />}
                                 {doc && doc.liked ? <span className="text-base">Đã thích</span> : <span className="text-base">Thích</span>}
                             </Button>
 
-                            <Button pill className="bg-white text-gray-700 enabled:hover:bg-green-50 enabled:active:bg-green-100 focus:border focus:ring-0 focus:bg-white border border-solid shadow-lg" onClick={handleSave}>
+                            <Button pill className="bg-white text-gray-700 enabled:hover:bg-green-50 enabled:active:bg-green-100 focus:border focus:ring-0 focus:bg-white border border-solid shadow-lg" onClick={doc && doc.saved ? handleUnsave : handleSave}>
                                 {doc && doc.saved ? <HiOutlineBookmark className="mr-2 h-7 w-7 fill-green-500 text-green-500" /> : <HiOutlineBookmark className="mr-2 h-7 w-7 text-green-500" />}
                                 {doc && doc.saved ? <span className="text-base">Đã lưu</span> : <span className="text-base">Lưu</span>}
                             </Button>
 
-                            <Button pill className="bg-white text-gray-700 enabled:hover:bg-gray-50 enabled:active:bg-gray-100 focus:border focus:ring-0 focus:bg-white border border-solid shadow-lg" onClick={handleDownload}>
+                            <Button pill className="bg-white text-gray-700 enabled:hover:bg-gray-50 enabled:active:bg-gray-100 focus:border focus:ring-0 focus:bg-white border border-solid shadow-lg" onClick={() => setIsOpenDownloadModal(true)}>
                                 <HiOutlineCloudDownload className="mr-2 h-7 w-7 text-indigo-500" />
                                 <span className="text-base">Tải về</span>
                             </Button>
@@ -406,6 +430,33 @@ const DetailDocument = () => {
                         </div>
                     </div>
                 )}
+
+                <Modal show={isopenDownloadModal} size="md" onClose={() => setIsOpenDownloadModal(false)} popup>
+                    <Modal.Header />
+                    <Modal.Body>
+                        <div className="text-center space-y-6 pb-3">
+                            <div className="flex justify-center space-x-5">
+                                <RiRobot2Fill className="h-14 w-14 text-red-500" />
+                                <FaUserCheck className="h-14 w-14 text-emerald-500" />
+                            </div>
+
+                            <h3 className="mb-5 text-lg font-normal text-gray-700">Vui lòng xác nhận trước khi tải tài liệu này</h3>
+
+                            <div className="flex justify-center">
+                                <ReCAPTCHA ref={recaptchaRef} sitekey={SITE_KEY} onChange={checkRecaptchaValid} />
+                            </div>
+
+                            <div className="flex justify-around gap-4">
+                                <Button color="success" onClick={handleVerifyRecaptcha} isProcessing={isLoading} disabled={isLoading || !isRecaptchaValid}>
+                                    Tải xuống
+                                </Button>
+                                <Button color="failure" onClick={() => setIsOpenDownloadModal(false)} disabled={isLoading}>
+                                    Huỷ bỏ
+                                </Button>
+                            </div>
+                        </div>
+                    </Modal.Body>
+                </Modal>
             </div>
         </>
     );

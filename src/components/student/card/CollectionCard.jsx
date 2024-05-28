@@ -1,3 +1,6 @@
+import { deleteCollection } from "@api/main/collectionAPI";
+import colors from "@assets/json-data/colors.json";
+import heights from "@assets/json-data/heights.json";
 import { Button, Modal, Toast, Tooltip } from "flowbite-react";
 import { useState } from "react";
 import { CgExtensionRemove } from "react-icons/cg";
@@ -5,10 +8,8 @@ import { GiPadlock } from "react-icons/gi";
 import { HiOutlineCheck, HiX } from "react-icons/hi";
 import { RiDeleteBinFill, RiEditCircleLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
-import { deleteCollection } from "../../../api/main/collectionAPI";
-import colors from "../../../assets/json-data/colors.json";
-import heights from "../../../assets/json-data/heights.json";
 import CollectionModal from "../modal/CollectionModal";
+import { HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
 
 const CollectionCard = (props) => {
     const { collection, isMine, refreshList } = props;
@@ -69,13 +70,16 @@ const CollectionCard = (props) => {
     };
 
     return (
-        <div className="w-full rounded-lg h-fit">
+        <div className="w-full rounded-lg h-fit p-5 rounded-lg shadow-md space-y-2 collection-card bg-white cursor-pointer" style={{ "--hover-color": getRandomColor.hover }}>
+            <div className="h-7 w-1/2 rounded-md m-auto -mt-8 flex items-center justify-center" style={{ backgroundColor: getRandomColor.bg }}>
+                <div className="w-3 h-3 rounded-full bg-white"></div>
+            </div>
             <div className="relative">
-                <div className="flex h-72 rounded-lg shadow-lg border gap-x-[2px] hover:shadow-xl cursor-pointer collection-card" onClick={() => navigate(`/collections/${collection.slug}`)} style={{ "--hover-color": getRandomColor.hover }}>
-                    {collection.thumbnails[0] && <img className="w-2/3 object-cover rounded-l-lg" src={collection.thumbnails[0]} alt="collection" />}
+                <div className="flex h-56 rounded-md shadow-md gap-x-[2px] hover:shadow-md" onClick={() => navigate(`/collections/${collection.slug}`)}>
+                    {collection.thumbnails[0] && <img className="w-2/3 object-cover rounded-l-md" src={collection.thumbnails[0]} alt="collection" />}
                     <div className="w-1/3 max-h-full flex flex-col space-y-[2px]">
-                        {collection.thumbnails[1] && <img className="h-[142px] w-full object-cover rounded-tr-lg" src={collection.thumbnails[1]} alt="collection" />}
-                        {collection.thumbnails[2] && <img className="h-[142px] w-full object-cover rounded-br-lg" src={collection.thumbnails[2]} alt="collection" />}
+                        {collection.thumbnails[1] && <img className="h-[142px] w-full object-cover rounded-tr-md" src={collection.thumbnails[1]} alt="collection" />}
+                        {collection.thumbnails[2] && <img className="h-[142px] w-full object-cover rounded-br-md" src={collection.thumbnails[2]} alt="collection" />}
                     </div>
                 </div>
 
@@ -86,7 +90,7 @@ const CollectionCard = (props) => {
                 )}
             </div>
 
-            <p className="font-medium text-base mt-3 mb-3 cursor-pointer collection-name" onClick={() => navigate(`/collections/${collection.slug}`)} style={{ "--hover-color": getRandomColor.hover, "--active-color": getRandomColor.active }}>
+            <p className="font-medium text-base text-center mb-3 cursor-pointer collection-name" onClick={() => navigate(`/collections/${collection.slug}`)} style={{ "--hover-color": getRandomColor.hover, "--active-color": getRandomColor.active }}>
                 {collection.collectionName}
             </p>
             {/* 
@@ -97,7 +101,7 @@ const CollectionCard = (props) => {
             {isMine && (
                 <div className="flex items-center ml-auto">
                     <Tooltip content="Chỉnh sửa" style="light">
-                        <RiEditCircleLine
+                        <HiOutlinePencilAlt
                             className="w-7 h-7 text-yellow-500 hover:text-yellow-300 active:text-yellow-200 mr-2"
                             onClick={(e) => {
                                 e.stopPropagation();
@@ -107,7 +111,7 @@ const CollectionCard = (props) => {
                     </Tooltip>
 
                     <Tooltip content="Xoá" style="light">
-                        <RiDeleteBinFill
+                        <HiOutlineTrash
                             className="w-7 h-7 text-red-500 hover:text-red-300 active:text-red-200"
                             onClick={(e) => {
                                 e.stopPropagation();

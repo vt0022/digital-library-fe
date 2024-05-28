@@ -1,10 +1,9 @@
-import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { Avatar, Button, Sidebar } from "flowbite-react";
-import { HiBookmark, HiCollection, HiHeart, HiDuplicate } from "react-icons/hi";
-import { TbAppsFilled } from "react-icons/tb";
+import { HiBookmark, HiCollection, HiDuplicate, HiHeart } from "react-icons/hi";
 import { MdRateReview } from "react-icons/md";
+import { TbAppsFilled } from "react-icons/tb";
 
 import "./sidebar.css";
 
@@ -23,38 +22,47 @@ const CustomSidebar = () => {
                 <p className="mb-3 text-base font-medium text-center">
                     {user && user.lastName} {user && user.firstName}
                 </p>
-                {user && (
-                    <Button className="text-white bg-green-400 enabled:hover:bg-green-500 focus:ring-green-200 focus:ring-1 mb-6 m-auto" pill onClick={() => navigate("/documents/upload")}>
-                        Tải lên
-                    </Button>
+                {user ? (
+                    <>
+                        <Button className="text-white bg-green-400 enabled:hover:bg-green-500 focus:ring-green-200 focus:ring-1 mb-6 m-auto" pill onClick={() => navigate("/documents/upload")}>
+                            Tải lên
+                        </Button>
+
+                        <Sidebar.ItemGroup>
+                            <Sidebar.Item as={Link} to="/me/uploads" icon={HiCollection} className={`gap-x-2 py-3 active:bg-green-300 active:text-white hover:text-green-400 hover:bg-green-100 ${currentPath === "/me/uploads" ? "text-green-400 bg-green-100" : ""}`}>
+                                Tài liệu của tôi
+                            </Sidebar.Item>
+
+                            <Sidebar.Item as={Link} to="/me/likes" icon={HiHeart} className={`gap-x-2 py-3 active:bg-green-300 active:text-white hover:text-green-400 hover:bg-green-100 ${currentPath === "/me/likes" ? "text-green-400 bg-green-100" : ""}`}>
+                                Yêu thích
+                            </Sidebar.Item>
+
+                            <Sidebar.Item as={Link} to="/me/saves" icon={HiBookmark} className={`gap-x-2 py-3 active:bg-green-300 active:text-white hover:text-green-400 hover:bg-green-100 ${currentPath === "/me/saves" ? "text-green-400 bg-green-100" : ""}`}>
+                                Đã lưu
+                            </Sidebar.Item>
+
+                            <Sidebar.Item as={Link} to="/me/recents" icon={HiDuplicate} className={`gap-x-2 py-3 active:bg-green-300 active:text-white hover:text-green-400 hover:bg-green-100 ${currentPath === "/me/recents" ? "text-green-400 bg-green-100" : ""}`}>
+                                Gần đây
+                            </Sidebar.Item>
+
+                            <Sidebar.Item as={Link} to="/me/collections" icon={TbAppsFilled} className={`gap-x-2 py-3 active:bg-green-300 active:text-white hover:text-green-400 hover:bg-green-100 ${currentPath === "/me/collections" ? "text-green-400 bg-green-100" : ""}`}>
+                                Bộ sưu tập
+                            </Sidebar.Item>
+
+                            <Sidebar.Item as={Link} to="/me/reviews" icon={MdRateReview} className={`gap-x-2 py-3 active:bg-green-300 active:text-white hover:text-green-400 hover:bg-green-100 ${currentPath === "/me/reviews" ? "text-green-400 bg-green-100" : ""}`}>
+                                Đánh giá của tôi
+                            </Sidebar.Item>
+                        </Sidebar.ItemGroup>
+                    </>
+                ) : (
+                    <>
+                        <p className="mb-6 text-base font-medium text-center">{!user && "Khách"}</p>
+
+                        <Button className="text-white bg-green-400 enabled:hover:bg-green-500 focus:ring-green-200 focus:ring-1 mb-6 m-auto" pill onClick={() => navigate("/login")}>
+                            Đăng nhập
+                        </Button>
+                    </>
                 )}
-
-                <p className="mb-6 text-base font-medium text-center">{!user && "Khách"}</p>
-                <Sidebar.ItemGroup>
-                    <Sidebar.Item as={Link} to="/me/uploads" icon={HiCollection} className={`gap-x-2 py-3 active:bg-green-300 active:text-white hover:text-green-400 hover:bg-green-100 ${currentPath === "/me/uploads" ? "text-green-400 bg-green-100" : ""}`}>
-                        Tài liệu của tôi
-                    </Sidebar.Item>
-
-                    <Sidebar.Item as={Link} to="/me/likes" icon={HiHeart} className={`gap-x-2 py-3 active:bg-green-300 active:text-white hover:text-green-400 hover:bg-green-100 ${currentPath === "/me/likes" ? "text-green-400 bg-green-100" : ""}`}>
-                        Yêu thích
-                    </Sidebar.Item>
-
-                    <Sidebar.Item as={Link} to="/me/saves" icon={HiBookmark} className={`gap-x-2 py-3 active:bg-green-300 active:text-white hover:text-green-400 hover:bg-green-100 ${currentPath === "/me/saves" ? "text-green-400 bg-green-100" : ""}`}>
-                        Đã lưu
-                    </Sidebar.Item>
-
-                    <Sidebar.Item as={Link} to="/me/recents" icon={HiDuplicate} className={`gap-x-2 py-3 active:bg-green-300 active:text-white hover:text-green-400 hover:bg-green-100 ${currentPath === "/me/recents" ? "text-green-400 bg-green-100" : ""}`}>
-                        Gần đây
-                    </Sidebar.Item>
-
-                    <Sidebar.Item as={Link} to="/me/collections" icon={TbAppsFilled} className={`gap-x-2 py-3 active:bg-green-300 active:text-white hover:text-green-400 hover:bg-green-100 ${currentPath === "/me/collections" ? "text-green-400 bg-green-100" : ""}`}>
-                        Bộ sưu tập
-                    </Sidebar.Item>
-
-                    <Sidebar.Item as={Link} to="/me/reviews" icon={MdRateReview} className={`gap-x-2 py-3 active:bg-green-300 active:text-white hover:text-green-400 hover:bg-green-100 ${currentPath === "/me/reviews" ? "text-green-400 bg-green-100" : ""}`}>
-                        Đánh giá của tôi
-                    </Sidebar.Item>
-                </Sidebar.ItemGroup>
             </Sidebar.Items>
         </Sidebar>
     );

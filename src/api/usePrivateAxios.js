@@ -2,6 +2,20 @@ import { useEffect } from "react";
 import { privateAxios } from "./axios";
 // import useRefreshToken from "./useRefreshToken";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Bounce, toast } from "react-toastify";
+
+const toastOptions = {
+    toastId: "entry-toast",
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const usePrivateAxios = () => {
     const navigate = useNavigate();
@@ -15,23 +29,19 @@ const usePrivateAxios = () => {
                 const accessToken = localStorage.getItem("accessToken");
                 const user = JSON.parse(sessionStorage.getItem("profile"));
 
-                if (!accessToken) {
-                    if (currentPath.includes("/admin")) navigate("/admin/login");
-                    else if (currentPath.includes("/manager")) navigate("/manager/login");
-                    else navigate("/login");
-
-                    sessionStorage.setItem("entryMessage", "Phiên đăng nhập đã hết. Vui lòng đăng nhập lại!");
-                } else {
-                    if (!user) {
-                        if (currentPath.includes("/admin")) navigate("/admin/login");
-                        else if (currentPath.includes("/manager")) navigate("/manager/login");
-                        else navigate("/login");
-
-                        sessionStorage.setItem("entryMessage", "Phiên đăng nhập đã hết. Vui lòng đăng nhập lại!");
+                if (!accessToken || !user) {
+                    if (currentPath.includes("/admin")) {
+                        navigate("/admin/login");
+                    } else if (currentPath.includes("/manager")) {
+                        navigate("/manager/login");
                     } else {
-                        config.headers.Authorization = `Bearer ${accessToken}`;
-                        sessionStorage.removeItem("entryMessage");
+                        navigate("/login");
                     }
+
+                    toast.error(<p className="pr-2">Vui lòng đăng nhập trước!</p>, toastOptions);
+                } else {
+                    config.headers.Authorization = `Bearer ${accessToken}`;
+                    sessionStorage.removeItem("entryMessage");
                 }
                 return config;
             },
@@ -44,18 +54,18 @@ const usePrivateAxios = () => {
 
                 if (response.data.status === 401 || response.data.status === 403) {
                     if (response.data.status === 401) {
-                        sessionStorage.setItem("entryMessage", "Vui lòng đăng nhập trước!");
+                        toast.error(<p className="pr-2">Vui lòng đăng nhập trước!</p>, toastOptions);
                     } else if (response.data.status === 403) {
-                        sessionStorage.setItem("entryMessage", "Tài khoản không có quyền truy cập!");
+                        toast.error(<p className="pr-2">Tài khoản không có quyền truy cập!</p>, toastOptions);
                     }
-                    if (currentPath.includes("/admin")) navigate("/admin/login");
-                    else if (currentPath.includes("/manager")) navigate("/manager/login");
-                    if (user && user.role && user.role.roleName === "ROLE_STUDENT") navigate("/login");
-                    // if (user && user.role && user.role.roleName === "ROLE_ADMIN") navigate("/admin/login");
-                    // else if (user && user.role && user.role.roleName === "ROLE_MANAGER") navigate("/manager/login");
-                    // if (user && user.role && user.role.roleName === "ROLE_STUDENT") navigate("/login");
-                } else {
-                    sessionStorage.removeItem("entryMessage");
+
+                    if (user && user.role && user.role.roleName === "ROLE_ADMIN") {
+                        navigate("/admin/login");
+                    } else if (user && user.role && user.role.roleName === "ROLE_MANAGER") {
+                        navigate("/manager/login");
+                    } else {
+                        navigate("/login");
+                    }
                 }
                 return response;
             },

@@ -1,0 +1,29 @@
+.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    background-color: #9CA3AF; /* Màu xám nhạt */
+    cursor: not-allowed;
+}
+
+.form select {
+    font-size: 16px;
+    line-height: 24px;
+    background-color: white;
+    padding-left: 28px;
+    padding-right: 28px;
+    padding-top: 13px;
+    padding-bottom: 13px;
+    border: 1px solid #e5e7eb;
+    outline: 1px solid white;
+}
+
+.form select:focus {
+    border-color: #34d399;
+    background-color: white;
+    outline: 1px solid #a7f3d0;
+    box-shadow: none;
+}
+
+.form select:hover {
+    border-color: #34d399; 
+}

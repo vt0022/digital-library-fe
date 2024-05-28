@@ -42,7 +42,7 @@ const TopBar = () => {
                             onKeyDown={(e) => {
                                 if (e.key === "Enter") {
                                     e.preventDefault();
-                                    navigate("/forum?query=" + query);
+                                    navigate("/forum/posts?query=" + query);
                                 }
                             }}
                         />
@@ -58,7 +58,6 @@ const TopBar = () => {
                 <div className="flex items-center gap-x-10 w-1/3 justify-end">
                     <div className="flex md:order-2 mr-10">
                         {user && (
-                            <Tooltip content="Tài khoản" placement="bottom" style="light">
                                 <Dropdown arrowIcon={false} inline label={<Avatar alt={user.lastName} img={user.image} rounded size="md" />}>
                                     <Dropdown.Header>
                                         <span className="block text-lg font-normal text-green-400 mb-3">
@@ -74,7 +73,6 @@ const TopBar = () => {
                                         Đăng xuất
                                     </Dropdown.Item>
                                 </Dropdown>
-                            </Tooltip>
                         )}
 
                         {!user && (
@@ -90,7 +88,7 @@ const TopBar = () => {
                             Trang chủ
                         </Navbar.Link>
                         <Navbar.Link as={Link} to="/documents" active={currentPath === "/documents"} className={`text-base md:active:text-green-400 md:hover:text-green-500 ${currentPath === "/documents" ? "md:text-green-400" : ""}`}>
-                            Tài liệu
+                            Thư viện
                         </Navbar.Link>
                     </Navbar.Collapse>
 

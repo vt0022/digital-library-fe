@@ -2,6 +2,7 @@ import { uploadImageForReply } from "@api/main/imageAPI";
 import { deleteAPost, getAPost, getAPostForGuest, getHistoryOfPost, likePost } from "@api/main/postAPI";
 import { addAReply, deleteAReply, editAReply, getHistoryOfReply, getRepliesForGuest, getViewableRepliesOfPost, likeReply } from "@api/main/replyAPI";
 import usePrivateAxios from "@api/usePrivateAxios";
+import "@assets/css/standard.css";
 import Error404 from "@components/forum/error/404Error";
 import PostHistoryModal from "@components/forum/modal/PostHistoryModal";
 import ReplyHistoryModal from "@components/forum/modal/ReplyHistoryModal";
@@ -59,6 +60,8 @@ const DetailPost = () => {
     const accessToken = localStorage.getItem("accessToken");
     const user = JSON.parse(sessionStorage.getItem("profile"));
 
+    const isLoggedIn = accessToken && user;
+
     useEffect(() => {
         getPostDetail();
         setCurrentPage(1);
@@ -83,7 +86,7 @@ const DetailPost = () => {
             else response = await getAPostForGuest(postId);
 
             if (response.status === 200) {
-                if (!response.data.my && (response.data.disabled || response.data.labelDisabled || response.data.sectionDisabled || response.data.subsection.disabled)) setNotFound(true);
+                if (response.data === null) setNotFound(true);
                 else {
                     setPost(response.data);
                     setNotFound(false);
@@ -456,7 +459,7 @@ const DetailPost = () => {
 
     return (
         <>
-            <PageHead title={post && post.title} description={post && post.content.replace(/(<([^>]+)>)/gi, "")} url={window.location.href}/>
+            <PageHead title={post && post.title} description={post && post.content.replace(/(<([^>]+)>)/gi, "")} url={window.location.href} origin="forum" />
 
             <div className="w-[95%] m-auto min-h-screen h-max p-5 main-section">
                 <Breadcrumb aria-label="Post breadcrumb" className="breadcrumb cursor-pointer">
@@ -490,7 +493,7 @@ const DetailPost = () => {
                                     <WiTime4 />
                                 </div>
 
-                                <div>{post && post.updatedAt ? <p>{moment(post.updatedAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p> : <p>{moment(post?.createdAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p>}</div>
+                                <div>{post && post.updatedAt ? <p>{moment(post.updatedAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p> : <p>{moment(post && post.createdAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p>}</div>
                             </div>
 
                             <div className="flex space-x-2 items-end">
@@ -555,7 +558,7 @@ const DetailPost = () => {
 
                         <div className={`col-span-3 p-5 ${post && post.disabled ? "bg-red-100" : "bg-green-100"}`}>
                             <div className="flex justify-between items-center pb-2 border-b border-gray-200 text-gray-500 text-sm">
-                                {post && post.updatedAt ? <p>{moment(post.updatedAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p> : <p>{moment(post?.createdAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p>}
+                                {post && post.updatedAt ? <p>{moment(post.updatedAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p> : <p>{moment(post && post.createdAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p>}
 
                                 <div className="space-x-3 flex items-center">
                                     {post && post.updatedAt && (
@@ -587,7 +590,7 @@ const DetailPost = () => {
                                         </>
                                     )}
 
-                                    {post && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled && (
+                                    {post && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled && !post.my && isLoggedIn && (
                                         <Tooltip content="Báo cáo bài đăng" style="light">
                                             <button className="bg-transparent" onClick={handleReportPost}>
                                                 <HiFlag className="text-base hover:text-amber-500 active:text-amber-400 cursor-pointer" />
@@ -659,7 +662,7 @@ const DetailPost = () => {
 
                                             <div className={`col-span-3 p-5 ${reply.disabled && "bg-red-100"}`}>
                                                 <div className="flex justify-between pb-2 border-b border-gray-200 text-gray-500 text-sm">
-                                                    {!reply.updatedAt ? <p>{moment(reply?.createdAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })} </p> : <p>{moment(reply.updatedAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p>}
+                                                    {reply && reply.updatedAt ? <p>{moment(reply.updatedAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p> : <p>{moment(reply && reply.createdAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p>}
 
                                                     <div className="space-x-3 flex items-center">
                                                         {reply.updatedAt && (
@@ -697,7 +700,7 @@ const DetailPost = () => {
                                                             </>
                                                         )}
 
-                                                        {reply && !reply.disabled && !reply.postDisabled && (
+                                                        {reply && !reply.disabled && !reply.postDisabled && !reply.my && isLoggedIn && (
                                                             <Tooltip content="Báo cáo phản hồi" style="light">
                                                                 <button className="bg-transparent" onClick={() => handleReportReply(reply.replyId)}>
                                                                     <HiFlag className="text-base hover:text-amber-500 active:text-amber-400 cursor-pointer" />
@@ -709,7 +712,11 @@ const DetailPost = () => {
                                                     </div>
                                                 </div>
 
-                                                {reply.parentReply && reply.parentReply.disabled && <p className="text-red-500 font-semibold italic text-sm">Phản hồi đã bị gỡ</p>}
+                                                {reply.parentReply && reply.parentReply.disabled && (
+                                                    <div className="bg-gray-200 border-l-4 border-green-800 mt-3 p-3">
+                                                        <p className="text-red-500 font-semibold italic text-sm">Phản hồi đã bị gỡ</p>
+                                                    </div>
+                                                )}
 
                                                 {reply.parentReply && !reply.parentReply.disabled && (
                                                     <div className="bg-gray-200 border-l-4 border-green-800 cursor-pointer mt-3" onClick={() => handleParentReplySection(reply.parentReply.replyId)}>

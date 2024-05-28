@@ -1,27 +1,27 @@
-const setMode = mode => {
+const setMode = (mode) => {
     return {
-        type: 'SET_MODE',
-        payload: mode
-    }
-}
+        type: "SET_MODE",
+        payload: mode,
+    };
+};
 
-const setColor = color => {
+const setColor = (color) => {
     return {
-        type: 'SET_COLOR',
-        payload: color
-    }
-}
+        type: "SET_COLOR",
+        payload: color,
+    };
+};
 
 const getTheme = () => {
     return {
-        type: 'GET_THEME'
-    }
-}
+        type: "GET_THEME",
+    };
+};
 
 const exportDefault = {
     setColor,
     setMode,
-    getTheme
-}
+    getTheme,
+};
 
-export default exportDefault
+export default exportDefault;

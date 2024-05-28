@@ -1,16 +1,12 @@
 import { Button, Datepicker, FileInput, Label, Modal, TextInput, Toast } from "flowbite-react";
 import React, { useEffect, useState } from "react";
 import { HiChevronLeft, HiChevronUp, HiOutlineCheck, HiX } from "react-icons/hi";
-
-import Select from "../../../select/Select";
-
-import { getAccessibleOrganizations } from "../../../../../api/main/organizationAPI";
-import { createUser, getAUser, updateUser } from "../../../../../api/main/userAPI";
-import usePrivateAxios from "../../../../../api/usePrivateAxios";
-
+import Select from "@components/management/select/Select";
+import { getAccessibleOrganizations } from "@api/main/organizationAPI";
+import { createUser, getAUser, updateUser } from "@api/main/userAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
 import moment from "moment/moment";
-
-import profileImage from "../../../../../assets/images/default_profile.jpg";
+import profileImage from "@assets/images/default_profile.jpg";
 
 const UserModal = (props) => {
     usePrivateAxios();
@@ -25,7 +21,6 @@ const UserModal = (props) => {
     const roleList = [
         { id: "c0a801b9-8ac0-1a60-818a-c04a8fb50038", roleName: "Admin" },
         { id: "c0a801b9-8ac0-1a60-818a-c04a8fa60037", roleName: "Quản lý" },
-        { id: "c0a801b9-8ac0-1a60-818a-c04a8f9f0036", roleName: "Giảng viên" },
         { id: "c0a801b9-8ac0-1a60-818a-c04a8f950035", roleName: "Sinh viên" },
     ];
 
@@ -50,7 +45,6 @@ const UserModal = (props) => {
     const [isLastNameValid, setIsLastNameValid] = useState(true);
     const [isFirstNameValid, setIsFirstNameValid] = useState(true);
     const [isEmailValid, setIsEmailValid] = useState(true);
-    const [isPhoneValid, setIsPhoneValid] = useState(true);
     const [isDateOfBirthValid, setIsDateOfBirthValid] = useState(true);
     const [isOrganizationValid, setIsOrganizationValid] = useState(true);
     const [isRoleValid, setIsRoleValid] = useState(true);
@@ -81,7 +75,6 @@ const UserModal = (props) => {
         setGender(0);
         setDateOfBirth(new Date());
         setEmail("");
-        setPhone("");
         setOrgId("");
         setRoleId("");
         setPassword("");
@@ -101,7 +94,6 @@ const UserModal = (props) => {
                 setGender(user.gender);
                 setDateOfBirth(new Date(user.dateOfBirth));
                 setEmail(user.email);
-                setPhone(user.phone);
                 user.organization ? setOrgId(user.organization.orgId) : setOrgId("");
                 user.role ? setRoleId(user.role.id) : setRoleId("");
             } else {
@@ -142,11 +134,6 @@ const UserModal = (props) => {
     const validateEmail = () => {
         if (email === "" || email.trim() === "") setIsEmailValid(false);
         else setIsEmailValid(true);
-    };
-
-    const validatePhone = () => {
-        if (phone === "" || phone.trim() === "") setIsPhoneValid(false);
-        else setIsPhoneValid(true);
     };
 
     const validateDateOfBirth = () => {
@@ -204,7 +191,6 @@ const UserModal = (props) => {
         validateLastName();
         validateFirstName();
         validateEmail();
-        validatePhone();
         validateDateOfBirth();
         validateOraganization();
         validateRole();
@@ -212,7 +198,7 @@ const UserModal = (props) => {
         validateConfirmPassword();
         setIsFileValid(validateFile());
 
-        if (!isLastNameValid || !isFirstNameValid || !isEmailValid || !isPhoneValid || !isDateOfBirthValid || !isOrganizationValid || !isRoleValid || !isPasswordValid || !isConfirmPasswordValid || !validateFile()) {
+        if (!isLastNameValid || !isFirstNameValid || !isEmailValid || !isDateOfBirthValid || !isOrganizationValid || !isRoleValid || !isPasswordValid || !isConfirmPasswordValid || !validateFile()) {
             return false;
         } else return true;
     };
@@ -228,7 +214,6 @@ const UserModal = (props) => {
                     firstName: firstName,
                     lastName: lastName,
                     email: email,
-                    phone: phone,
                     gender: gender,
                     dateOfBirth: dateOfBirth,
                     orgId: orgId,
@@ -257,7 +242,6 @@ const UserModal = (props) => {
                     setFirstName("");
                     setLastName("");
                     setEmail("");
-                    setPhone("");
                     setPassword("");
                     setConfirmPassword("");
                     setImage(profileImage);
@@ -386,14 +370,6 @@ const UserModal = (props) => {
                                 </div>
                                 <TextInput id="email" placeholder="thuan@gmail.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
                                 {!isEmailValid && <p className="block mt-2 text-sm font-medium text-red-600 italic">* Vui lòng nhập email</p>}
-                            </div>
-
-                            <div className="mb-6">
-                                <div className="mb-2 block">
-                                    <Label htmlFor="phone" value="Số điện thoại" />
-                                </div>
-                                <TextInput id="phone" value={phone} placeholder="0123456789" required onChange={(e) => setPhone(e.target.value)} maxLength={11} />
-                                {!isPhoneValid && <p className="block mt-2 text-sm font-medium text-red-600 italic">* Vui lòng nhập số điện thoại</p>}
                             </div>
 
                             <div className="mb-6">

@@ -21,7 +21,7 @@ const Reviews = () => {
 
     const renderBody = (item, index) => (
         <tr key={index} className="cursor-pointer">
-            <td className="text-center font-bold">{(currentPage + 1) * 15 + index + 1}</td>
+            <td className="text-center font-bold">{(currentPage - 1) * 15 + index + 1}</td>
             <td className="max-w-xs text-justify font-bold">
                 {item.star} <i className="bx bxs-star" style={{ color: "green" }}></i>
             </td>
@@ -34,8 +34,8 @@ const Reviews = () => {
             </td>
             <td className="text-center">
                 <div className="flex space-x-0">
-                    <ActionButton onClick={() => handleDelete(item)} icon="bx bx-minus-circle" color="red" content="Xoá đánh giá" />
-                    {item.verifiedStatus === 0 && <ActionButton onClick={() => handleApprove(item)} icon="bx bxs-check-shield" color="green" content="Duyệt đánh giá" />}
+                    <ActionButton onClick={() => handleDelete(item)} icon="bx bx-trash" color="red" content="Xoá đánh giá" />
+                    {item.verifiedStatus === 0 && <ActionButton onClick={() => handleApprove(item)} icon="bx bx-check-double" color="green" content="Duyệt đánh giá" />}
                     {item.verifiedStatus !== 0 && <ActionButton onClick={() => handleReapprove(item)} icon="bx bx-revision" color="indigo" content="Phê duyệt lại" />}
                 </div>
             </td>
