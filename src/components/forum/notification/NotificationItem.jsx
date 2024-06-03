@@ -23,13 +23,34 @@ const NotificationItem = (props) => {
     const getMessage = () => {
         switch (notification && notification.type) {
             case "WARN_POST":
+                return (
+                    <>
+                        {notification.message} <span className="font-medium text-black">{findReportReasonByType(notification.postReport && notification.postReport.type)}</span>
+                    </>
+                );
             case "WARN_REPLY":
+                return (
+                    <>
+                        {notification.message} <span className="font-medium text-black">{findReportReasonByType(notification.replyReport && notification.replyReport.type)}</span>
+                    </>
+                );
+            case "REJECT_DOCUMENT":
+                return (
+                    <>
+                        {notification.message} vì <span className="font-medium text-black">{notification.document && notification.document.note}</span>
+                    </>
+                );
+            case "REJECT_REVIEW":
+                return (
+                    <>
+                        {notification.message} vì <span className="font-medium text-black">{notification.review && notification.review.note}</span>
+                    </>
+                );
             case "RESTORE_POST":
             case "RESTORE_REPLY":
             case "ACCEPT_DOCUMENT":
-            case "REJECT_DOCUMENT":
+
             case "ACCEPT_REVIEW":
-            case "REJECT_REVIEW":
                 return <>{notification.message}</>;
             case "REWARD_BADGE":
                 return (

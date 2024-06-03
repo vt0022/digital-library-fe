@@ -1,18 +1,32 @@
-import { useEffect, useState } from "react";
-import { useMatch, useNavigate } from "react-router-dom";
-import SelectFilter from "@components/management/select/SelectFilter";
-import Table from "@components/management/table/Table";
-import ActionButton from "@components/management/action-button/ActionButton";
-import { Badge, Button, Modal, Pagination, Spinner, Toast } from "flowbite-react";
-import { HiCheck, HiDocumentRemove, HiOutlineCheck, HiOutlineDotsHorizontal, HiX } from "react-icons/hi";
-import { deleteADocument, getDocumentsByOrganizations, getLatestDocumentsByOrganization } from "@api/main/documentAPI";
-import usePrivateAxios from "@api/usePrivateAxios";
 import { getAllCategories } from "@api/main/categoryAPI";
+import { deleteADocument, getDocumentsByOrganizations, getLatestDocumentsByOrganization } from "@api/main/documentAPI";
 import { getAllFields } from "@api/main/fieldAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
 import scopeList from "@assets/json-data/scopes.json";
 import verifiedStatusList from "@assets/json-data/verified_status_list.json";
+import ActionButton from "@components/management/action-button/ActionButton";
+import SelectFilter from "@components/management/select/SelectFilter";
+import Table from "@components/management/table/Table";
+import PageHead from "components/shared/head/PageHead";
+import { Badge, Button, Modal, Pagination, Spinner } from "flowbite-react";
+import { useEffect, useState } from "react";
+import { HiCheck, HiDocumentRemove, HiOutlineDotsHorizontal, HiX } from "react-icons/hi";
+import { useMatch, useNavigate } from "react-router-dom";
+import { Bounce, toast } from "react-toastify";
 
 let selectedPage = 0;
+
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const ManagerDocuments = () => {
     const tableHead = ["", "Tên", "Giới thiệu", "Trạng thái", "Lượt xem", ""];
@@ -89,7 +103,6 @@ const ManagerDocuments = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [category, setCategory] = useState("all");
     const [field, setField] = useState("all");
-    const [deleted, setDeleted] = useState("all");
     const [internal, setInternal] = useState("all");
     const [verifiedStatus, setVerifiedStatus] = useState("all");
 
@@ -98,7 +111,6 @@ const ManagerDocuments = () => {
     const [fieldList, setFieldList] = useState([]);
 
     const [openModal, setOpenModal] = useState(false);
-    const [status, setStatus] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [isFetching, setIsFetching] = useState(false);
     const [docId, setDocId] = useState("");
@@ -120,7 +132,7 @@ const ManagerDocuments = () => {
 
         if (isLatestRoute) getLatestDocumentList(currentPage);
         else getDocumentList(currentPage);
-    }, [category, field, deleted, internal, verifiedStatus, search]);
+    }, [category, field, internal, verifiedStatus, search]);
 
     useEffect(() => {
         selectedPage = currentPage - 1;
@@ -145,11 +157,9 @@ const ManagerDocuments = () => {
             setIsFetching(false);
             if (response.status === 200) {
                 setCategoryList(response.data.content);
-            } else {
-                // navigate("/admin/login");
             }
         } catch (error) {
-            console.log(error);
+            navigate("/error-500");
         }
     };
 
@@ -167,11 +177,9 @@ const ManagerDocuments = () => {
             setIsFetching(false);
             if (response.status === 200) {
                 setFieldList(response.data.content);
-            } else {
-                // navigate("/admin/login");
             }
         } catch (error) {
-            console.log(error);
+            navigate("/error-500");
         }
     };
 
@@ -185,7 +193,6 @@ const ManagerDocuments = () => {
                     order: "updatedAt",
                     category: category,
                     field: field,
-                    deleted: deleted,
                     internal: internal,
                     status: verifiedStatus,
                     s: search,
@@ -195,11 +202,9 @@ const ManagerDocuments = () => {
             if (response.status === 200) {
                 setDocumentList(response.data.content);
                 setTotalPages(response.data.totalPages);
-            } else {
-                // navigate("/manager/login");
             }
         } catch (error) {
-            console.log(error);
+            navigate("/error-500");
         }
     };
 
@@ -212,7 +217,6 @@ const ManagerDocuments = () => {
                     size: 15,
                     category: category,
                     field: field,
-                    deleted: deleted,
                     internal: internal,
                     status: verifiedStatus,
                     s: search,
@@ -222,41 +226,45 @@ const ManagerDocuments = () => {
             if (response.status === 200) {
                 setDocumentList(response.data.content);
                 setTotalPages(response.data.totalPages);
-            } else {
-                // navigate("/manager/login");
             }
         } catch (error) {
-            console.log(error);
+            navigate("/error-500");
         }
     };
 
     const deleteDocument = async (docId) => {
-        setIsLoading(true);
         try {
+            setIsLoading(true);
+
             const response = await deleteADocument(docId);
+
             setIsLoading(false);
+
             setOpenModal(false);
+
             if (response.status === 200) {
-                setStatus(1);
-                setTimeout(() => {
-                    setStatus(0);
-                }, 2000);
+                toast.success(<p className="pr-2">Xoá tài liệu thành công!</p>, toastOptions);
+
                 setCurrentPage(1);
+
                 if (isLatestRoute) getLatestDocumentList(currentPage);
                 else getDocumentList(currentPage);
             } else {
-                setStatus(-1);
-                setTimeout(() => {
-                    setStatus(0);
-                }, 2000);
+                {
+                    toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
+                }
             }
         } catch (error) {
-            console.log(error);
+            {
+                toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
+            }
         }
     };
 
     return (
         <div>
+            <PageHead title="Quản lý tài liệu - Quản lý" description="Quản lý tài liệu - learniverse & shariverse" url={window.location.href} origin="lib" />
+
             <div className="row">
                 <div className="px-[15px]">
                     <h2 className="page-header">{isLatestRoute ? "tài liệu mới" : "tài liệu"}</h2>
@@ -376,20 +384,6 @@ const ManagerDocuments = () => {
                     </div>
                 </Modal.Body>
             </Modal>
-
-            {status === -1 && (
-                <Toast className="top-1/4 right-5 w-100 fixed">
-                    <HiX className="h-5 w-5 bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200" />
-                    <div className="pl-4 text-sm font-normal">Đã xảy ra lỗi! Xin vui lòng thử lại!</div>
-                </Toast>
-            )}
-
-            {status === 1 && (
-                <Toast className="top-1/4 right-5 fixed w-100">
-                    <HiOutlineCheck className="h-5 w-5 bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200" />
-                    <div className="pl-4 text-sm font-normal">Xoá tài liệu thành công!</div>
-                </Toast>
-            )}
         </div>
     );
 };

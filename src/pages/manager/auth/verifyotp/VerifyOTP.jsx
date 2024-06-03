@@ -1,7 +1,7 @@
 import { sendEmail, verify } from "@api/main/authAPI";
 import bg from "@assets/images/background.jpg";
 import Spinner from "@components/shared/spinner/Spinner";
-import SimpleNavbar from "@components/student/navbar/SimpleNavbar";
+import PageHead from "components/shared/head/PageHead";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -168,46 +168,50 @@ const VerifyOTP = () => {
     // if(!email || !target) navigate("/error-404")
 
     return (
-        <div style={{ backgroundImage: `url(${bg})` }} className="flex flex-col h-screen bg-cover bg-center">
-            <div className="bg-transparent text-gray-900 flex justify-center items-center">
-                <div className="w-full h-fit max-w-lg px-8 py-10 bg-white rounded-lg shadow-lg">
-                    <h1 className="text-2xl font-semibold text-center mb-6">Nhập mã OTP để {type === "reset" ? "khôi phục mật khẩu" : "kích hoạt tài khoản"}</h1>
-                    <p className="text-gray-600 text-center mb-4">Mã được gửi tới {email}</p>
-                    <div className="grid grid-cols-6 gap-x-4 my-6">
-                        {[no1, no2, no3, no4, no5, no6].map((value, index) => (
-                            <input
-                                key={index}
-                                ref={(el) => (inputRefs.current[index] = el)}
-                                type="text"
-                                maxLength={1}
-                                value={value}
-                                onChange={(e) => handleChange(e, index)}
-                                required
-                                className="no-spinner rounded-lg bg-white cursor-text text-center text-2xl font-medium w-14 aspect-square text-gray-700 rounded-lg border border-gray-200 outline-1 outline-white focus:border focus:border-green-400 focus:bg-white focus:outline-1 focus:outline-green-200 focus:ring-0 hover:border-green-400"
-                            />
-                        ))}
-                    </div>
+        <>
+            <PageHead title="Xác nhận OTP - Quản lý" description="Xác nhận OTP - learniverse & shariverse" url={window.location.href} origin="both" />
 
-                    <div className="flex items-center flex-col justify-between mb-6">
-                        <p className="text-gray-600 text-sm">Không nhận được mã?</p>
-                        <div className="flex items-center space-x-2">
-                            <button className="px-3 py-2 text-sm font-medium text-center rounded text-gray-500 hover:text-emerald-500" onClick={handleSendEmail}>
-                                Gửi lại ({formatTime(countdown)})
-                            </button>
+            <div style={{ backgroundImage: `url(${bg})` }} className="flex flex-col h-screen bg-cover bg-center">
+                <div className="bg-transparent text-gray-900 flex justify-center items-center">
+                    <div className="w-full h-fit max-w-lg px-8 py-10 bg-white rounded-lg shadow-lg">
+                        <h1 className="text-2xl font-semibold text-center mb-6">Nhập mã OTP để {type === "reset" ? "khôi phục mật khẩu" : "kích hoạt tài khoản"}</h1>
+                        <p className="text-gray-600 text-center mb-4">Mã được gửi tới {email}</p>
+                        <div className="grid grid-cols-6 gap-x-4 my-6">
+                            {[no1, no2, no3, no4, no5, no6].map((value, index) => (
+                                <input
+                                    key={index}
+                                    ref={(el) => (inputRefs.current[index] = el)}
+                                    type="text"
+                                    maxLength={1}
+                                    value={value}
+                                    onChange={(e) => handleChange(e, index)}
+                                    required
+                                    className="no-spinner rounded-lg bg-white cursor-text text-center text-2xl font-medium w-14 aspect-square text-gray-700 rounded-lg border border-gray-200 outline-1 outline-white focus:border focus:border-green-400 focus:bg-white focus:outline-1 focus:outline-green-200 focus:ring-0 hover:border-green-400"
+                                />
+                            ))}
                         </div>
+
+                        <div className="flex items-center flex-col justify-between mb-6">
+                            <p className="text-gray-600 text-sm">Không nhận được mã?</p>
+                            <div className="flex items-center space-x-2">
+                                <button className="px-3 py-2 text-sm font-medium text-center rounded text-gray-500 hover:text-emerald-500" onClick={handleSendEmail}>
+                                    Gửi lại ({formatTime(countdown)})
+                                </button>
+                            </div>
+                        </div>
+
+                        <button
+                            className={`w-full px-4 py-2 rounded-lg font-medium text-white bg-emerald-400 hover:scale-105 hover:bg-emerald-500 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none ${validate() ? "" : "disabled"}`}
+                            disabled={!validate()}
+                            onClick={handleVerify}>
+                            Xác nhận
+                        </button>
                     </div>
-
-                    <button
-                        className={`w-full px-4 py-2 rounded-lg font-medium text-white bg-emerald-400 hover:scale-105 hover:bg-emerald-500 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none ${validate() ? "" : "disabled"}`}
-                        disabled={!validate()}
-                        onClick={handleVerify}>
-                        Xác nhận
-                    </button>
                 </div>
-            </div>
 
-            <Spinner loading={isLoading} />
-        </div>
+                <Spinner loading={isLoading} />
+            </div>
+        </>
     );
 };
 

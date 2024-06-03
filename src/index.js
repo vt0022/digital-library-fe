@@ -42,7 +42,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 const store = createStore(rootReducer);
 
-document.title = "Wisdo";
+document.title = "learniverse & shariverse";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 

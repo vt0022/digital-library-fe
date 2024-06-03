@@ -82,6 +82,15 @@ export const getLatestUsersByOrganization = async (org, config) => {
     }
 };
 
+export const getUserRanking = async (config) => {
+    try {
+        const response = await axios.get("/users/ranking", config);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const getProfile = async (config) => {
     try {
         const response = await privateAxios.get("/users/profile", config);

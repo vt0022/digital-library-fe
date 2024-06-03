@@ -241,7 +241,16 @@ export const getAllDocumentsForGuest = async (page, size, order, sortOrder, cate
 
 export const getRelatedDocuments = async (slug) => {
     try {
-        const response = await axios.get(`/documents/related/${slug}`);
+        const response = await privateAxios.get(`/documents/related/${slug}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getRelatedDocumentsForGuest = async (slug) => {
+    try {
+        const response = await axios.get(`/documents/related/${slug}/guest`);
         return response.data;
     } catch (error) {
         throw error;

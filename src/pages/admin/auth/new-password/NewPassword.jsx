@@ -1,7 +1,7 @@
 import { resetPassword } from "@api/main/userAPI";
 import bg from "@assets/images/background.jpg";
 import Spinner from "@components/shared/spinner/Spinner";
-import SimpleNavbar from "@components/student/navbar/SimpleNavbar";
+import PageHead from "components/shared/head/PageHead";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
@@ -93,67 +93,71 @@ const NewPassword = () => {
     };
 
     return (
-        <div style={{ backgroundImage: `url(${bg})` }} className="h-screen flex flex-col bg-cover bg-center">
-            <div className="text-gray-900 flex justify-center">
-                <div className="max-w-lg m-0 h-fit bg-white shadow-lg rounded-lg flex justify-center flex-1">
-                    <div className="w-full p-10">
-                        <div className="">
-                            <img src="https://drive.google.com/thumbnail?id=1MFiKAExRFF0-2YNpAZzIu1Sh52J8r16v" className="w-mx-auto m-auto" />
-                        </div>
-                        <div className="mt-6 flex flex-col items-center">
-                            <h1 className="text-2xl font-semibold text-center mb-10">Nhập mật khẩu mới</h1>
+        <>
+            <PageHead title="Mật khẩu mới - Admin" description="Mật khẩu mới - learniverse & shariverse" url={window.location.href} origin="both" />
 
-                            <div className="mx-auto max-w-xs">
-                                <input
-                                    className="w-full px-8 py-3 rounded-lg border border-gray-200 outline-1 outline-white  focus:border focus:border-green-400 focus:bg-white focus:outline-1 focus:outline-green-200 focus:ring-0 hover:border-green-400"
-                                    type="password"
-                                    placeholder="Mật khẩu mới"
-                                    onChange={(e) => setNewPassword(e.target.value)}
-                                    value={newPassword}
-                                    required
-                                />
+            <div style={{ backgroundImage: `url(${bg})` }} className="h-screen flex flex-col bg-cover bg-center">
+                <div className="text-gray-900 flex justify-center">
+                    <div className="max-w-lg m-0 h-fit bg-white shadow-lg rounded-lg flex justify-center flex-1">
+                        <div className="w-full p-10">
+                            <div className="">
+                                <img src="https://drive.google.com/thumbnail?id=1MFiKAExRFF0-2YNpAZzIu1Sh52J8r16v" className="w-mx-auto m-auto" />
+                            </div>
+                            <div className="mt-6 flex flex-col items-center">
+                                <h1 className="text-2xl font-semibold text-center mb-10">Nhập mật khẩu mới</h1>
 
-                                {newPasswordMessage && (
-                                    <p className="mt-2">
-                                        <div className="text-sm font-light text-red-600">* {newPasswordMessage}</div>
-                                    </p>
-                                )}
+                                <div className="mx-auto max-w-xs">
+                                    <input
+                                        className="w-full px-8 py-3 rounded-lg border border-gray-200 outline-1 outline-white  focus:border focus:border-green-400 focus:bg-white focus:outline-1 focus:outline-green-200 focus:ring-0 hover:border-green-400"
+                                        type="password"
+                                        placeholder="Mật khẩu mới"
+                                        onChange={(e) => setNewPassword(e.target.value)}
+                                        value={newPassword}
+                                        required
+                                    />
 
-                                <input
-                                    className="w-full mt-5 px-8 py-3 rounded-lg border border-gray-200 outline-1 outline-white  focus:border focus:border-green-400 focus:bg-white focus:outline-1 focus:outline-green-200 focus:ring-0 hover:border-green-400"
-                                    type="password"
-                                    placeholder="Xác nhận mật khẩu mới"
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    value={confirmPassword}
-                                    required
-                                />
+                                    {newPasswordMessage && (
+                                        <p className="mt-2">
+                                            <div className="text-sm font-light text-red-600">* {newPasswordMessage}</div>
+                                        </p>
+                                    )}
 
-                                {confirmPasswordMessage && (
-                                    <p className="mt-2">
-                                        <div className="text-sm font-light text-red-600">* {confirmPasswordMessage}</div>
-                                    </p>
-                                )}
+                                    <input
+                                        className="w-full mt-5 px-8 py-3 rounded-lg border border-gray-200 outline-1 outline-white  focus:border focus:border-green-400 focus:bg-white focus:outline-1 focus:outline-green-200 focus:ring-0 hover:border-green-400"
+                                        type="password"
+                                        placeholder="Xác nhận mật khẩu mới"
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        value={confirmPassword}
+                                        required
+                                    />
 
-                                <button
-                                    className={`mt-5 tracking-wide font-semibold bg-emerald-400 text-white w-full py-4 rounded-lg hover:bg-emerald-500 hover:scale-105 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none ${
-                                        newPassword.trim() === "" ? "disabled" : ""
-                                    }`}
-                                    onClick={onClickReset}
-                                    disabled={newPassword.trim() === ""}>
-                                    <span className="ml-4">Khôi phục mật khẩu</span>
-                                </button>
+                                    {confirmPasswordMessage && (
+                                        <p className="mt-2">
+                                            <div className="text-sm font-light text-red-600">* {confirmPasswordMessage}</div>
+                                        </p>
+                                    )}
+
+                                    <button
+                                        className={`mt-5 tracking-wide font-semibold bg-emerald-400 text-white w-full py-4 rounded-lg hover:bg-emerald-500 hover:scale-105 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none ${
+                                            newPassword.trim() === "" ? "disabled" : ""
+                                        }`}
+                                        onClick={onClickReset}
+                                        disabled={newPassword.trim() === ""}>
+                                        <span className="ml-4">Khôi phục mật khẩu</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <Spinner loading={isLoading} />
-            </div>
-            {/* 
+                    <Spinner loading={isLoading} />
+                </div>
+                {/* 
             <div>
                 <CustomFooter />
             </div> */}
-        </div>
+            </div>
+        </>
     );
 };
 

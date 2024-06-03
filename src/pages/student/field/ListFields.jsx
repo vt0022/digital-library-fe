@@ -7,6 +7,7 @@ import KeyCard from "../../../components/student/card/KeyCard";
 import fieldImage from "../../../assets/images/field.png";
 
 import { getAccessibleFields } from "../../../api/main/fieldAPI";
+import PageHead from "components/shared/head/PageHead";
 
 const ListFields = () => {
 
@@ -37,6 +38,8 @@ const ListFields = () => {
 
     return (
         <>
+            <PageHead title="Lĩnh vực" description="Lĩnh vực - learniverse & shariverse" url={window.location.href} origin="lib" />
+
             <div className="bg-gray-50 h-full w-full overflow-auto">
                 <div className="px-[10%]">
                     <div className="grid place-items-center mt-20 mb-20">

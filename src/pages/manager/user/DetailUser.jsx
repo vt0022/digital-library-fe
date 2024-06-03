@@ -1,18 +1,28 @@
+import { deleteADocument, getUploadedDocumentsByUser } from "@api/main/documentAPI";
+import { getAUser } from "@api/main/userAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
+import profileImage from "@assets/images/default_profile.jpg";
+import ActionButton from "@components/management/action-button/ActionButton";
+import Table from "@components/management/table/Table";
+import PageHead from "@components/shared/head/PageHead";
+import { Badge, Button, Modal, Pagination, Spinner } from "flowbite-react";
 import moment from "moment/moment";
 import { useEffect, useState } from "react";
+import { HiAtSymbol, HiCake, HiCheck, HiChevronLeft, HiCloudUpload, HiDocumentRemove, HiOutlineDotsHorizontal, HiPhone, HiUser, HiUserAdd, HiX } from "react-icons/hi";
 import { useNavigate, useParams } from "react-router-dom";
+import { Bounce, toast } from "react-toastify";
 
-import { deleteADocument, getUploadedDocumentsByUser } from "../../../api/main/documentAPI";
-import { getAUser } from "../../../api/main/userAPI";
-import usePrivateAxios from "../../../api/usePrivateAxios";
-
-import { Badge, Button, Modal, Pagination, Spinner, Toast } from "flowbite-react";
-import { HiAtSymbol, HiCake, HiCheck, HiChevronLeft, HiCloudUpload, HiDocumentRemove, HiExclamation, HiOutlineCloudUpload, HiOutlineDotsHorizontal, HiPhone, HiUser, HiUserAdd, HiX } from "react-icons/hi";
-
-import ActionButton from "../../../components/management/action-button/ActionButton";
-import Table from "../../../components/management/table/Table";
-
-import profileImage from "../../../assets/images/default_profile.jpg";
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 let selectedPage = 0;
 
@@ -20,7 +30,6 @@ const ManagerDetailUser = () => {
     const roleList = {
         ROLE_ADMIN: "ADMIN",
         ROLE_STUDENT: "SINH VIÊN",
-        ROLE_LECTURER: "GIẢNG VIÊN",
         ROLE_MANAGER: "QUẢN LÝ",
     };
 
@@ -83,8 +92,6 @@ const ManagerDetailUser = () => {
     const [isFetching, setIsFetching] = useState(false);
     const [openModal, setOpenModal] = useState(false);
     const [isLoadingDelete, setIsLoadingDelete] = useState(false);
-    const [status, setStatus] = useState(0);
-    const [message, setMessage] = useState("Đã xảy ra lỗi! Xin vui lòng thử lại!");
 
     useEffect(() => {
         getUserByUserId();
@@ -105,10 +112,9 @@ const ManagerDetailUser = () => {
 
             if (response.status === 200) {
                 setUser(response.data);
-            } else {
             }
         } catch (error) {
-            console.log(error);
+            navigate("/error-500");
         }
     };
 
@@ -125,11 +131,9 @@ const ManagerDetailUser = () => {
             if (response.status === 200) {
                 setDocumentList(response.data.content);
                 setTotalPages(response.data.totalPages);
-            } else {
-                // navigate("/manager/login");
             }
         } catch (error) {
-            console.log(error);
+            navigate("/error-500");
         }
     };
 
@@ -140,21 +144,14 @@ const ManagerDetailUser = () => {
             setIsLoadingDelete(false);
             setOpenModal(false);
             if (response.status === 200) {
-                setStatus(1);
-                setMessage("Xoá tài liệu thành công!");
-                setTimeout(() => {
-                    setStatus(0);
-                }, 4000);
+                toast.success(<p className="pr-2">Xoá tài liệu thành công!</p>, toastOptions);
+
                 getUploadedDocumentList(1);
             } else {
-                setStatus(-1);
-                setMessage("Đã xảy ra lỗi! Xin vui lòng thử lại!");
-                setTimeout(() => {
-                    setStatus(0);
-                }, 4000);
+                toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
             }
         } catch (error) {
-            console.log(error);
+            toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
         }
     };
 
@@ -173,16 +170,15 @@ const ManagerDetailUser = () => {
 
     return (
         <div>
+            <PageHead title={`Người dùng ${user && user.lastName} ${user && user.firstName} - Quản lý`} description={`Người dùng ${user && user.lastName} ${user && user.firstName} - learniverse & shariverse`} url={window.location.href} origin="both" />
+
             <div className="flex flex-wrap gap-2 mb-3">
                 <Button onClick={() => navigate(-1)}>
                     <HiChevronLeft className="mr-2 h-5 w-5" />
                     Quay lại
                 </Button>
-                {/* <Button color="success" onClick={() => navigate(`/manager/users/${userId}/edit`)}>
-                    Chỉnh sửa
-                    <HiOutlinePencilAlt className="ml-2 h-5 w-5" />
-                </Button> */}
             </div>
+
             <div className="row">
                 <div className="col-12 flex">
                     <div className="card w-1/3 mr-5 h-min">
@@ -297,20 +293,6 @@ const ManagerDetailUser = () => {
                             </div>
                         </Modal.Body>
                     </Modal>
-
-                    {status === -1 && (
-                        <Toast className="top-1/4 right-5 w-100 fixed z-50">
-                            <HiExclamation className="h-5 w-5 text-amber-400 dark:text-amber-300" />
-                            <div className="pl-4 text-sm font-normal">{message}</div>
-                        </Toast>
-                    )}
-
-                    {status === 1 && (
-                        <Toast className="top-1/4 right-5 fixed w-100 z-50">
-                            <HiOutlineCloudUpload className="h-5 w-5 text-green-600 dark:text-green-500" />
-                            <div className="pl-4 text-sm font-normal">{message}</div>
-                        </Toast>
-                    )}
                 </div>
             </div>
         </div>

@@ -2,6 +2,7 @@ import { approveAReview, deleteAReview, getReviewsOfOrganization } from "@api/ma
 import usePrivateAxios from "@api/usePrivateAxios";
 import ActionButton from "@components/management/action-button/ActionButton";
 import Table from "@components/management/table/Table";
+import PageHead from "components/shared/head/PageHead";
 import { Button, Label, Modal, Pagination, Spinner, TextInput } from "flowbite-react";
 import moment from "moment";
 import { useEffect, useState } from "react";
@@ -9,6 +10,18 @@ import { HiDocumentRemove } from "react-icons/hi";
 import { MdReportProblem, MdReviews } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
+
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const Reviews = () => {
     const tableHead = ["", "Rating", "Nội dung", "Người đánh giá", "Tài liệu", ""];
@@ -41,18 +54,6 @@ const Reviews = () => {
             </td>
         </tr>
     );
-    
-    const toastOptions = {
-        position: "bottom-center",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-    };
 
     const navigate = useNavigate();
 
@@ -96,7 +97,6 @@ const Reviews = () => {
     const [openRejectModal, setOpenRejectModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isFetching, setIsFetching] = useState(false);
-    const [approvedStatus, setApprovedStatus] = useState(true);
     const [note, setNote] = useState("");
 
     const unselected = "border border-green-600 hover:bg-green-100";
@@ -133,11 +133,9 @@ const Reviews = () => {
             if (response.status === 200) {
                 setReviewList(response.data.content);
                 setTotalPages(response.data.totalPages);
-            } else {
-                // navigate("/manager/login");
             }
         } catch (error) {
-            console.log(error);
+            navigate("/error-500");
         }
     };
 
@@ -155,7 +153,7 @@ const Reviews = () => {
                 toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
             }
         } catch (error) {
-            console.log(error);
+            toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
         }
     };
 
@@ -170,27 +168,33 @@ const Reviews = () => {
             });
 
             setIsLoading(false);
-            if (approvedStatus) setOpenAppoveModal(false);
-            else {
+            if (approvedStatus) {
+                setOpenAppoveModal(false);
+            } else {
                 setOpenRejectModal(false);
                 setNote("");
             }
 
             if (response.status === 200) {
-                if (approvedStatus) toast.success(<p className="pr-2">Đã chấp nhận đánh giá!</p>, toastOptions);
-                else toast.success(<p className="pr-2">Đã từ chối đánh giá!</p>, toastOptions);
+                if (approvedStatus) {
+                    toast.success(<p className="pr-2">Đã chấp nhận đánh giá!</p>, toastOptions);
+                } else {
+                    toast.success(<p className="pr-2">Đã từ chối đánh giá!</p>, toastOptions);
+                }
 
                 refreshList();
             } else {
                 toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
             }
         } catch (error) {
-            console.log(error);
+            toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
         }
     };
 
     return (
         <div>
+            <PageHead title="Quản lý đánh giá - Quản lý" description="Quản lý đánh giá - learniverse & shariverse" url={window.location.href} origin="lib" />
+
             <div className="row">
                 <div className="px-[15px]">
                     <h2 className="page-header">Đánh giá</h2>

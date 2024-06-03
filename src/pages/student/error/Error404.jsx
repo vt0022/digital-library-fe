@@ -4,11 +4,15 @@ import { useNavigate } from "react-router-dom";
 import CustomNavbar from "../../../components/student/navbar/Navbar";
 
 import icon404 from "../../../assets/images/404_2.svg";
+import PageHead from "components/shared/head/PageHead";
 
 const Error404 = () => {
     const navigate = useNavigate();
 
     return (
+        <>
+        <PageHead title="Không tìm thấy trang" description="Không tìm thấy - learniverse & shariverse" url={window.location.href} origin="lib" />
+
         <div className="relative flex flex-col h-screen">
             <div className="sticky top-0 bg-white w-full z-40  border-b">
                 <CustomNavbar />
@@ -33,6 +37,7 @@ const Error404 = () => {
                 </div>
             </div>
         </div>
+        </>
     );
 };
 

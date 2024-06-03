@@ -6,6 +6,7 @@ import { getLikedDocuments, undoUnlikeDocument, unlikeDocument } from "../../../
 import usePrivateAxios from "../../../api/usePrivateAxios";
 import DocumentCard from "../../../components/student/card/Card";
 import "./document.css";
+import PageHead from "components/shared/head/PageHead";
 
 const LikedDocument = () => {
     usePrivateAxios();
@@ -131,6 +132,8 @@ const LikedDocument = () => {
 
     return (
         <>
+            <PageHead title="Danh sách yêu thích" description="Danh sách yêu thích - learniverse & shariverse" url={window.location.href} origin="lib" />
+
             <div className="flex-1 p-4 bg-gray-50 h-full">
                 <div className="rounded-lg bg-white py-8 px-8 ">
                     <div className="mb-5 flex items-center">

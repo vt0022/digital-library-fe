@@ -12,6 +12,7 @@ import DocumentCard from "../../../components/student/card/Card";
 import "./document.css";
 
 import { initFlowbite } from "flowbite";
+import PageHead from "components/shared/head/PageHead";
 
 const UploadedDocument = () => {
     initFlowbite();
@@ -198,6 +199,8 @@ const UploadedDocument = () => {
 
     return (
         <>
+        <PageHead title="Tài liệu của tôi" description="Tài liệu của tôi - learniverse & shariverse" url={window.location.href} origin="lib" />
+
             {status === -1 && (
                 <Toast className="top-1/4 right-5 w-100 fixed z-50">
                     <HiX className="h-5 w-5 bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200" />

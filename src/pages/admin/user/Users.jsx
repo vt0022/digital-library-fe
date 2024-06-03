@@ -5,6 +5,7 @@ import ActionButton from "@components/management/action-button/ActionButton";
 import UserModal from "@components/management/admin/modal/user/UserModal";
 import SelectFilter from "@components/management/select/SelectFilter";
 import Table from "@components/management/table/Table";
+import PageHead from "components/shared/head/PageHead";
 import { Avatar, Badge, Button, Modal, Pagination, Spinner, Tooltip } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { HiCheck, HiOutlineBadgeCheck, HiX } from "react-icons/hi";
@@ -198,6 +199,7 @@ const Users = () => {
     const getOrganizationList = async () => {
         try {
             setIsFetching(true);
+            
             const response = await getAllOrganizations({
                 params: {
                     page: 0,
@@ -213,13 +215,14 @@ const Users = () => {
                 setOrganizationList(response.data.content);
             }
         } catch (error) {
-            console.log(error);
+            navigate("/error-500");
         }
     };
 
     const getUserList = async (page) => {
         try {
             setIsFetching(true);
+
             const response = await getAllUsers({
                 params: {
                     page: page - 1,
@@ -239,13 +242,14 @@ const Users = () => {
                 setTotalPages(response.data.totalPages);
             }
         } catch (error) {
-            console.log(error);
+            navigate("/error-500");
         }
     };
 
     const getLatestUserList = async (page) => {
         try {
             setIsFetching(true);
+
             const response = await getLatestUsers({
                 params: {
                     page: page - 1,
@@ -265,14 +269,14 @@ const Users = () => {
                 setTotalPages(response.data.totalPages);
             }
         } catch (error) {
-            console.log(error);
+            navigate("/error-500");
         }
     };
 
     const disableUser = async (userId) => {
-        setIsLoading(true);
-
         try {
+            setIsLoading(true);
+
             const response = await disableAUser(userId);
 
             setIsLoading(false);
@@ -292,14 +296,14 @@ const Users = () => {
                 toast.error(<p className="pr-2">Đã xảy ra lỗi, vui lòng thử lại!</p>, toastOptions);
             }
         } catch (error) {
-            console.log(error);
+            toast.error(<p className="pr-2">Đã xảy ra lỗi, vui lòng thử lại!</p>, toastOptions);
         }
     };
 
     const enableUser = async (userId) => {
-        setIsLoading(true);
-
         try {
+            setIsLoading(true);
+
             const response = await enableAUser(userId);
 
             setIsLoading(false);
@@ -317,7 +321,7 @@ const Users = () => {
                 toast.error(<p className="pr-2">Đã xảy ra lỗi, vui lòng thử lại!</p>, toastOptions);
             }
         } catch (error) {
-            console.log(error);
+            toast.error(<p className="pr-2">Đã xảy ra lỗi, vui lòng thử lại!</p>, toastOptions);
         }
     };
 
@@ -328,6 +332,8 @@ const Users = () => {
 
     return (
         <div>
+            <PageHead title="Quản lý người dùng - Admin" description="Quản lý người dùng - learniverse & shariverse" url={window.location.href} origin="both" />
+
             <div className="row">
                 <div className="px-[15px]">
                     <h2 className="page-header">{isLatestRoute ? "Người dùng mới" : "Người dùng"}</h2>

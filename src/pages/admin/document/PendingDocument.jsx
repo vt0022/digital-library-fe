@@ -4,6 +4,7 @@ import usePrivateAxios from "@api/usePrivateAxios";
 import ActionButton from "@components/management/action-button/ActionButton";
 import SelectFilter from "@components/management/select/SelectFilter";
 import Table from "@components/management/table/Table";
+import PageHead from "components/shared/head/PageHead";
 import { Badge, Button, Label, Modal, Pagination, Spinner, TextInput } from "flowbite-react";
 import moment from "moment";
 import { useEffect, useState } from "react";
@@ -14,24 +15,24 @@ import { MdRemoveDone } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
 
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
+
 const PendingDocuments = () => {
     const verifiedStatus = [
         { name: "Chưa phê duyệt", value: 0 },
         { name: "Đã phê duyệt", value: 1 },
         { name: "Từ chối", value: -1 },
     ];
-
-    const toastOptions = {
-        position: "bottom-center",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-    };
 
     const tableHead = ["", "Tên", "Giới thiệu", "Trạng thái", ""];
 
@@ -92,7 +93,7 @@ const PendingDocuments = () => {
     const handleApprove = (doc) => {
         setOpenAppoveModal(true);
         setDoc(doc);
-        setReason("")
+        setReason("");
     };
 
     const handleReapprove = (doc) => {
@@ -148,11 +149,9 @@ const PendingDocuments = () => {
             if (response.status === 200) {
                 setDocumentList(response.data.content);
                 setTotalPages(response.data.totalPages);
-            } else {
-                // navigate("/admin/login");
             }
         } catch (error) {
-            console.log(error);
+            navigate("/error-500");
         }
     };
 
@@ -168,11 +167,9 @@ const PendingDocuments = () => {
             setIsFetching(false);
             if (response.status === 200) {
                 setOrganizationList(response.data.content);
-            } else {
-                //navigate("/admin/login");
             }
         } catch (error) {
-            console.log(error);
+            navigate("/error-500");
         }
     };
 
@@ -194,25 +191,31 @@ const PendingDocuments = () => {
             }
 
             if (response.status === 200) {
-                if (approvedStatus) toast.success(<p className="pr-2">Đã chấp nhận tài liệu!</p>, toastOptions);
-                else toast.success(<p className="pr-2">Đã từ chối tài liệu!</p>, toastOptions);
+                if (approvedStatus) {
+                    toast.success(<p className="pr-2">Đã chấp nhận tài liệu!</p>, toastOptions);
+                } else {
+                    toast.success(<p className="pr-2">Đã từ chối tài liệu!</p>, toastOptions);
+                }
+
                 getDocumentList(1);
                 setCurrentPage(1);
             } else {
                 toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
             }
         } catch (error) {
-            console.log(error);
+            toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
         }
     };
 
     return (
         <div>
+            <PageHead title="Duyệt tài liệu - Admin" description="Duyệt tài liệu - learniverse & shariverse" url={window.location.href} origin="lib" />
+
             <div className="row">
                 <div className="px-[15px]">
                     <h2 className="page-header">Tài liệu được chia sẻ bởi người dùng</h2>
                 </div>
-                
+
                 <div className="col-12">
                     <div className="card">
                         <div className="card__body">

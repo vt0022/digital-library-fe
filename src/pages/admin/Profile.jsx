@@ -1,21 +1,32 @@
+import { deleteADocument, getUploadedDocuments } from "@api/main/documentAPI";
+import { getProfile, updateAvatar, updatePassword, updateProfile } from "@api/main/userAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
+import profileBackground from "@assets/images/default_background.jpg";
+import profileImage from "@assets/images/default_profile.jpg";
+import ActionButton from "@components/management/action-button/ActionButton";
+import Select from "@components/management/select/Select";
+import Table from "@components/management/table/Table";
+import PageHead from "components/shared/head/PageHead";
+import { Button, Datepicker, FileInput, Label, Modal, Pagination, Spinner, TextInput } from "flowbite-react";
 import moment from "moment/moment";
 import { useEffect, useState } from "react";
+import { HiAdjustments, HiAtSymbol, HiCake, HiDocumentRemove, HiUser } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
-
-import { Button, Datepicker, FileInput, Label, Modal, Pagination, Spinner, TextInput, Toast } from "flowbite-react";
-import { HiAdjustments, HiAtSymbol, HiCake, HiDocumentRemove, HiOutlineCheck, HiPhone, HiUser, HiX } from "react-icons/hi";
-
-import ActionButton from "../../components/management/action-button/ActionButton";
-import Select from "../../components/management/select/Select";
-import Table from "../../components/management/table/Table";
-
-import { deleteADocument, getUploadedDocuments } from "../../api/main/documentAPI";
-import { getProfile, updateAvatar, updatePassword, updateProfile } from "../../api/main/userAPI";
-import usePrivateAxios from "../../api/usePrivateAxios";
-import profileBackground from "../../assets/images/default_background.jpg";
-import profileImage from "../../assets/images/default_profile.jpg";
+import { Bounce, toast } from "react-toastify";
 
 let selectedPage = 0;
+
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const Profile = () => {
     const genderList = [
@@ -27,7 +38,6 @@ const Profile = () => {
     const roleList = {
         ROLE_ADMIN: "ADMIN",
         ROLE_STUDENT: "SINH VIÊN",
-        ROLE_LECTURER: "GIẢNG VIÊN",
         ROLE_MANAGER: "QUẢN LÝ",
     };
 
@@ -42,7 +52,7 @@ const Profile = () => {
     const renderBody = (item, index) => (
         <tr key={index}>
             <td className="text-center font-bold" onClick={() => handleDetail(item.slug)}>
-                {selectedPage * 7 + index + 1}
+                {selectedPage * 5 + index + 1}
             </td>
             <td className="max-w-xs text-justify" onClick={() => handleDetail(item.slug)}>
                 {item.docName}
@@ -68,7 +78,6 @@ const Profile = () => {
     const [gender, setGender] = useState(0);
     const [dateOfBirth, setDateOfBirth] = useState(new Date());
     const [email, setEmail] = useState("");
-    const [phone, setPhone] = useState("");
 
     const [oldPassword, setOldPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
@@ -80,12 +89,10 @@ const Profile = () => {
     const [isLoadingAvatar, setIsLoadingAvatar] = useState(false);
     const [isLoadingPassword, setIsLoadingPassword] = useState(false);
     const [isFetching, setIsFetching] = useState(false);
-    const [status, setStatus] = useState(0);
 
     const [isLastNameValid, setIsLastNameValid] = useState(true);
     const [isFirstNameValid, setIsFirstNameValid] = useState(true);
     const [isEmailValid, setIsEmailValid] = useState(true);
-    const [isPhoneValid, setIsPhoneValid] = useState(true);
     const [isDateOfBirthValid, setIsDateOfBirthValid] = useState(true);
     const [isOldPasswordValid, setIsOldPasswordValid] = useState(true);
     const [isNewPasswordValid, setIsNewPasswordValid] = useState(true);
@@ -93,7 +100,6 @@ const Profile = () => {
     const [isFileValid, setIsFileValid] = useState(true);
     const [fileMessage, setFileMessage] = useState("");
     const [confirmPasswordMessage, setConfirmPasswordMessage] = useState("");
-    const [message, setMessage] = useState("Đã xảy ra lỗi! Xin vui lòng thử lại!");
 
     const [user, setUser] = useState(null);
 
@@ -128,18 +134,16 @@ const Profile = () => {
             const response = await getUploadedDocuments({
                 params: {
                     page: page - 1,
-                    size: 7,
+                    size: 5,
                 },
             });
             setIsFetching(false);
             if (response.status === 200) {
                 setDocumentList(response.data.content);
                 setTotalPages(response.data.totalPages);
-            } else {
-                // navigate("/admin/login");
             }
         } catch (error) {
-            console.log(error);
+            navigate("/error-500");
         }
     };
 
@@ -155,11 +159,9 @@ const Profile = () => {
                 setGender(user.gender);
                 setDateOfBirth(user.dateOfBirth);
                 setEmail(user.email);
-                setPhone(user.phone);
-            } else {
             }
         } catch (error) {
-            console.log(error);
+            navigate("/error-500");
         }
     };
 
@@ -170,21 +172,14 @@ const Profile = () => {
             setIsLoadingDelete(false);
             setOpenModal(false);
             if (response.status === 200) {
-                setStatus(1);
-                setMessage("Xoá tài liệu thành công!");
-                setTimeout(() => {
-                    setStatus(0);
-                }, 4000);
+                toast.success(<p className="pr-2">Xoá tài liệu thành công!</p>, toastOptions);
+
                 getUploadedDocumentList(1);
             } else {
-                setStatus(-1);
-                setMessage("Đã xảy ra lỗi! Xin vui lòng thử lại!");
-                setTimeout(() => {
-                    setStatus(0);
-                }, 4000);
+                toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
             }
         } catch (error) {
-            console.log(error);
+            toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
         }
     };
 
@@ -219,11 +214,6 @@ const Profile = () => {
     const validateEmail = () => {
         if (email === "" || email.trim() === "") setIsEmailValid(false);
         else setIsEmailValid(true);
-    };
-
-    const validatePhone = () => {
-        if (phone === "" || phone.trim() === "") setIsPhoneValid(false);
-        else setIsPhoneValid(true);
     };
 
     const validateDateOfBirth = () => {
@@ -275,10 +265,9 @@ const Profile = () => {
         validateLastName();
         validateFirstName();
         validateEmail();
-        validatePhone();
         validateDateOfBirth();
 
-        if (!isLastNameValid || !isFirstNameValid || !isEmailValid || !isPhoneValid || !isDateOfBirthValid) {
+        if (!isLastNameValid || !isFirstNameValid || !isEmailValid || !isDateOfBirthValid) {
             return false;
         } else return true;
     };
@@ -294,7 +283,6 @@ const Profile = () => {
                     firstName: firstName,
                     lastName: lastName,
                     email: email,
-                    phone: phone,
                     gender: gender,
                     dateOfBirth: dateOfBirth,
                 };
@@ -304,13 +292,10 @@ const Profile = () => {
                 setIsLoadingInfo(false);
 
                 if (response.status === 200) {
-                    setStatus(1);
-                    setMessage("Cập nhật thông tin thành công!");
-                    setTimeout(() => {
-                        setStatus(0);
-                    }, 4000);
+                    toast.success(<p className="pr-2">Cập nhật thông tin thành công!</p>, toastOptions);
 
                     setUser(response.data);
+
                     sessionStorage.removeItem("profile");
                     sessionStorage.setItem("profile", JSON.stringify(response.data));
 
@@ -319,25 +304,18 @@ const Profile = () => {
                     setGender(response.data.gender);
                     setDateOfBirth(new Date(response.data.dateOfBirth));
                     setEmail(response.data.email);
-                    setPhone(response.data.phone);
                 } else {
-                    setStatus(-1);
-
-                    if (response.message === "Email already registered") setMessage("Email đã tồn tại!");
-                    else if (response.message === "User not found") setMessage("Người dùng không tồn tại!");
-                    else setMessage("Đã xảy ra lỗi! Xin vui lòng thử lại!");
-
-                    setTimeout(() => {
-                        setStatus(0);
-                    }, 4000);
+                    if (response.message === "Email already registered") {
+                        toast.error(<p className="pr-2">Email đã tồn tại!</p>, toastOptions);
+                    } else if (response.message === "User not found") {
+                        toast.error(<p className="pr-2">Người dùng không tồn tại!</p>, toastOptions);
+                    } else {
+                        toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
+                    }
                 }
             } catch (error) {
                 setIsLoadingInfo(false);
-                setStatus(-1);
-                setMessage("Đã xảy ra lỗi! Xin vui lòng thử lại!");
-                setTimeout(() => {
-                    setStatus(0);
-                }, 4000);
+                toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
             }
         }
     };
@@ -363,27 +341,16 @@ const Profile = () => {
                 if (response.status === 200) {
                     setImage(profileImage);
                     setImageFile(null);
-                    setStatus(1);
-                    setMessage("Cập nhật ảnh đại diện thành công!");
-                    setTimeout(() => {
-                        setStatus(0);
-                    }, 4000);
+
+                    toast.success(<p className="pr-2">Cập nhật ảnh đại diện thành công!</p>, toastOptions);
+
                     setUser(response.data);
                 } else {
-                    setStatus(-1);
-                    setMessage("Đã xảy ra lỗi! Xin vui lòng thử lại!");
-
-                    setTimeout(() => {
-                        setStatus(0);
-                    }, 4000);
+                    toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
                 }
             } catch (error) {
                 setIsLoadingAvatar(false);
-                setStatus(-1);
-                setMessage("Đã xảy ra lỗi! Xin vui lòng thử lại!");
-                setTimeout(() => {
-                    setStatus(0);
-                }, 2000);
+                toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
             }
         }
     };
@@ -410,50 +377,30 @@ const Profile = () => {
                 setIsLoadingPassword(false);
 
                 if (response.status === 200) {
-                    setStatus(1);
-                    setMessage("Cập nhật mật khẩu thành công!");
-                    setTimeout(() => {
-                        setStatus(0);
-                    }, 4000);
+                    toast.success(<p className="pr-2">Cập nhật mật khẩu thành công!</p>, toastOptions);
+
                     setUser(response.data);
                 } else {
-                    setStatus(-1);
-
-                    if (response.message === "Password incorrect") setMessage("Mật khẩu cũ không đúng!");
-                    else if (response.message === "Passwords not matched") setMessage("Mật khẩu mới không khớp!");
-                    else if (response.message === "User not found") setMessage("Người dùng không tồn tại!");
-                    else setMessage("Đã xảy ra lỗi! Xin vui lòng thử lại!");
-
-                    setTimeout(() => {
-                        setStatus(0);
-                    }, 4000);
+                    if (response.message === "Password incorrect") {
+                        toast.error(<p className="pr-2">Mật khẩu cũ không đúng!</p>, toastOptions);
+                    } else if (response.message === "Passwords not matched") {
+                        toast.error(<p className="pr-2">Mật khẩu mới không khớp!</p>, toastOptions);
+                    } else if (response.message === "User not found") {
+                        toast.error(<p className="pr-2">Người dùng không tồn tại!</p>, toastOptions);
+                    } else {
+                        toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
+                    }
                 }
             } catch (error) {
                 setIsLoadingPassword(false);
-                setStatus(-1);
-                setMessage("Đã xảy ra lỗi! Xin vui lòng thử lại!");
-                setTimeout(() => {
-                    setStatus(0);
-                }, 4000);
+                toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
             }
         }
     };
 
     return (
         <div>
-            {status === -1 && (
-                <Toast className="top-1/4 right-5 w-100 fixed z-50">
-                    <HiX className="h-5 w-5 bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200" />
-                    <div className="pl-4 text-sm font-normal">{message}</div>
-                </Toast>
-            )}
-
-            {status === 1 && (
-                <Toast className="top-1/4 right-5 fixed w-100 z-50">
-                    <HiOutlineCheck className="h-5 w-5 bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200" />
-                    <div className="pl-4 text-sm font-normal">{message}</div>
-                </Toast>
-            )}
+            <PageHead title={`${user && user.lastName} ${user && user.firstName} - Trang cá nhân - Admin`} description={`Trang cá nhân ${user && user.lastName} ${user && user.firstName} - learniverse & shariverse`} url={window.location.href} origin="both" />
 
             <div className="row">
                 <div className="col-12 flex">
@@ -542,14 +489,6 @@ const Profile = () => {
                                                 required
                                             />
                                             {!isDateOfBirthValid && <p className="block mt-2 text-sm font-medium text-red-600 italic">* Người dùng cần ít nhất 15 tuổi</p>}
-                                        </div>
-
-                                        <div className="mb-2 ">
-                                            <div className="block mb-2">
-                                                <Label htmlFor="phone" value="Số điện thoại" style={{ color: "var(--txt-color)" }} />
-                                            </div>
-                                            <TextInput id="phone" value={phone} placeholder="0123456789" required onChange={(e) => setPhone(e.target.value)} maxLength={11} />
-                                            {!isPhoneValid && <p className="block mt-2 text-sm font-medium text-red-600 italic">* Vui lòng nhập số điện thoại</p>}
                                         </div>
                                     </div>
                                 </div>
@@ -640,13 +579,6 @@ const Profile = () => {
                                     <div className="flex items-center mb-2 font-bold">
                                         <HiAtSymbol className="w-5 h-5 mr-3 text-gray-800 dark:text-white" />
                                         <span className="block text-base font-medium text-sky-500 dark:text-white">{user && user.email}</span>
-                                    </div>
-                                </div>
-
-                                <div className="mb-5">
-                                    <div className="flex items-center mb-2 font-bold">
-                                        <HiPhone className="w-5 h-5 mr-3 text-gray-800 dark:text-white" />
-                                        <span className="block text-base font-medium text-sky-500 dark:text-white">{user && user.phone}</span>
                                     </div>
                                 </div>
                             </div>

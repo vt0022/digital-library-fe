@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getActiveSections } from "@api/main/sectionAPI";
 import Subsection from "@components/forum/card/Subsection";
 import "./home.css";
+import PageHead from "components/shared/head/PageHead";
 
 const Home = ({ onPinSection }) => {
     const navigate = useNavigate();
@@ -28,6 +29,8 @@ const Home = ({ onPinSection }) => {
 
     return (
         <>
+            <PageHead title="Trang chủ" description="Trang chủ - learniverse & shariverse" url={window.location.href} origin="forum" />
+
             <div className="w-11/12 m-auto p-5">
                 <div className="space-y-5">
                     {sectionList &&
@@ -38,7 +41,7 @@ const Home = ({ onPinSection }) => {
                                         <p>{section.sectionName}</p>
                                     </div>
 
-                                    {section.subsections && section.subsections.map((subsection, index) => <Subsection key={index} subsection={subsection} handlePinClick={() => handlePinClick(subsection)}/>)}
+                                    {section.subsections && section.subsections.map((subsection, index) => <Subsection key={index} subsection={subsection} handlePinClick={() => handlePinClick(subsection)} />)}
                                 </div>
                             </div>
                         ))}

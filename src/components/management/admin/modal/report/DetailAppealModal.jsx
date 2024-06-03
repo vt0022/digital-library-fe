@@ -1,12 +1,12 @@
 import appealReasons from "@assets/json-data/appeal_reasons.json";
 import reportReasons from "@assets/json-data/report_reasons.json";
 import DOMPurify from "dompurify";
-import { Modal } from "flowbite-react";
+import { Button, Modal } from "flowbite-react";
 import moment from "moment";
 import { useRef } from "react";
 
 const DetailAppealModal = (props) => {
-    const { target, openViewModal, onCloseViewModal, content} = props;
+    const { target, openViewModal, onCloseViewModal, content, restore, remain, notSolved} = props;
 
     const topModal = useRef(null);
 
@@ -63,6 +63,18 @@ const DetailAppealModal = (props) => {
                         <p className="text-sm font-medium text-gray-600">Ngày khiếu nại</p>
                         <p className="font-medium">{moment(content.appealedAt).calendar()}</p>
                     </div>
+
+                    {notSolved && (
+                        <div className="flex justify-between">
+                            <Button color="success" onClick={restore}>
+                                Khôi phục {target === "POST" ? "bài đăng" : "bình luận"}
+                            </Button>
+
+                            <Button color="warning" onClick={remain}>
+                                Giữ nguyên quyết định
+                            </Button>
+                        </div>
+                    )}
                 </div>
             </Modal.Body>
         </Modal>

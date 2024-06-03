@@ -28,3 +28,17 @@
 .ql-font-serif {
     font-family: "Noto Serif", serif;
 }
+
+[data-testid="flowbite-tooltip-target"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-section a.related-post {
+    color: #22c55e !important;
+}
+
+.main-section a.related-post:hover {
+    color: #16a34a !important;
+}

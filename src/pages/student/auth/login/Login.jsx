@@ -13,6 +13,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
 import loginAction from "redux/actions/AuthenAction";
 import "./login.css";
+import PageHead from "components/shared/head/PageHead";
 
 const toastOptions = {
     position: "bottom-center",
@@ -161,6 +162,7 @@ const Login = () => {
                 navigate("/home");
             }
         } catch (error) {
+            console.log(error)
             navigate("/error-500");
         }
     };
@@ -188,7 +190,7 @@ const Login = () => {
                 localStorage.setItem("accessToken", response.data.accessToken);
                 localStorage.setItem("refreshToken", response.data.refreshToken);
                 sessionStorage.setItem("profile", JSON.stringify(response.data.profile));
-                dispatch(loginAction.setUser(response.data.profile));
+                //dispatch(loginAction.setUserProfile(response.data.profile));
 
                 navigate("/home");
             } else {
@@ -228,7 +230,7 @@ const Login = () => {
                 localStorage.setItem("accessToken", response.data.accessToken);
                 localStorage.setItem("refreshToken", response.data.refreshToken);
                 sessionStorage.setItem("profile", JSON.stringify(response.data.profile));
-                dispatch(loginAction.setUser(response.data.profile));
+                dispatch(loginAction.setUserProfile(response.data.profile));
 
                 navigate("/home");
             } else {
@@ -240,6 +242,9 @@ const Login = () => {
     };
 
     return (
+        <>
+        <PageHead title="Đăng nhập" description="Đăng nhập - learniverse & shariverse" url={window.location.href} origin="both" />
+
         <div style={{ backgroundImage: `url(${bg})` }} className=" flex flex-col bg-cover bg-center">
             <div className="sticky top-0 bg-transparent w-full z-40">
                 <SimpleNavbar />
@@ -381,6 +386,7 @@ const Login = () => {
                 </Modal>
             </div>
         </div>
+        </>
     );
 };
 

@@ -6,9 +6,14 @@ import PostHistoryModal from "@components/forum/modal/PostHistoryModal";
 import ReplyHistoryModal from "@components/forum/modal/ReplyHistoryModal";
 import ReportModal from "@components/forum/modal/ReportModal";
 import Error404 from "@components/management/error/404Error";
+import PageHead from "components/shared/head/PageHead";
+import Spinner from "components/shared/spinner/Spinner";
 import DOMPurify from "dompurify";
 import { Avatar, Breadcrumb, Button, Modal, Pagination, Tooltip } from "flowbite-react";
 import moment from "moment";
+import * as Emoji from "quill-emoji";
+import "quill-emoji/dist/quill-emoji.css";
+import "quill/dist/quill.snow.css";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { render } from "react-dom";
 import { HiHome, HiOutlineThumbUp, HiOutlineUser, HiOutlineX, HiPencil, HiReply, HiThumbUp, HiTrash } from "react-icons/hi";
@@ -16,10 +21,24 @@ import { IoEyeOff } from "react-icons/io5";
 import { LuEye } from "react-icons/lu";
 import { RiChatHistoryFill, RiChatHistoryLine } from "react-icons/ri";
 import { WiTime4 } from "react-icons/wi";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import ReactQuill, { Quill } from "react-quill";
 import { useNavigate, useParams } from "react-router-dom";
+import { Bounce, toast } from "react-toastify";
 import "./post.css";
+
+Quill.register("modules/emoji", Emoji);
+
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const DetailPost = () => {
     const { postId } = useParams();
@@ -51,6 +70,7 @@ const DetailPost = () => {
     const [triggerReplyModal, setTriggerReplyModal] = useState(0);
     const [triggerReportModal, setTriggerReportModal] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingImage, setIsLoadingImage] = useState(false);
     const [notFound, setNotFound] = useState(false);
 
     let editedReply = "";
@@ -151,11 +171,15 @@ const DetailPost = () => {
 
     const handleAddReply = async () => {
         try {
+            setIsLoading(true);
+
             const data = {
                 content: reply,
                 parentReplyId: parentReplyId,
             };
             const response = await addAReply(postId, data);
+
+            setIsLoading(false);
 
             if (response.status === 200) {
                 getPostReply();
@@ -171,10 +195,14 @@ const DetailPost = () => {
 
     const handleEditReply = async (replyId) => {
         try {
+            setIsLoading(true);
+
             const data = {
                 content: editedReply,
             };
             const response = await editAReply(replyId, data);
+
+            setIsLoading(false);
 
             if (response.status === 200) {
                 getPostReply();
@@ -196,9 +224,10 @@ const DetailPost = () => {
             const response = await deleteAPost(postId);
             if (response.status === 200) navigate("/forum");
             else {
-                setIsLoading(false);
-                setOpenPostModal(false);
+                toast.error(<p className="pr-2">Đã xảy ra lỗi khi xoá bài đăng!</p>, toastOptions);
             }
+            setIsLoading(false);
+            setOpenPostModal(false);
         } catch (error) {
             navigate("/error-500");
         }
@@ -210,9 +239,10 @@ const DetailPost = () => {
             const response = await deleteAReply(replyId);
             if (response.status === 200) getPostReply();
             else {
-                setIsLoading(false);
-                setOpenPostModal(false);
+                toast.error(<p className="pr-2">Đã xảy ra lỗi khi xoá phản hồi!</p>, toastOptions);
             }
+            setIsLoading(false);
+            setOpenReplyModal(false);
         } catch (error) {
             navigate("/error-500");
         }
@@ -275,7 +305,7 @@ const DetailPost = () => {
 
         const newHtmlContent = (
             <>
-                <div className="h-52">
+                <div className="h-60">
                     <ReactQuill
                         ref={(el) => (editQuill.current = el)}
                         theme="snow"
@@ -289,12 +319,14 @@ const DetailPost = () => {
                     />
                 </div>
 
-                <div className="pt-3 text-green-500 text-sm mt-2 flex justity-end space-x-3">
+                <div className="pt-3 text-green-500 text-sm mt-8 flex justity-end space-x-3">
                     <Button
                         className="ml-auto bg-green-400 enabled:hover:bg-green-500"
                         onClick={() => {
                             handleEditReply(reply.replyId);
-                        }}>
+                        }}
+                        isProcessing={isLoading}
+                        disabled={isLoading}>
                         <HiReply className="mr-2 h-5 w-5 " />
                         Cập nhật phản hồi
                     </Button>
@@ -304,7 +336,8 @@ const DetailPost = () => {
                         onClick={() => {
                             render(oldHtmlContent, editReplySection);
                             editQuill.current.getEditor().setText("");
-                        }}>
+                        }}
+                        disabled={isLoading}>
                         <HiOutlineX className="mr-2 h-5 w-5 " />
                         Huỷ bỏ
                     </Button>
@@ -323,6 +356,8 @@ const DetailPost = () => {
         input.click();
 
         input.onchange = async () => {
+            setIsLoadingImage(true);
+
             const file = input.files[0];
 
             const formData = new FormData();
@@ -336,14 +371,20 @@ const DetailPost = () => {
 
             const response = await uploadImageForReply(formData, config);
 
-            const imageUrl = response.message;
+            setIsLoadingImage(false);
 
-            const quillEditor = mainQuill.current.getEditor();
+            if (response.status === 200) {
+                const imageUrl = response.message;
 
-            if (mainQuill) {
-                // Get the current selection range and insert the image at that index
-                const range = quillEditor.getSelection(true);
-                quillEditor.insertEmbed(range.index, "image", imageUrl, "user");
+                const quillEditor = mainQuill.current.getEditor();
+
+                if (mainQuill) {
+                    // Get the current selection range and insert the image at that index
+                    const range = quillEditor.getSelection(true);
+                    quillEditor.insertEmbed(range.index, "image", imageUrl, "user");
+                }
+            } else {
+                toast.error(<p className="pr-2">Đã xảy ra lỗi khi tải ảnh lên!</p>, toastOptions);
             }
         };
     }, []);
@@ -353,14 +394,19 @@ const DetailPost = () => {
             toolbar: {
                 container: [
                     [{ font: [] }],
+                    [{ size: ["small", false, "large", "huge"] }],
                     [{ header: [1, 2, 3, 4, 5, 6, false] }],
+                    [{ header: 1 }, { header: 2 }],
                     ["bold", "italic", "underline", "strike"],
                     [{ color: [] }, { background: [] }],
+                    [{ align: [] }],
+                    [{ indent: "-1" }, { indent: "+1" }],
+                    [{ direction: "rtl" }],
+                    [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
                     [{ script: "sub" }, { script: "super" }],
                     ["blockquote", "code-block"],
-                    [{ list: "ordered" }, { list: "bullet" }],
-                    [{ indent: "-1" }, { indent: "+1" }, { align: [] }],
-                    ["link", "image"],
+                    ["link", "image", "video", "formula"],
+                    ["emoji"],
                     ["clean"],
                 ],
                 handlers: {
@@ -370,6 +416,9 @@ const DetailPost = () => {
             clipboard: {
                 matchVisual: false,
             },
+            "emoji-toolbar": true,
+            "emoji-textarea": true,
+            "emoji-shortname": true,
         }),
         [imageHandler],
     );
@@ -382,6 +431,8 @@ const DetailPost = () => {
         input.click();
 
         input.onchange = async () => {
+            setIsLoadingImage(true);
+
             const file = input.files[0];
 
             const formData = new FormData();
@@ -395,14 +446,20 @@ const DetailPost = () => {
 
             const response = await uploadImageForReply(formData, config);
 
-            const imageUrl = response.message;
+            setIsLoadingImage(false);
 
-            const quillEditor = editQuill.current.getEditor();
+            if (response.status === 200) {
+                const imageUrl = response.message;
 
-            if (editQuill) {
-                // Get the current selection range and insert the image at that index
-                const range = quillEditor.getSelection(true);
-                quillEditor.insertEmbed(range.index, "image", imageUrl, "user");
+                const quillEditor = editQuill.current.getEditor();
+
+                if (editQuill) {
+                    // Get the current selection range and insert the image at that index
+                    const range = quillEditor.getSelection(true);
+                    quillEditor.insertEmbed(range.index, "image", imageUrl, "user");
+                }
+            } else {
+                toast.error(<p className="pr-2">Đã xảy ra lỗi khi tải ảnh lên!</p>, toastOptions);
             }
         };
     }, []);
@@ -412,14 +469,19 @@ const DetailPost = () => {
             toolbar: {
                 container: [
                     [{ font: [] }],
+                    [{ size: ["small", false, "large", "huge"] }],
                     [{ header: [1, 2, 3, 4, 5, 6, false] }],
+                    [{ header: 1 }, { header: 2 }],
                     ["bold", "italic", "underline", "strike"],
                     [{ color: [] }, { background: [] }],
+                    [{ align: [] }],
+                    [{ indent: "-1" }, { indent: "+1" }],
+                    [{ direction: "rtl" }],
+                    [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
                     [{ script: "sub" }, { script: "super" }],
                     ["blockquote", "code-block"],
-                    [{ list: "ordered" }, { list: "bullet" }],
-                    [{ indent: "-1" }, { indent: "+1" }, { align: [] }],
-                    ["link", "image"],
+                    ["link", "image", "video", "formula"],
+                    ["emoji"],
                     ["clean"],
                 ],
                 handlers: {
@@ -429,16 +491,21 @@ const DetailPost = () => {
             clipboard: {
                 matchVisual: false,
             },
+            "emoji-toolbar": true,
+            "emoji-textarea": true,
+            "emoji-shortname": true,
         }),
         [imageHandlerForEdit],
     );
 
-    const formats = ["header", "bold", "italic", "underline", "strike", "blockquote", "list", "bullet", "indent", "link", "image", "color", "clean"];
+    const formats = ["font", "header", "bold", "italic", "underline", "strike", "blockquote", "code-block", "list", "1", "2", "indent", "direction", "size", "link", "image", "video", "formula", "color", "background", "script", "align", "emoji", "clean"];
 
     if (notFound) return <Error404 name="post" />;
 
     return (
         <>
+            <PageHead title={`${post && post.title} - Admin`} description={`${post && post.content.replace(/(<([^>]+)>)/gi, "")} - learniverse & shariverse`} url={window.location.href} origin="forum" />
+
             <div className="w-[95%] m-auto min-h-screen h-max p-5 main-section">
                 <Breadcrumb aria-label="Post breadcrumb" className="breadcrumb cursor-pointer">
                     <Breadcrumb.Item onClick={() => navigate("/forum")} icon={HiHome}>
@@ -737,16 +804,18 @@ const DetailPost = () => {
                             <div className="col-span-3 p-5" id="reply-section">
                                 <div id="parent-reply-section"></div>
 
-                                <div className="h-52">
+                                <div className="h-60">
                                     <ReactQuill ref={(el) => (mainQuill.current = el)} theme="snow" modules={modules} formats={formats} value={reply} onChange={(e) => setReply(e)} className="h-full" />
                                 </div>
 
-                                <div className="pt-3 text-green-500 text-sm mt-2">
+                                <div className="pt-3 text-green-500 text-sm mt-8">
                                     <Button
                                         className="ml-auto bg-green-400 enabled:hover:bg-green-500"
                                         onClick={() => {
                                             handleAddReply();
-                                        }}>
+                                        }}
+                                        isProcessing={isLoading}
+                                        disabled={isLoading}>
                                         <HiReply className="mr-2 h-5 w-5 " />
                                         Đăng phản hồi
                                     </Button>
@@ -771,7 +840,7 @@ const DetailPost = () => {
                         <HiTrash className="mx-auto mb-4 h-14 w-14 text-red-600 dark:text-gray-200" />
                         <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có chắc chắn muốn xoá bài viết này không?</h3>
                         <div className="flex justify-center gap-4">
-                            <Button color="failure" isProcessing={isLoading} onClick={handleDeletePost}>
+                            <Button color="failure" isProcessing={isLoading} disabled={isLoading} onClick={handleDeletePost}>
                                 {"Chắc chắn"}
                             </Button>
                             <Button color="gray" disabled={isLoading} onClick={() => setOpenPostModal(false)}>
@@ -789,7 +858,7 @@ const DetailPost = () => {
                         <HiTrash className="mx-auto mb-4 h-14 w-14 text-red-600 dark:text-gray-200" />
                         <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có chắc chắn muốn xoá phản hồi này không?</h3>
                         <div className="flex justify-center gap-4">
-                            <Button color="failure" isProcessing={isLoading} onClick={handleDeleteReply}>
+                            <Button color="failure" isProcessing={isLoading} disabled={isLoading} onClick={handleDeleteReply}>
                                 {"Chắc chắn"}
                             </Button>
                             <Button color="gray" disabled={isLoading} onClick={() => setOpenReplyModal(false)}>
@@ -799,6 +868,8 @@ const DetailPost = () => {
                     </div>
                 </Modal.Body>
             </Modal>
+
+            <Spinner loading={isLoadingImage} />
         </>
     );
 };

@@ -1,10 +1,10 @@
-import { Avatar, Button, Dropdown, Navbar } from "flowbite-react";
 import React from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import bg from "@assets/images/main-bg.png";
 import CustomFooter from "@components/student/footer/Footer";
 import SimpleNavbar from "@components/student/navbar/SimpleNavbar";
+import PageHead from "components/shared/head/PageHead";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -17,48 +17,52 @@ const Home = () => {
     const [searchQuery, setSearchQuery] = React.useState("");
 
     return (
-        <div style={{ backgroundImage: `url(${bg})` }} className=" flex flex-col bg-cover bg-center">
-            <div className="sticky top-0 bg-transparent w-full z-40">
-                <SimpleNavbar />
-            </div>
+        <>
+            <PageHead title="Trang chủ" description="Trang chủ - learniverse & shariverse" url={window.location.href} origin="lib" />
 
-            <div className="w-full h-screen bg-transparent">
-                <div className="grid place-items-center relative top-1/4">
-                    <div className="text-center">
-                        <h1 className="mb-4 text-3xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
-                            Chào mừng đến với <mark className="px-2 text-white bg-green-400 rounded dark:bg-green-400">Wisdo</mark>
-                        </h1>
-                        <p className=" mt-5 text-lg font-normal text-gray-700 lg:text-xl dark:text-gray-400">Khám phá những tài liệu hữu ích dành cho bạn</p>
-                    </div>
+            <div style={{ backgroundImage: `url(${bg})` }} className=" flex flex-col bg-cover bg-center">
+                <div className="sticky top-0 bg-transparent w-full z-40">
+                    <SimpleNavbar />
+                </div>
 
-                    <div className="w-1/2 mt-10">
-                        <div className="relative rounded-full">
-                            <input
-                                type="text"
-                                id="home-search"
-                                className="text-lg block w-full p-4 ps-5 text-gray-900 border border-gray-300 bg-white focus:ring-green-400 focus:border-green-400 rounded-full"
-                                placeholder="Tìm kiếm"
-                                required
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter") navigate(`/search/${searchQuery}`);
-                                }}
-                            />
+                <div className="w-full h-screen bg-transparent">
+                    <div className="grid place-items-center relative top-1/4">
+                        <div className="text-center">
+                            <h1 className="mb-4 text-3xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+                                Chào mừng đến với <mark className="px-2 text-white bg-green-400 rounded dark:bg-green-400">Wisdo</mark>
+                            </h1>
+                            <p className=" mt-5 text-lg font-normal text-gray-700 lg:text-xl dark:text-gray-400">Khám phá những tài liệu hữu ích dành cho bạn</p>
+                        </div>
 
-                            <div className="absolute inset-y-0 end-0 flex items-center pe-5 cursor-pointer" onClick={() => navigate(`/search/${searchQuery}`)}>
-                                <svg className="w-6 h-6 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                                </svg>
+                        <div className="w-1/2 mt-10">
+                            <div className="relative rounded-full">
+                                <input
+                                    type="text"
+                                    id="home-search"
+                                    className="text-lg block w-full p-4 ps-5 text-gray-900 border border-gray-300 bg-white focus:ring-green-400 focus:border-green-400 rounded-full"
+                                    placeholder="Tìm kiếm"
+                                    required
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") navigate(`/search/${searchQuery}`);
+                                    }}
+                                />
+
+                                <div className="absolute inset-y-0 end-0 flex items-center pe-5 cursor-pointer" onClick={() => navigate(`/search/${searchQuery}`)}>
+                                    <svg className="w-6 h-6 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                    </svg>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div>
-                <CustomFooter />
+                <div>
+                    <CustomFooter />
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 

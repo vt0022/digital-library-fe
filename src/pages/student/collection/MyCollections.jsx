@@ -6,6 +6,7 @@ import { getMyCollections } from "../../../api/main/collectionAPI";
 import usePrivateAxios from "../../../api/usePrivateAxios";
 import CollectionCard from "../../../components/student/card/CollectionCard";
 import CollectionModal from "../../../components/student/modal/CollectionModal";
+import PageHead from "components/shared/head/PageHead";
 
 const MyCollections = () => {
     usePrivateAxios();
@@ -56,6 +57,8 @@ const MyCollections = () => {
 
     return (
         <>
+            <PageHead title="Bộ sưu tập của tôi" description="Bộ sưu tập của tôi - learniverse & shariverse" url={window.location.href} origin="lib" />
+
             <div className="flex-1 p-4 bg-gray-50 h-full">
                 <div className="rounded-lg bg-white py-8 px-8 ">
                     <div className="mb-5 flex items-center justify-between">

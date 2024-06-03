@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { getMyReviews } from "../../../api/main/reviewAPI";
 import usePrivateAxios from "../../../api/usePrivateAxios";
 import ReviewCard from "../../../components/student/card/ReviewCard";
+import PageHead from "components/shared/head/PageHead";
 
 const MyReviews = () => {
     usePrivateAxios();
@@ -84,6 +85,8 @@ const MyReviews = () => {
 
     return (
         <>
+            <PageHead title="Đánh giá của tôi" description="Đánh giá của tôi - learniverse & shariverse" url={window.location.href} origin="lib" />
+
             <div className="flex-1 p-4 bg-gray-50 h-full">
                 <div className="rounded-lg bg-white py-8 px-8 ">
                     <div className="mb-5 flex items-center justify-between">

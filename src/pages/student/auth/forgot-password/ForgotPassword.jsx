@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
 import "./forgot-password.css";
+import PageHead from "components/shared/head/PageHead";
 
 const toastOptions = {
     position: "bottom-center",
@@ -78,6 +79,9 @@ const ForgotPassword = () => {
     };
 
     return (
+        <>
+        <PageHead title="Quên mật khẩu" description="Quên mật khẩu - learniverse & shariverse" url={window.location.href} origin="both" />
+
         <div style={{ backgroundImage: `url(${bg})` }} className="h-screen flex flex-col bg-cover bg-center">
             <div className="sticky top-0 bg-transparent w-full z-40">
                 <SimpleNavbar />
@@ -124,6 +128,7 @@ const ForgotPassword = () => {
                 <Spinner loading={isLoading} />
             </div>
         </div>
+        </>
     );
 };
 

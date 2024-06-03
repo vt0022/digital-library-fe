@@ -3,6 +3,7 @@ import { getAllPostsOfUser, getPostLikes } from "@api/main/postAPI";
 import { getAllRepliesOfUser, getReplyLikes } from "@api/main/replyAPI";
 import { getAUser } from "@api/main/userAPI";
 import usePrivateAxios from "api/usePrivateAxios";
+import PageHead from "components/shared/head/PageHead";
 import { initFlowbite } from "flowbite";
 import { Avatar, Pagination, Popover } from "flowbite-react";
 import moment from "moment";
@@ -215,225 +216,257 @@ const Activity = () => {
     };
 
     return (
-        <div className="m-5 min-h-screen h-max px-[10%] py-5 bg-white rounded-lg space-y-5">
-            <div className="flex items-center justify-center space-x-5 rounded-lg py-5">
-                <Avatar alt="User" img={user && user.image ? user.image : ""} size="xl" className="rounded-md shadow-md w-fit" />
+        <>
+            <PageHead title="Hoạt động của tôi" description="Hoạt động của tôi - learniverse & shariverse" url={window.location.href} origin="forum" />
 
-                <div>
-                    <p className="text-4xl font-medium mb-2">
-                        {user && user.lastName} {user && user.firstName}
-                    </p>
-                    <p className="text-sm text-gray-500">Tham gia vào khoảng {moment(user && user.createdAt).fromNow()}</p>
-                </div>
-            </div>
+            <div className="m-5 min-h-screen h-max px-[10%] py-5 bg-white rounded-lg space-y-5">
+                <div className="flex items-center justify-center space-x-5 rounded-lg py-5">
+                    <Avatar alt="User" img={user && user.image ? user.image : ""} size="xl" className="rounded-md shadow-md w-fit" />
 
-            <div className="rounded-lg p-5">
-                <div className="mb-2 border-b pb-2 border-gray-200">
-                    <ul
-                        className="flex flex-wrap -mb-px text-base font-medium text-center"
-                        id="default-styled-tab"
-                        data-tabs-toggle="#default-styled-tab-content"
-                        data-tabs-active-classes="bg-green-400 text-white rounded-full hover:bg-green-500"
-                        data-tabs-inactive-classes="text-gray-400 hover:bg-gray-100 hover:rounded-full"
-                        role="tablist">
-                        <li className="me-2" role="presentation">
-                            <button className="inline-block px-6 py-2" id="post-styled-tab" data-tabs-target="#styled-post" type="button" role="tab" aria-controls="post" aria-selected="false" onClick={resetPagesForPost}>
-                                Bài đăng
-                            </button>
-                        </li>
-
-                        <li className="me-2" role="presentation">
-                            <button className="inline-block px-6 py-2" id="reply-styled-tab" data-tabs-target="#styled-reply" type="button" role="tab" aria-controls="reply" aria-selected="false" onClick={resetPagesForReply}>
-                                Phản hồi
-                            </button>
-                        </li>
-
-                        <li className="me-2" role="presentation">
-                            <button className="inline-block px-6 py-2" id="post-like-styled-tab" data-tabs-target="#styled-post-like" type="button" role="tab" aria-controls="post-like" aria-selected="false" onClick={resetPagesForPostLike}>
-                                Lượt thích bài đăng
-                            </button>
-                        </li>
-
-                        <li className="me-2" role="presentation">
-                            <button className="inline-block px-6 py-2" id="reply-like-styled-tab" data-tabs-target="#styled-reply-like" type="button" role="tab" aria-controls="reply-like" aria-selected="false" onClick={resetPagesForReplyLike}>
-                                Lượt thích phản hồi
-                            </button>
-                        </li>
-                    </ul>
+                    <div>
+                        <p className="text-4xl font-medium mb-2">
+                            {user && user.lastName} {user && user.firstName}
+                        </p>
+                        <p className="text-sm text-gray-500">Tham gia vào khoảng {moment(user && user.createdAt).fromNow()}</p>
+                    </div>
                 </div>
 
-                <div id="default-styled-tab-content" ref={myTab}>
-                    <div className="hidden space-y-2" id="styled-post" role="tabpanel" aria-labelledby="post-tab">
-                        <p className="text-2xl font-medium">{totalPosts} bài đăng</p>
+                <div className="rounded-lg p-5">
+                    <div className="mb-2 border-b pb-2 border-gray-200">
+                        <ul
+                            className="flex flex-wrap -mb-px text-base font-medium text-center"
+                            id="default-styled-tab"
+                            data-tabs-toggle="#default-styled-tab-content"
+                            data-tabs-active-classes="bg-green-400 text-white rounded-full hover:bg-green-500"
+                            data-tabs-inactive-classes="text-gray-400 hover:bg-gray-100 hover:rounded-full"
+                            role="tablist">
+                            <li className="me-2" role="presentation">
+                                <button className="inline-block px-6 py-2" id="post-styled-tab" data-tabs-target="#styled-post" type="button" role="tab" aria-controls="post" aria-selected="false" onClick={resetPagesForPost}>
+                                    Bài đăng
+                                </button>
+                            </li>
 
-                        {postList &&
-                            postList.map((post, index) => (
-                                <div className={`p-3 rounded-lg border space-y-2 ${(post.disabled || post.labelDisabled || post.subsectionDisabled || post.sectionDisabled) && "bg-red-100"}`} key={index}>
-                                    <div className="flex text-sm items-center justify-between">
-                                        <div className="flex space-x-3 items-center ">
-                                            <p>{post.totalLikes} lượt thích</p>
-                                            <p className="px-3 py-1 bg-green-500 rounded-md text-white">{post.totalReplies} phản hồi</p>
-                                            <p className="text-gray-500">{post.totalViews} lượt xem</p>
-                                        </div>
+                            <li className="me-2" role="presentation">
+                                <button className="inline-block px-6 py-2" id="reply-styled-tab" data-tabs-target="#styled-reply" type="button" role="tab" aria-controls="reply" aria-selected="false" onClick={resetPagesForReply}>
+                                    Phản hồi
+                                </button>
+                            </li>
 
-                                        {(post.disabled || post.labelDisabled || post.subsectionDisabled || post.sectionDisabled) && (
-                                            <Popover
-                                                content={
-                                                    <div className="w-96 text-sm text-gray-500">
-                                                        <div className="border-b border-gray-200 bg-gray-100 px-3 py-2">
-                                                            <h3 className="font-semibold text-gray-900">Bài đăng này đã bị ẩn vì (những) lý do sau</h3>
+                            <li className="me-2" role="presentation">
+                                <button className="inline-block px-6 py-2" id="post-like-styled-tab" data-tabs-target="#styled-post-like" type="button" role="tab" aria-controls="post-like" aria-selected="false" onClick={resetPagesForPostLike}>
+                                    Bài đăng đã thích
+                                </button>
+                            </li>
+
+                            <li className="me-2" role="presentation">
+                                <button className="inline-block px-6 py-2" id="reply-like-styled-tab" data-tabs-target="#styled-reply-like" type="button" role="tab" aria-controls="reply-like" aria-selected="false" onClick={resetPagesForReplyLike}>
+                                    Phản hồi đã thích
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div id="default-styled-tab-content" ref={myTab}>
+                        <div className="hidden space-y-2" id="styled-post" role="tabpanel" aria-labelledby="post-tab">
+                            <p className="text-2xl font-medium">{totalPosts} bài đăng</p>
+
+                            {totalPostPages > 1 && (
+                                <div className="flex justify-center">
+                                    <Pagination previousLabel="" nextLabel="" currentPage={currentReplyPage} totalPages={totalPostPages} onPageChange={handleMorePosts} showIcons />
+                                </div>
+                            )}
+
+                            {postList &&
+                                postList.map((post, index) => (
+                                    <div className={`p-3 rounded-lg border space-y-2 ${(post.disabled || post.labelDisabled || post.subsectionDisabled || post.sectionDisabled) && "bg-red-100"}`} key={index}>
+                                        <div className="flex text-sm items-center justify-between">
+                                            <div className="flex space-x-3 items-center ">
+                                                <p>{post.totalLikes} lượt thích</p>
+                                                <p className="px-3 py-1 bg-green-500 rounded-md text-white">{post.totalReplies} phản hồi</p>
+                                                <p className="text-gray-500">{post.totalViews} lượt xem</p>
+                                            </div>
+
+                                            {(post.disabled || post.labelDisabled || post.subsectionDisabled || post.sectionDisabled) && (
+                                                <Popover
+                                                    content={
+                                                        <div className="w-96 text-sm text-gray-500">
+                                                            <div className="border-b border-gray-200 bg-gray-100 px-3 py-2">
+                                                                <h3 className="font-semibold text-gray-900">Bài đăng này đã bị ẩn vì (những) lý do sau</h3>
+                                                            </div>
+                                                            <div className="px-3 py-2">
+                                                                <ul class="list-disc pl-5">
+                                                                    {post.disabled && <li>Bài đăng đã bị gỡ</li>}
+                                                                    {post.labelDisabled && <li>Nhãn đã bị vô hiệu, bạn có thể chuyển sang nhãn khác</li>}
+                                                                    {post.subsectionDisabled && <li>Mục chính chứa chuyên mục đã bị vô hiệu</li>}
+                                                                    {post.subsectionDisabled && <li>Chuyên mục đã bị vô hiệu, bạn có thể chuyển sang chuyên mục khác</li>}
+                                                                </ul>
+                                                            </div>
                                                         </div>
-                                                        <div className="px-3 py-2">
-                                                            <ul class="list-disc pl-5">
-                                                                {post.disabled && <li>Bài đăng đã bị gỡ</li>}
-                                                                {post.labelDisabled && <li>Nhãn đã bị vô hiệu, bạn có thể chuyển sang nhãn khác</li>}
-                                                                {post.subsectionDisabled && <li>Mục chính chứa chuyên mục đã bị vô hiệu</li>}
-                                                                {post.subsectionDisabled && <li>Chuyên mục đã bị vô hiệu, bạn có thể chuyển sang chuyên mục khác</li>}
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                }
-                                                trigger="hover">
-                                                <button>
-                                                    <RiErrorWarningLine className="text-red-500 text-xl" />
-                                                </button>
-                                            </Popover>
-                                        )}
-                                    </div>
-
-                                    <p className="font-medium text-lg text-sky-700 cursor-pointer" onClick={() => navigate(`/forum/posts/${post.postId}`)}>
-                                        {post.title}
-                                    </p>
-
-                                    <div className="flex justify-between">
-                                        <div className="flex space-x-5 text-xs">
-                                            {post.subsection && <p className="px-3 py-1 rounded-md bg-teal-300 text-white">{post.subsection.subName}</p>}
-                                            {post.label && (
-                                                <p className="px-3 py-1 rounded-md text-white" style={{ backgroundColor: post.label.color }}>
-                                                    #{post.label.labelName}
-                                                </p>
+                                                    }
+                                                    trigger="hover">
+                                                    <button>
+                                                        <RiErrorWarningLine className="text-red-500 text-xl" />
+                                                    </button>
+                                                </Popover>
                                             )}
                                         </div>
 
+                                        <p className="font-medium text-lg text-sky-700 cursor-pointer" onClick={() => navigate(`/forum/posts/${post.postId}`)}>
+                                            {post.title}
+                                        </p>
+
+                                        <div className="flex justify-between">
+                                            <div className="flex space-x-5 text-xs">
+                                                {post.subsection && <p className="px-3 py-1 rounded-md bg-teal-300 text-white">{post.subsection.subName}</p>}
+                                                {post.label && (
+                                                    <p className="px-3 py-1 rounded-md text-white" style={{ backgroundColor: post.label.color }}>
+                                                        #{post.label.labelName}
+                                                    </p>
+                                                )}
+                                            </div>
+
+                                            <p className="text-sm text-gray-600 text-right">
+                                                <span className="text-xs">đăng vào </span>
+                                                {moment(post.createdAt).calendar({ sameElse: "DD/MM/YYYY HH:mm" })}
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))}
+
+                            {totalPostPages === 0 && <p className="font-medium text-center">Không tìm thấy bài đăng nào!!!</p>}
+
+                            {totalPostPages > 1 && (
+                                <div className="flex justify-center">
+                                    <Pagination previousLabel="" nextLabel="" currentPage={currentReplyPage} totalPages={totalPostPages} onPageChange={handleMorePosts} showIcons />
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="hidden space-y-2" id="styled-reply" role="tabpanel" aria-labelledby="reply-tab">
+                            <p className="text-2xl font-medium">{totalReplies} phản hồi</p>
+
+                            {totalReplyPages > 1 && (
+                                <div className="flex justify-center">
+                                    <Pagination previousLabel="" nextLabel="" currentPage={currentReplyPage} totalPages={totalReplyPages} onPageChange={handleMoreReplies} showIcons />
+                                </div>
+                            )}
+
+                            {replyList &&
+                                replyList.map((reply, index) => (
+                                    <div className={`p-3 rounded-lg border space-y-1 ${(reply.disabled || reply.postDisabled) && "bg-red-100"}`} key={index}>
+                                        <div className="flex text-sm space-x-3 items-center justify-between">
+                                            <p className="px-3 py-1 bg-green-500 rounded-md text-white">{reply.totalLikes} lượt thích</p>
+
+                                            {(reply.disabled || reply.postDisabled) && (
+                                                <Popover
+                                                    content={
+                                                        <div className="w-80 text-sm text-gray-500">
+                                                            <div className="border-b border-gray-200 bg-gray-100 px-3 py-2">
+                                                                <h3 className="font-semibold text-gray-900">Bình luận này đã bị ẩn vì (những) lý do sau</h3>
+                                                            </div>
+                                                            <div className="px-3 py-2">
+                                                                <ul class="list-disc pl-5">
+                                                                    {reply.disabled && <li>Bình luận đã bị gỡ</li>}
+                                                                    {reply.postDisabled && <li>Bài đăng đã bị ẩn</li>}
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                    trigger="hover">
+                                                    <button>
+                                                        <RiErrorWarningLine className="text-red-500 text-xl" />
+                                                    </button>
+                                                </Popover>
+                                            )}
+                                        </div>
+
+                                        <p className="font-medium text-lg text-sky-700 cursor-pointer" onClick={() => navigate(`/forum/posts/${reply.post && reply.post.postId}`)}>
+                                            {reply.post && reply.post.title}
+                                        </p>
+
+                                        <p className="text-sm truncate whitespace-normal line-clamp-2">{reply.content && reply.content.replace(/(<([^>]+)>)/gi, "")}</p>
+
                                         <p className="text-sm text-gray-600 text-right">
-                                            <span className="text-xs">đăng vào </span>
-                                            {moment(post.createdAt).calendar({ sameElse: "DD/MM/YYYY HH:mm" })}
+                                            <span className="text-xs">gửi vào </span>
+                                            {moment(reply.createdAt).calendar({ sameElse: "DD/MM/YYYY HH:mm" })}
                                         </p>
                                     </div>
+                                ))}
+
+                            {totalReplyPages > 1 && (
+                                <div className="flex justify-center">
+                                    <Pagination previousLabel="" nextLabel="" currentPage={currentReplyPage} totalPages={totalReplyPages} onPageChange={handleMoreReplies} showIcons />
                                 </div>
-                            ))}
+                            )}
 
-                        {totalPostPages === 0 && <p className="font-medium text-center">Không tìm thấy bài đăng nào!!!</p>}
+                            {totalReplies === 0 && <p className="font-medium text-center">Bạn chưa đăng phản hồi nào!!!</p>}
+                        </div>
 
-                        {totalPostPages > 1 && <Pagination previousLabel="" nextLabel="" currentPage={currentReplyPage} totalPages={totalPostPages} onPageChange={handleMorePosts} showIcons />}
-                    </div>
+                        <div className="hidden space-y-2" id="styled-post-like" role="tabpanel" aria-labelledby="post-like-tab">
+                            <p className="text-2xl font-medium">{totalPostLikes} lượt thích bài đăng</p>
 
-                    <div className="hidden space-y-2" id="styled-reply" role="tabpanel" aria-labelledby="reply-tab">
-                        <p className="text-2xl font-medium">{totalReplies} phản hồi</p>
-
-                        {replyList &&
-                            replyList.map((reply, index) => (
-                                <div className={`p-3 rounded-lg border space-y-1 ${(reply.disabled || reply.postDisabled) && "bg-red-100"}`} key={index}>
-                                    <div className="flex text-sm space-x-3 items-center justify-between">
-                                        <p className="px-3 py-1 bg-green-500 rounded-md text-white">{reply.totalLikes} lượt thích</p>
-
-                                        {(reply.disabled || reply.postDisabled) && (
-                                            <Popover
-                                                content={
-                                                    <div className="w-80 text-sm text-gray-500">
-                                                        <div className="border-b border-gray-200 bg-gray-100 px-3 py-2">
-                                                            <h3 className="font-semibold text-gray-900">Bình luận này đã bị ẩn vì (những) lý do sau</h3>
-                                                        </div>
-                                                        <div className="px-3 py-2">
-                                                            <ul class="list-disc pl-5">
-                                                                {reply.disabled && <li>Bình luận đã bị gỡ</li>}
-                                                                {reply.postDisabled && <li>Bài đăng đã bị ẩn</li>}
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                }
-                                                trigger="hover">
-                                                <button>
-                                                    <RiErrorWarningLine className="text-red-500 text-xl" />
-                                                </button>
-                                            </Popover>
-                                        )}
-                                    </div>
-
-                                    <p className="font-medium text-lg text-sky-700 cursor-pointer" onClick={() => navigate(`/forum/posts/${reply.post && reply.post.postId}`)}>
-                                        {reply.post && reply.post.title}
-                                    </p>
-
-                                    <p className="text-sm truncate whitespace-normal line-clamp-2">{reply.content && reply.content.replace(/(<([^>]+)>)/gi, "")}</p>
-
-                                    <p className="text-sm text-gray-600 text-right">
-                                        <span className="text-xs">gửi vào </span>
-                                        {moment(reply.createdAt).calendar({ sameElse: "DD/MM/YYYY HH:mm" })}
-                                    </p>
+                            {totalPostLikePages > 1 && (
+                                <div className="flex justify-center">
+                                    <Pagination previousLabel="" nextLabel="" currentPage={currentPostLikePage} totalPages={totalPostLikePages} onPageChange={handleMorePostLikes} showIcons />
                                 </div>
-                            ))}
+                            )}
 
-                        {totalReplyPages > 1 && (
-                            <div className="flex justify-center">
-                                <Pagination previousLabel="" nextLabel="" currentPage={currentReplyPage} totalPages={totalReplyPages} onPageChange={handleMoreReplies} showIcons />
-                            </div>
-                        )}
-
-                        {totalReplies === 0 && <p className="font-medium text-center">Bạn chưa đăng phản hồi nào!!!</p>}
-                    </div>
-
-                    <div className="hidden space-y-2" id="styled-post-like" role="tabpanel" aria-labelledby="post-like-tab">
-                        <p className="text-2xl font-medium">{totalPostLikes} lượt thích bài đăng</p>
-
-                        {postLikeList &&
-                            postLikeList.map((postLike, index) => (
-                                <div className=" flex items-center p-3 rounded-lg border" key={index}>
-                                    <p className="w-10/12 font-medium text-lg text-sky-700 cursor-pointer" onClick={() => navigate(`/forum/posts/${postLike.post && postLike.post.postId}`)}>
-                                        {postLike.post && postLike.post.title}
-                                    </p>
-
-                                    <p className="w-2/12 text-sm text-gray-600 text-right">{moment(postLike.likedAt).calendar({ sameElse: "DD/MM/YYYY HH:mm" })}</p>
-                                </div>
-                            ))}
-
-                        {totalPostLikePages > 1 && (
-                            <div className="flex justify-center">
-                                <Pagination previousLabel="" nextLabel="" currentPage={currentPostLikePage} totalPages={totalPostLikePages} onPageChange={handleMorePostLikes} showIcons />
-                            </div>
-                        )}
-
-                        {totalPostLikes === 0 && <p className="font-medium text-center">Bạn chưa thích bài đăng nào!!!</p>}
-                    </div>
-
-                    <div className="hidden space-y-2" id="styled-reply-like" role="tabpanel" aria-labelledby="reply-like-tab">
-                        <p className="text-2xl font-medium">{totalReplyLikes} lượt thích phản hồi</p>
-
-                        {replyLikeList &&
-                            replyLikeList.map((replyLike, index) => (
-                                <div className=" flex items-center p-3 rounded-lg border" key={index}>
-                                    <div className="w-10/12">
-                                        <p className="text-lg text-sky-700 cursor-pointer" onClick={() => navigate(`/forum/posts/${replyLike.reply && replyLike.reply.post && replyLike.reply.post.postId}`)}>
-                                            {replyLike.reply && replyLike.reply.post && replyLike.reply.post.title}
+                            {postLikeList &&
+                                postLikeList.map((postLike, index) => (
+                                    <div className=" flex items-center p-3 rounded-lg border" key={index}>
+                                        <p className="w-10/12 font-medium text-lg text-sky-700 cursor-pointer" onClick={() => navigate(`/forum/posts/${postLike.post && postLike.post.postId}`)}>
+                                            {postLike.post && postLike.post.title}
                                         </p>
 
-                                        <p className="text-sm truncate whitespace-normal line-clamp-2 mt-2">{replyLike.reply && replyLike.reply.content && replyLike.reply.content.replace(/(<([^>]+)>)/gi, "")}</p>
+                                        <p className="w-2/12 text-sm text-gray-600 text-right">{moment(postLike.likedAt).calendar({ sameElse: "DD/MM/YYYY HH:mm" })}</p>
                                     </div>
+                                ))}
 
-                                    <p className="w-2/12 text-sm text-gray-600 text-right">{moment(replyLike.likedAt).calendar({ sameElse: "DD/MM/YYYY HH:mm" })}</p>
+                            {totalPostLikePages > 1 && (
+                                <div className="flex justify-center">
+                                    <Pagination previousLabel="" nextLabel="" currentPage={currentPostLikePage} totalPages={totalPostLikePages} onPageChange={handleMorePostLikes} showIcons />
                                 </div>
-                            ))}
+                            )}
 
-                        {totalReplyLikePages > 1 && (
-                            <div className="flex justify-center">
-                                <Pagination previousLabel="" nextLabel="" currentPage={currentReplyLikePage} totalPages={totalReplyLikePages} onPageChange={handleMoreReplyLikes} showIcons />
-                            </div>
-                        )}
+                            {totalPostLikes === 0 && <p className="font-medium text-center">Bạn chưa thích bài đăng nào!!!</p>}
+                        </div>
 
-                        {totalReplyLikes === 0 && <p className="font-medium text-center">Bạn chưa thích phản hồi nào!!!</p>}
+                        <div className="hidden space-y-2" id="styled-reply-like" role="tabpanel" aria-labelledby="reply-like-tab">
+                            <p className="text-2xl font-medium">{totalReplyLikes} lượt thích phản hồi</p>
+
+                            {totalReplyLikePages > 1 && (
+                                <div className="flex justify-center">
+                                    <Pagination previousLabel="" nextLabel="" currentPage={currentReplyLikePage} totalPages={totalReplyLikePages} onPageChange={handleMoreReplyLikes} showIcons />
+                                </div>
+                            )}
+
+                            {replyLikeList &&
+                                replyLikeList.map((replyLike, index) => (
+                                    <div className=" flex items-center p-3 rounded-lg border" key={index}>
+                                        <div className="w-10/12">
+                                            <p className="text-lg text-sky-700 cursor-pointer" onClick={() => navigate(`/forum/posts/${replyLike.reply && replyLike.reply.post && replyLike.reply.post.postId}`)}>
+                                                {replyLike.reply && replyLike.reply.post && replyLike.reply.post.title}
+                                            </p>
+
+                                            <p className="text-sm truncate whitespace-normal line-clamp-2 mt-2">{replyLike.reply && replyLike.reply.content && replyLike.reply.content.replace(/(<([^>]+)>)/gi, "")}</p>
+                                        </div>
+
+                                        <p className="w-2/12 text-sm text-gray-600 text-right">{moment(replyLike.likedAt).calendar({ sameElse: "DD/MM/YYYY HH:mm" })}</p>
+                                    </div>
+                                ))}
+
+                            {totalReplyLikePages > 1 && (
+                                <div className="flex justify-center">
+                                    <Pagination previousLabel="" nextLabel="" currentPage={currentReplyLikePage} totalPages={totalReplyLikePages} onPageChange={handleMoreReplyLikes} showIcons />
+                                </div>
+                            )}
+
+                            {totalReplyLikes === 0 && <p className="font-medium text-center">Bạn chưa thích phản hồi nào!!!</p>}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

@@ -1,11 +1,11 @@
 import reportReasons from "@assets/json-data/report_reasons.json";
 import DOMPurify from "dompurify";
-import { Modal } from "flowbite-react";
+import { Button, Modal } from "flowbite-react";
 import moment from "moment";
 import { useRef } from "react";
 
 const DetailReportModal = (props) => {
-    const { target, openViewModal, onCloseViewModal, content, relatedContent, handleView } = props;
+    const { target, openViewModal, onCloseViewModal, content, relatedContent, handleView, action, notSolved } = props;
 
     const topModal = useRef(null);
 
@@ -56,7 +56,7 @@ const DetailReportModal = (props) => {
                             <hr />
 
                             <div className="space-y-5">
-                                <p>{target === "POST" ? "Tài liệu" : "Bình luận"} này cũng bị báo cáo vì:</p>
+                                <p>{target === "POST" ? "Bài đăng" : "Bình luận"} này cũng bị báo cáo vì:</p>
 
                                 {relatedContent.map((report, index) => (
                                     <div
@@ -72,6 +72,12 @@ const DetailReportModal = (props) => {
                                 ))}
                             </div>
                         </>
+                    )}
+
+                    {notSolved && (
+                        <Button color="warning" onClick={action}>
+                            Gỡ {target === "POST" ? "bài đăng" : "bình luận"}
+                        </Button>
                     )}
                 </div>
             </Modal.Body>

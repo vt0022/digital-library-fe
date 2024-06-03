@@ -5,6 +5,7 @@ import OrganizationCard from "../../../components/student/card/OrganizationCard"
 
 import { searchOrganizations } from "../../../api/main/organizationAPI";
 import institutionImage from "../../../assets/images/institution.png";
+import PageHead from "components/shared/head/PageHead";
 
 const ListOrganizations = () => {
     const navigate = useNavigate();
@@ -36,6 +37,8 @@ const ListOrganizations = () => {
 
     return (
         <>
+            <PageHead title="Trường" description="Trường - learniverse & shariverse" url={window.location.href} origin="lib" />
+
             <div className="bg-gray-50 h-full w-full overflow-auto">
                 <div className="px-[5%]">
                     <div className="grid place-items-center mt-20 mb-10">

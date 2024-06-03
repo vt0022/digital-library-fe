@@ -1,4 +1,4 @@
-import { getADocument, getADocumentForGuest, getRelatedDocuments, likeDocument, saveDocument, unlikeDocument, unsaveDocument } from "@api/main/documentAPI";
+import { getADocument, getADocumentForGuest, getRelatedDocuments, getRelatedDocumentsForGuest, likeDocument, saveDocument, unlikeDocument, unsaveDocument } from "@api/main/documentAPI";
 import usePrivateAxios from "@api/usePrivateAxios";
 import DocumentCard from "@components/student/card/Card";
 import CollectionListModal from "@components/student/modal/CollectionListModal";
@@ -131,7 +131,10 @@ const DetailDocument = () => {
 
     const getRelatedDocumentList = async () => {
         try {
-            const response = await getRelatedDocuments(slug);
+            let response = null;
+
+            if (user && accessToken) response =  await getRelatedDocuments(slug);
+            else response = await getRelatedDocumentsForGuest(slug);
 
             if (response.status === 200) {
                 setDocumentList(response.data.content);
@@ -278,7 +281,7 @@ const DetailDocument = () => {
 
     return (
         <>
-            <PageHead title={doc && doc.docName} description={doc && doc.docIntroduction} imageUrl={doc && doc.thumbnail} url={window.location.href} />
+            <PageHead title={doc && doc.docName} description={doc && doc.docIntroduction} imageUrl={doc && doc.thumbnail} url={window.location.href} origin="lib"/>
 
             <div className="flex-1 p-4 bg-gray-50">
                 <div className="flex gap-5 w-full">
@@ -365,8 +368,6 @@ const DetailDocument = () => {
 
                             <div className="w-[80px] h-[80px] absolute opacity-0 right-0 top-0"></div>
                         </div>
-
-                        <iframe class="pdf-embed" src="https://docs.google.com/viewer?url=https://drive.google.com/uc?id=1oNvF1dnKd0Q-inR15gth2EST3f3XyZZa&embedded=true"></iframe>
 
                         {isOpenModal && (
                             <div ref={collectionRef}>

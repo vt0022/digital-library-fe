@@ -1,24 +1,19 @@
-import React, { useEffect, useState } from "react";
+import { getADocument } from "@api/main/documentAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
+import PageHead from "components/shared/head/PageHead";
+import { Button, Rating } from "flowbite-react";
+import moment from "moment/moment";
+import { useEffect, useState } from "react";
+import { HiChevronLeft, HiCloudUpload, HiEye, HiInformationCircle, HiLibrary, HiLink, HiOutlinePencilAlt, HiRefresh, HiRss, HiTable, HiThumbUp, HiUserAdd, HiViewBoards } from "react-icons/hi";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { getADocument } from "../../../api/main/documentAPI";
-
-import moment from "moment/moment";
-
-import usePrivateAxios from "../../../api/usePrivateAxios";
-
-import { Button, Rating } from "flowbite-react";
-import { HiChevronLeft, HiCloudUpload, HiEye, HiInformationCircle, HiLibrary, HiLink, HiOutlinePencilAlt, HiRefresh, HiRss, HiTable, HiThumbUp, HiUserAdd, HiViewBoards, HiXCircle } from "react-icons/hi";
-
 const DetailDocument = () => {
-
     const { slug } = useParams();
 
-    
     const navigate = useNavigate();
 
     usePrivateAxios();
-    
+
     const [document, setDocument] = useState(null);
 
     useEffect(() => {
@@ -38,10 +33,10 @@ const DetailDocument = () => {
         }
     };
 
-    // Icon partern: w-5 h-5 mr-3 text-gray-800 dark:text-white
-
     return (
         <div>
+            <PageHead title={`${document && document.docName} - Admin`} description={`${document && document.docIntroduction} - learniverse & shariverse`} imageUrl={document && document.thumbnail} url={window.location.href} origin="lib" />
+
             <div className="flex flex-wrap gap-2 mb-3">
                 <Button onClick={() => navigate(-1)}>
                     <HiChevronLeft className="mr-2 h-5 w-5" />
@@ -108,7 +103,7 @@ const DetailDocument = () => {
                         </div>
                     </div>
 
-                    <div className="w-2/3 mb-8 rounded-2xl shadow-lg shadow-gray-200 bg-white">
+                    <div className="w-2/3 rounded-2xl shadow-lg shadow-gray-200 bg-white">
                         <iframe title="Tài liệu PDF" src={document && document.viewUrl} width="100%" height="500px" className="h-full rounded-2xl"></iframe>
                     </div>
                 </div>
@@ -236,7 +231,6 @@ const DetailDocument = () => {
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>

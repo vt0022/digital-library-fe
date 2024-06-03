@@ -6,12 +6,25 @@ import ReportModal from "@components/management/admin/modal/report/ReportModal";
 import SelectFilter from "@components/management/select/SelectFilter";
 import Table from "@components/management/table/Table";
 import DetailReportModal from "components/management/admin/modal/report/DetailReportModal";
+import PageHead from "components/shared/head/PageHead";
 import { Button, Modal, Pagination, Spinner } from "flowbite-react";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { HiDocumentRemove } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
+
+    const toastOptions = {
+        position: "bottom-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+    };
 
 const Reports = () => {
     const processStatus = [
@@ -75,7 +88,7 @@ const Reports = () => {
                             content="Gỡ nội dung"
                         />
                     )}
-                    
+
                     {/* <ActionButton
                         onClick={(e) => {
                             e.stopPropagation();
@@ -100,18 +113,6 @@ const Reports = () => {
         </tr>
     );
 
-    const toastOptions = {
-        position: "bottom-center",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-    };
-
     const navigate = useNavigate();
 
     usePrivateAxios();
@@ -121,6 +122,7 @@ const Reports = () => {
     const [reportList, setReportList] = useState([]);
     const [reportId, setReportId] = useState("");
     const [content, setContent] = useState("");
+    const [notSolved, setNotSolved] = useState(false);
     const [relatedContent, setRelatedContent] = useState([]);
     const [action, setAction] = useState("disable");
 
@@ -150,9 +152,18 @@ const Reports = () => {
 
     const handleView = (report) => {
         if (report.status === "PENDING") readThisReport(report.reportId);
+        setNotSolved(report.status !== "DISABLED")
+        setReportId(report.reportId);
         setContent(report);
         getRelatedReports(report.reportId);
         setOpenViewModal(true);
+    };
+
+    const handleAction = () => {
+        setOpenViewModal(false);
+        setOpenReportModal(true);
+        setTriggerReportModal(triggerReportModal + 1);
+        setAction("disable");
     };
 
     const handleDisableTarget = (report) => {
@@ -294,95 +305,99 @@ const Reports = () => {
     };
 
     return (
-        <div className="w-full m-auto">
-            <div className="row">
-                <div className="px-[15px]">
-                    <h2 className="page-header">Báo cáo vi phạm</h2>
-                </div>
+        <>
+            <PageHead title="Quản lý báo cáo - Admin" description="Quản lý báo cáo - learniverse & shariverse" url={window.location.href} origin="forum" />
 
-                <div className="col-12">
-                    <div className="card">
-                        <div className="card__body flex space-x-10 items-end justify-between">
-                            <div className="flex space-x-5 items-end">
-                                <SelectFilter
-                                    selectName="Loại vi phạm"
-                                    options={reportReasons}
-                                    selectedValue={type}
-                                    onChangeHandler={(e) => {
-                                        setCurrentPage(1);
-                                        setType(e.target.value);
-                                    }}
-                                    name="value"
-                                    field="name"
-                                    required
-                                />
+            <div className="w-full m-auto">
+                <div className="row">
+                    <div className="px-[15px]">
+                        <h2 className="page-header">Báo cáo vi phạm</h2>
+                    </div>
 
-                                <SelectFilter
-                                    selectName="Trạng thái"
-                                    options={processStatus}
-                                    selectedValue={status}
-                                    onChangeHandler={(e) => {
-                                        setCurrentPage(1);
-                                        setStatus(e.target.value);
-                                    }}
-                                    name="name"
-                                    field="value"
-                                    required
-                                />
-                            </div>
+                    <div className="col-12">
+                        <div className="card">
+                            <div className="card__body flex space-x-10 items-end justify-between">
+                                <div className="flex space-x-5 items-end">
+                                    <SelectFilter
+                                        selectName="Loại vi phạm"
+                                        options={reportReasons}
+                                        selectedValue={type}
+                                        onChangeHandler={(e) => {
+                                            setCurrentPage(1);
+                                            setType(e.target.value);
+                                        }}
+                                        name="value"
+                                        field="name"
+                                        required
+                                    />
 
-                            <div className="flex mb-2 font-medium">
-                                <div className={`px-5 py-3 rounded-s-lg h-fit shadow-md cursor-pointer ${target === "POST" ? "text-white" : ""}`} style={{ backgroundColor: target === "POST" ? "var(--main-color)" : "white" }} onClick={() => setTarget("POST")}>
-                                    Bài đăng
+                                    <SelectFilter
+                                        selectName="Trạng thái"
+                                        options={processStatus}
+                                        selectedValue={status}
+                                        onChangeHandler={(e) => {
+                                            setCurrentPage(1);
+                                            setStatus(e.target.value);
+                                        }}
+                                        name="name"
+                                        field="value"
+                                        required
+                                    />
                                 </div>
 
-                                <div className={`px-5 py-3 rounded-e-lg h-fit shadow-md cursor-pointer ${target === "REPLY" ? "text-white" : ""}`} style={{ backgroundColor: target === "REPLY" ? "var(--main-color)" : "white" }} onClick={() => setTarget("REPLY")}>
-                                    Phản hồi
+                                <div className="flex mb-2 font-medium">
+                                    <div className={`px-5 py-3 rounded-s-lg h-fit shadow-md cursor-pointer ${target === "POST" ? "text-white" : ""}`} style={{ backgroundColor: target === "POST" ? "var(--main-color)" : "white" }} onClick={() => setTarget("POST")}>
+                                        Bài đăng
+                                    </div>
+
+                                    <div className={`px-5 py-3 rounded-e-lg h-fit shadow-md cursor-pointer ${target === "REPLY" ? "text-white" : ""}`} style={{ backgroundColor: target === "REPLY" ? "var(--main-color)" : "white" }} onClick={() => setTarget("REPLY")}>
+                                        Phản hồi
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div className="card">
-                        <div className="card__body">
-                            {reportList.length === 0 && !isFetching && <p className="mt-2 mb-4 font-medium text-center">Không có kết quả!</p>}
+                        <div className="card">
+                            <div className="card__body">
+                                {reportList.length === 0 && !isFetching && <p className="mt-2 mb-4 font-medium text-center">Không có kết quả!</p>}
 
-                            {reportList.length > 0 && <Table totalPages="10" headData={tableHead} renderHead={(item, index) => renderHead(item, index)} bodyData={reportList} renderBody={(item, index) => renderBody(item, index)} />}
+                                {reportList.length > 0 && <Table totalPages="10" headData={tableHead} renderHead={(item, index) => renderHead(item, index)} bodyData={reportList} renderBody={(item, index) => renderBody(item, index)} />}
 
-                            {isFetching && <Spinner className="flex items-center w-full mb-2 mt-2" style={{ color: "var(--main-color)" }} />}
+                                {isFetching && <Spinner className="flex items-center w-full mb-2 mt-2" style={{ color: "var(--main-color)" }} />}
 
-                            {totalPages > 1 && (
-                                <div className="flex overflow-x-auto sm:justify-center">
-                                    <Pagination previousLabel="" nextLabel="" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} showIcons />
-                                </div>
-                            )}
+                                {totalPages > 1 && (
+                                    <div className="flex overflow-x-auto sm:justify-center">
+                                        <Pagination previousLabel="" nextLabel="" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} showIcons />
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <ReportModal target={target} reportId={reportId} action={action} openReportModal={openReportModal} triggerReportModal={triggerReportModal} refresh={refresh} />
+
+                <DetailReportModal target={target} content={content} relatedContent={relatedContent} openViewModal={openViewModal} onCloseViewModal={onCloseViewModal} handleView={handleView} action={handleAction} notSolved={notSolved}/>
+
+                <Modal show={openDeleteReportModal} size="md" onClose={() => setOpenDeleteReportModal(false)} popup className="z-40">
+                    <Modal.Header />
+                    <Modal.Body>
+                        <div className="text-center">
+                            <HiDocumentRemove className="mx-auto mb-4 h-14 w-14 text-red-600 dark:text-gray-200" />
+                            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có chắc chắn muốn xoá báo cáo {target === "POST" ? "bài đăng" : "phản hồi"} này không?</h3>
+                            <div className="flex justify-center gap-4">
+                                <Button color="failure" isProcessing={isLoading} disabled={isLoading} onClick={() => deleteThisReport(reportId)}>
+                                    Chắc chắn
+                                </Button>
+                                <Button color="gray" disabled={isLoading} onClick={() => setOpenDeleteReportModal(false)}>
+                                    Huỷ bỏ
+                                </Button>
+                            </div>
+                        </div>
+                    </Modal.Body>
+                </Modal>
             </div>
-
-            <ReportModal target={target} reportId={reportId} action={action} openReportModal={openReportModal} triggerReportModal={triggerReportModal} refresh={refresh} />
-
-            <DetailReportModal target={target} content={content} relatedContent={relatedContent} openViewModal={openViewModal} onCloseViewModal={onCloseViewModal} handleView={handleView} />
-
-            <Modal show={openDeleteReportModal} size="md" onClose={() => setOpenDeleteReportModal(false)} popup className="z-40">
-                <Modal.Header />
-                <Modal.Body>
-                    <div className="text-center">
-                        <HiDocumentRemove className="mx-auto mb-4 h-14 w-14 text-red-600 dark:text-gray-200" />
-                        <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có chắc chắn muốn xoá báo cáo {target === "POST" ? "bài đăng" : "phản hồi"} này không?</h3>
-                        <div className="flex justify-center gap-4">
-                            <Button color="failure" isProcessing={isLoading} disabled={isLoading} onClick={() => deleteThisReport(reportId)}>
-                                Chắc chắn
-                            </Button>
-                            <Button color="gray" disabled={isLoading} onClick={() => setOpenDeleteReportModal(false)}>
-                                Huỷ bỏ
-                            </Button>
-                        </div>
-                    </div>
-                </Modal.Body>
-            </Modal>
-        </div>
+        </>
     );
 };
 

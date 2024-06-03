@@ -1,9 +1,10 @@
-import { Spinner } from "flowbite-react";
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { getCollections, getPublicCollections } from "@api/main/collectionAPI";
 import CollectionCard from "@components/student/card/CollectionCard";
+import { Spinner } from "flowbite-react";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./collection.css";
+import PageHead from "components/shared/head/PageHead";
 
 const ListCollections = () => {
     const navigate = useNavigate();
@@ -128,34 +129,38 @@ const ListCollections = () => {
     };
 
     return (
-        <div className="p-10 bg-slate-100">
-            <h1 className="text-3xl text-center font-medium mb-20">Khám phá những bộ sưu tập hữu ích dành cho bạn</h1>
+        <>
+            <PageHead title="Bộ sưu tập" description="Bộ sưu tập - learniverse & shariverse" url={window.location.href} origin="lib" />
 
-            <div className="flex justify-evenly space-x-10" id="collection-section" ref={collectionSectionRef}>
-                <div className="flex flex-col flex-1 space-y-12">
-                    {collectionListCol1.map((collection, index) => (
-                        <CollectionCard collection={collection} key={index} />
-                    ))}
+            <div className="p-10 bg-slate-100">
+                <h1 className="text-3xl text-center font-medium mb-20">Khám phá những bộ sưu tập hữu ích dành cho bạn</h1>
+
+                <div className="flex justify-evenly space-x-10" id="collection-section" ref={collectionSectionRef}>
+                    <div className="flex flex-col flex-1 space-y-12">
+                        {collectionListCol1.map((collection, index) => (
+                            <CollectionCard collection={collection} key={index} />
+                        ))}
+                    </div>
+                    <div className="flex flex-col flex-1 space-y-12">
+                        {collectionListCol2.map((collection, index) => (
+                            <CollectionCard collection={collection} key={index} />
+                        ))}
+                    </div>
+                    <div className="flex flex-col flex-1 space-y-12">
+                        {collectionListCol3.map((collection, index) => (
+                            <CollectionCard collection={collection} key={index} />
+                        ))}
+                    </div>
+                    <div className="flex flex-col flex-1 space-y-12">
+                        {collectionListCol4.map((collection, index) => (
+                            <CollectionCard collection={collection} key={index} />
+                        ))}
+                    </div>
                 </div>
-                <div className="flex flex-col flex-1 space-y-12">
-                    {collectionListCol2.map((collection, index) => (
-                        <CollectionCard collection={collection} key={index} />
-                    ))}
-                </div>
-                <div className="flex flex-col flex-1 space-y-12">
-                    {collectionListCol3.map((collection, index) => (
-                        <CollectionCard collection={collection} key={index} />
-                    ))}
-                </div>
-                <div className="flex flex-col flex-1 space-y-12">
-                    {collectionListCol4.map((collection, index) => (
-                        <CollectionCard collection={collection} key={index} />
-                    ))}
-                </div>
+
+                <div className="flex justify-center mt-5 mb-2">{isFetching && <Spinner color="success" className="flex items-center w-full mb-2 mt-2 text-green-400" />}</div>
             </div>
-
-            <div className="flex justify-center mt-5 mb-2">{isFetching && <Spinner color="success" className="flex items-center w-full mb-2 mt-2 text-green-400" />}</div>
-        </div>
+        </>
     );
 };
 

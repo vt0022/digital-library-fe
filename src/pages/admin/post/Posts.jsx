@@ -5,11 +5,24 @@ import usePrivateAxios from "@api/usePrivateAxios";
 import ActionButton from "@components/management/action-button/ActionButton";
 import SelectFilter from "@components/management/select/SelectFilter";
 import Table from "@components/management/table/Table";
+import PageHead from "components/shared/head/PageHead";
 import { Button, Modal, Pagination, Spinner } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { HiDocumentRemove } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
+
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const Posts = () => {
     const tableHead = ["", "Tiêu đề", "Chuyên mục", "Nhãn", "Phản hồi", "Lượt thích", ""];
@@ -46,7 +59,7 @@ const Posts = () => {
                     <ActionButton
                         onClick={(e) => {
                             e.stopPropagation();
-                            handleEdit(item.postId);
+                            navigate(`/admin/posts/${item.postId}/edit`);
                         }}
                         icon="bx bx-pencil"
                         color="amber"
@@ -65,18 +78,6 @@ const Posts = () => {
             </td>
         </tr>
     );
-
-    const toastOptions = {
-        position: "bottom-center",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-    };
 
     const orderList = [
         {
@@ -142,10 +143,8 @@ const Posts = () => {
         getPostList(currentPage);
     }, [currentPage, search, subsection, label, order]);
 
-    const handleAdd = () => {};
-
-    const handleEdit = (postId) => {
-        setPostId(postId);
+    const handleAdd = () => {
+        navigate("/admin/posts/new");
     };
 
     const handleDelete = (postId) => {
@@ -235,120 +234,124 @@ const Posts = () => {
     };
 
     return (
-        <div className="m-auto">
-            <div className="row">
-                <div className="px-[15px]">
-                    <h2 className="page-header">Bài đăng</h2>
-                    <Button color="gray" className="mt-7 justify-self-end bg-white py-1.5" style={{ boxShadow: "var(--box-shadow)", borderRadius: "var(--border-radius)" }} onClick={handleAdd}>
-                        <i className="bx bxs-calendar-plus mr-3 text-xl hover:text-white" style={{ color: "var(--main-color)" }}></i>
-                        Thêm bài đăng
-                    </Button>
-                </div>
+        <>
+            <PageHead title="Quản lý bài đăng - Admin" description="Quản lý bài đăng - learniverse & shariverse" url={window.location.href} origin="forum" />
 
-                <div className="col-12">
-                    <div className="card">
-                        <div className="card__body flex items-end justify-between">
-                            <div className="flex space-x-5">
-                                <SelectFilter
-                                    selectName="Chuyên bài đăng"
-                                    options={subsectionList}
-                                    selectedValue={subsection}
-                                    onChangeHandler={(e) => {
-                                        setCurrentPage(1);
-                                        setSubsection(e.target.value);
-                                    }}
-                                    name="subName"
-                                    field="slug"
-                                    required
-                                />
+            <div className="m-auto">
+                <div className="row">
+                    <div className="px-[15px]">
+                        <h2 className="page-header">Bài đăng</h2>
+                        <Button color="gray" className="mt-7 justify-self-end bg-white py-1.5" style={{ boxShadow: "var(--box-shadow)", borderRadius: "var(--border-radius)" }} onClick={handleAdd}>
+                            <i className="bx bxs-calendar-plus mr-3 text-xl hover:text-white" style={{ color: "var(--main-color)" }}></i>
+                            Thêm bài đăng
+                        </Button>
+                    </div>
 
-                                <SelectFilter
-                                    selectName="Nhãn"
-                                    options={labelList}
-                                    selectedValue={label}
-                                    onChangeHandler={(e) => {
-                                        setCurrentPage(1);
-                                        setLabel(e.target.value);
-                                    }}
-                                    name="labelName"
-                                    field="slug"
-                                    required
-                                />
+                    <div className="col-12">
+                        <div className="card">
+                            <div className="card__body flex items-end justify-between">
+                                <div className="flex space-x-5">
+                                    <SelectFilter
+                                        selectName="Chuyên bài đăng"
+                                        options={subsectionList}
+                                        selectedValue={subsection}
+                                        onChangeHandler={(e) => {
+                                            setCurrentPage(1);
+                                            setSubsection(e.target.value);
+                                        }}
+                                        name="subName"
+                                        field="slug"
+                                        required
+                                    />
 
-                                <SelectFilter
-                                    selectName="Sắp xếp"
-                                    options={orderList}
-                                    selectedValue={order}
-                                    onChangeHandler={(e) => {
-                                        setOrder(e.target.value);
-                                    }}
-                                    name="name"
-                                    field="order"
-                                    defaultName="Sắp xếp mặc định"
-                                    defaultValue="newest"
-                                    required
-                                />
-                            </div>
+                                    <SelectFilter
+                                        selectName="Nhãn"
+                                        options={labelList}
+                                        selectedValue={label}
+                                        onChangeHandler={(e) => {
+                                            setCurrentPage(1);
+                                            setLabel(e.target.value);
+                                        }}
+                                        name="labelName"
+                                        field="slug"
+                                        required
+                                    />
 
-                            <div className="relative rounded-lg mb-2 w-1/3">
-                                <input
-                                    type="text"
-                                    id="list-search"
-                                    className="text-sm text-black block w-full p-3 ps-5 border border-gray-300 bg-white focus:ring-0 focus:border-green-400 rounded-lg"
-                                    placeholder="Tìm kiếm"
-                                    onChange={(e) => {
-                                        setCurrentPage(1);
-                                        setSearch(e.target.value);
-                                    }}
-                                    value={search}
-                                    required
-                                />
+                                    <SelectFilter
+                                        selectName="Sắp xếp"
+                                        options={orderList}
+                                        selectedValue={order}
+                                        onChangeHandler={(e) => {
+                                            setOrder(e.target.value);
+                                        }}
+                                        name="name"
+                                        field="order"
+                                        defaultName="Sắp xếp mặc định"
+                                        defaultValue="newest"
+                                        required
+                                    />
+                                </div>
 
-                                <div className="absolute inset-y-0 end-0 flex items-center pe-5 cursor-pointer rounded-lg">
-                                    <svg className="w-4 h-4 text-green-400 hover:text-green-200 focus:text-green-200 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                                    </svg>
+                                <div className="relative rounded-lg mb-2 w-1/3">
+                                    <input
+                                        type="text"
+                                        id="list-search"
+                                        className="text-sm text-black block w-full p-3 ps-5 border border-gray-300 bg-white focus:ring-0 focus:border-green-400 rounded-lg"
+                                        placeholder="Tìm kiếm"
+                                        onChange={(e) => {
+                                            setCurrentPage(1);
+                                            setSearch(e.target.value);
+                                        }}
+                                        value={search}
+                                        required
+                                    />
+
+                                    <div className="absolute inset-y-0 end-0 flex items-center pe-5 cursor-pointer rounded-lg">
+                                        <svg className="w-4 h-4 text-green-400 hover:text-green-200 focus:text-green-200 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                        </svg>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div className="card">
-                        <div className="card__body">
-                            {postList.length === 0 && !isFetching && <p className="mt-2 mb-4 font-medium text-center">Không có kết quả!</p>}
+                        <div className="card">
+                            <div className="card__body">
+                                {postList.length === 0 && !isFetching && <p className="mt-2 mb-4 font-medium text-center">Không có kết quả!</p>}
 
-                            {postList.length > 0 && <Table totalPages="10" headData={tableHead} renderHead={(item, index) => renderHead(item, index)} bodyData={postList} renderBody={(item, index) => renderBody(item, index)} />}
+                                {postList.length > 0 && <Table totalPages="10" headData={tableHead} renderHead={(item, index) => renderHead(item, index)} bodyData={postList} renderBody={(item, index) => renderBody(item, index)} />}
 
-                            {isFetching && <Spinner color="success" className="flex items-center w-full mb-2 mt-2" style={{ color: "var(--main-color)" }} />}
+                                {isFetching && <Spinner color="success" className="flex items-center w-full mb-2 mt-2" style={{ color: "var(--main-color)" }} />}
 
-                            {totalPages > 1 && (
-                                <div className="flex overflow-x-auto sm:justify-center">
-                                    <Pagination previousLabel="" nextLabel="" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} showIcons />
-                                </div>
-                            )}
+                                {totalPages > 1 && (
+                                    <div className="flex overflow-x-auto sm:justify-center">
+                                        <Pagination previousLabel="" nextLabel="" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} showIcons />
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <Modal show={openDeleteModal} size="md" onClose={() => setOpenDeleteModal(false)} popup className="z-40">
+                    <Modal.Header />
+                    <Modal.Body>
+                        <div className="text-center">
+                            <HiDocumentRemove className="mx-auto mb-4 h-14 w-14 text-red-600 dark:text-gray-200" />
+                            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có chắc chắn muốn xoá bài đăng này không?</h3>
+                            <div className="flex justify-center gap-4">
+                                <Button color="failure" isProcessing={isLoading} disabled={isLoading} onClick={() => deleteThisPost(postId)}>
+                                    Chắc chắn
+                                </Button>
+                                <Button color="gray" disabled={isLoading} onClick={() => setOpenDeleteModal(false)}>
+                                    Huỷ bỏ
+                                </Button>
+                            </div>
+                        </div>
+                    </Modal.Body>
+                </Modal>
             </div>
-
-            <Modal show={openDeleteModal} size="md" onClose={() => setOpenDeleteModal(false)} popup className="z-40">
-                <Modal.Header />
-                <Modal.Body>
-                    <div className="text-center">
-                        <HiDocumentRemove className="mx-auto mb-4 h-14 w-14 text-red-600 dark:text-gray-200" />
-                        <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có chắc chắn muốn xoá bài đăng này không?</h3>
-                        <div className="flex justify-center gap-4">
-                            <Button color="failure" isProcessing={isLoading} disabled={isLoading} onClick={() => deleteThisPost(postId)}>
-                                Chắc chắn
-                            </Button>
-                            <Button color="gray" disabled={isLoading} onClick={() => setOpenDeleteModal(false)}>
-                                Huỷ bỏ
-                            </Button>
-                        </div>
-                    </div>
-                </Modal.Body>
-            </Modal>
-        </div>
+        </>
     );
 };
 

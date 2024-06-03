@@ -119,7 +119,7 @@ const ListPosts = () => {
 
     return (
         <>
-            <PageHead title={"Danh sách bài đăng" + (section === "" ? "" : "của chuyên mục " + section)} description={"Danh sách bài đăng" + (section === "" ? "" : "của " + section)} url={window.location.href} origin="forum" />
+            <PageHead title={"Danh sách bài đăng" + (section === "" ? "" : "của chuyên mục " + section)} description={"Danh sách bài đăng" + (section === "" ? "" : "của " + section) + " - learniverse & shariverse"} url={window.location.href} origin="forum" />
 
             <div className="w-11/12 m-auto p-5">
                 <div className="w-fit flex justify-end ml-auto items-center mb-2 ">
@@ -214,7 +214,7 @@ const ListPosts = () => {
                                                                 {post.userPosted.lastName} {post.userPosted.firstName}
                                                             </span>
                                                             <span className="text-gray-900"> ● </span>
-                                                            <span className="text-gray-400 text-sm">{moment(post.createdAt).format("DD/MM/yyyy")}</span>
+                                                            <span className="text-gray-400 text-sm">{moment(post.createdAt).calendar()}</span>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -241,7 +241,7 @@ const ListPosts = () => {
                                                         <p className="text-green-600 hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/users/${post.post.latestReply.user.userId}`)}>
                                                             {post.latestReply.user && post.latestReply.user.lastName} {post.latestReply.user && post.latestReply.user.firstName}
                                                         </p>
-                                                        <p className="text-gray-400 text-sm">{moment(post.latestReply.createdAt).format("DD/MM/yyyy")}</p>
+                                                        <p className="text-gray-400 text-sm">{moment(post.latestReply.createdAt).calendar()}</p>
                                                     </>
                                                 )}
 
@@ -250,7 +250,7 @@ const ListPosts = () => {
                                                         <p className="text-green-600 hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/users/${post.userPosted.userId}`)}>
                                                             {post.userPosted.lastName} {post.userPosted.firstName}
                                                         </p>
-                                                        <p className="text-gray-400 text-sm">{moment(post.createdAt).format("DD/MM/yyyy")}</p>
+                                                        <p className="text-gray-400 text-sm">{moment(post.createdAt).calendar()}</p>
                                                     </>
                                                 )}
                                             </td>

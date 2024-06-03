@@ -1,27 +1,49 @@
 import { uploadImageForReply } from "@api/main/imageAPI";
-import { deleteAPost, getAPost, getAPostForGuest, getHistoryOfPost, likePost } from "@api/main/postAPI";
-import { addAReply, deleteAReply, editAReply, getHistoryOfReply, getRepliesForGuest, getViewableRepliesOfPost, likeReply } from "@api/main/replyAPI";
+import { acceptPost, deleteAPost, getAPost, getAPostForGuest, getHistoryOfPost, getRelatedPostsForAPost, likePost, undoAcceptPost } from "@api/main/postAPI";
+import { acceptReply, addAReply, deleteAReply, editAReply, getHistoryOfReply, getRepliesForGuest, getViewableRepliesOfPost, likeReply, undoAcceptReply } from "@api/main/replyAPI";
 import usePrivateAxios from "@api/usePrivateAxios";
 import "@assets/css/standard.css";
+import AvatarGroup from "@components/forum/avatar/AvatarGroup";
 import Error404 from "@components/forum/error/404Error";
 import PostHistoryModal from "@components/forum/modal/PostHistoryModal";
 import ReplyHistoryModal from "@components/forum/modal/ReplyHistoryModal";
 import ReportModal from "@components/forum/modal/ReportModal";
 import PageHead from "@components/shared/head/PageHead";
+import Spinner from "@components/shared/spinner/Spinner";
 import DOMPurify from "dompurify";
 import { Avatar, Breadcrumb, Button, Modal, Pagination, Tooltip } from "flowbite-react";
 import moment from "moment";
+import * as Emoji from "quill-emoji";
+import "quill-emoji/dist/quill-emoji.css";
+import "quill/dist/quill.snow.css";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { render } from "react-dom";
-import { HiFlag, HiHome, HiOutlineThumbUp, HiOutlineUser, HiOutlineX, HiPencil, HiReply, HiThumbUp, HiTrash } from "react-icons/hi";
+import { BsHeart, BsHeartFill } from "react-icons/bs";
+import { HiFlag, HiHome, HiOutlineChatAlt2, HiOutlineUser, HiOutlineX, HiPencil, HiTrash } from "react-icons/hi";
 import { IoEyeOff } from "react-icons/io5";
 import { LuEye } from "react-icons/lu";
+import { PiCheckFat, PiCheckFatFill } from "react-icons/pi";
 import { RiChatHistoryFill, RiChatHistoryLine } from "react-icons/ri";
+import { TbMessageForward } from "react-icons/tb";
 import { WiTime4 } from "react-icons/wi";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import { useNavigate, useParams } from "react-router-dom";
+import ReactQuill, { Quill } from "react-quill";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { Bounce, toast } from "react-toastify";
 import "./post.css";
+
+Quill.register("modules/emoji", Emoji);
+
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const DetailPost = () => {
     const { postId } = useParams();
@@ -35,6 +57,7 @@ const DetailPost = () => {
 
     const [post, setPost] = useState(null);
     const [replyList, setReplyList] = useState([]);
+    const [postList, setPostList] = useState([]);
     const [postHistory, setPostHistory] = useState([]);
     const [replyHistory, setReplyHistory] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -53,6 +76,7 @@ const DetailPost = () => {
     const [triggerReplyModal, setTriggerReplyModal] = useState(0);
     const [triggerReportModal, setTriggerReportModal] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingImage, setIsLoadingImage] = useState(false);
     const [notFound, setNotFound] = useState(false);
 
     let editedReply = "";
@@ -66,6 +90,7 @@ const DetailPost = () => {
         getPostDetail();
         setCurrentPage(1);
         getPostReply();
+        getRelatedPost();
     }, [postId]);
 
     useEffect(() => {
@@ -127,6 +152,18 @@ const DetailPost = () => {
         }
     };
 
+    const getRelatedPost = async () => {
+        try {
+            const response = await getRelatedPostsForAPost(postId);
+
+            if (response.status === 200) {
+                setPostList(response.data.content);
+            }
+        } catch (error) {
+            navigate("/error-500");
+        }
+    };
+
     const getPostHistory = async () => {
         try {
             const response = await getHistoryOfPost(postId);
@@ -152,30 +189,122 @@ const DetailPost = () => {
     };
 
     const handlePostLike = async () => {
-        try {
-            const response = await likePost(postId);
-            if (response.status === 200) getPostDetail();
-        } catch (error) {
-            navigate("/error-500");
+        if (post && post.my) {
+            toast.error(<p className="pr-2">Bạn không thể thích/bỏ thích bài đăng của mình!</p>, toastOptions);
+        } else {
+            try {
+                const response = await likePost(postId);
+                if (response.status === 200) {
+                    getPostDetail();
+                }
+            } catch (error) {
+                navigate("/error-500");
+            }
         }
     };
 
-    const handleReplyLike = async (replyId) => {
-        try {
-            const response = await likeReply(replyId);
-            if (response.status === 200) getPostReply();
-        } catch (error) {
-            navigate("/error-500");
+    const handleReplyLike = async (reply) => {
+        if (reply && reply.my) {
+            toast.error(<p className="pr-2">Bạn không thể thích/bỏ thích phản hồi của mình!</p>, toastOptions);
+        } else {
+            try {
+                const response = await likeReply(reply && reply.replyId);
+                if (response.status === 200) {
+                    getPostReply();
+                }
+            } catch (error) {
+                navigate("/error-500");
+            }
+        }
+    };
+
+    const handlePostAccept = async () => {
+        if (post && post.my) {
+            toast.error(<p className="pr-2">Bạn không thể đánh dấu bài đăng của mình là hữu ích!</p>, toastOptions);
+        } else {
+            try {
+                const response = await acceptPost(postId);
+                if (response.status === 200) {
+                    toast.success(<p className="pr-2">Đã đánh dấu bài đăng là hữu ích!</p>, toastOptions);
+                    getPostDetail();
+                } else {
+                    toast.error(<p className="pr-2">Đã xảy ra lỗi khi đánh dấu bài đăng!</p>, toastOptions);
+                }
+            } catch (error) {
+                navigate("/error-500");
+            }
+        }
+    };
+
+    const handlePostUndoAccept = async () => {
+        if (post && post.my) {
+            toast.error(<p className="pr-2">Bạn không thể bỏ đánh dấu bài đăng của mình!</p>, toastOptions);
+        } else {
+            try {
+                const response = await undoAcceptPost(postId);
+                if (response.status === 200) {
+                    toast.success(<p className="pr-2">Đã xoá đánh dấu bài đăng!</p>, toastOptions);
+                    getPostDetail();
+                } else {
+                    toast.error(<p className="pr-2">Đã xảy ra lỗi khi xoá đánh dấu bài đăng!</p>, toastOptions);
+                }
+            } catch (error) {
+                navigate("/error-500");
+            }
+        }
+    };
+
+    const handleReplyAccept = async (reply) => {
+        if (post && !post.my) {
+            toast.error(<p className="pr-2">Chỉ có chủ bài đăng mới có thể xoá đánh dấu phản hồi này!</p>, toastOptions);
+        } else if (reply && reply.my) {
+            toast.error(<p className="pr-2">Bạn không thể đánh dấu phản hồi của mình!</p>, toastOptions);
+        } else {
+            try {
+                const response = await acceptReply(reply && reply.replyId);
+                if (response.status === 200) {
+                    toast.success(<p className="pr-2">Đã đánh dấu phản hồi là hữu ích!</p>, toastOptions);
+                    getPostReply();
+                } else {
+                    toast.error(<p className="pr-2">Đã xảy ra lỗi khi đánh dấu phản hồi!</p>, toastOptions);
+                }
+            } catch (error) {
+                navigate("/error-500");
+            }
+        }
+    };
+
+    const handleReplyUndoAccept = async (reply) => {
+        if (post && !post.my) {
+            toast.error(<p className="pr-2">Chỉ có chủ bài đăng mới có thể xoá đánh dấu phản hồi này!</p>, toastOptions);
+        } else if (reply && reply.my) {
+            toast.error(<p className="pr-2">Bạn không thể bỏ đánh dấu phản hồi của mình!</p>, toastOptions);
+        } else {
+            try {
+                const response = await undoAcceptReply(reply && reply.replyId);
+                if (response.status === 200) {
+                    toast.success(<p className="pr-2">Đã xoá đánh dấu bài đăng!</p>, toastOptions);
+                    getPostReply();
+                } else {
+                    toast.error(<p className="pr-2">Đã xảy ra lỗi khi xoá đánh dấu bài đăng!</p>, toastOptions);
+                }
+            } catch (error) {
+                navigate("/error-500");
+            }
         }
     };
 
     const handleAddReply = async () => {
         try {
+            setIsLoading(true);
+
             const data = {
                 content: reply,
                 parentReplyId: parentReplyId,
             };
             const response = await addAReply(postId, data);
+
+            setIsLoading(false);
 
             if (response.status === 200) {
                 getPostReply();
@@ -191,10 +320,14 @@ const DetailPost = () => {
 
     const handleEditReply = async (replyId) => {
         try {
+            setIsLoading(true);
+
             const data = {
                 content: editedReply,
             };
             const response = await editAReply(replyId, data);
+
+            setIsLoading(false);
 
             if (response.status === 200) {
                 getPostReply();
@@ -216,9 +349,10 @@ const DetailPost = () => {
             const response = await deleteAPost(postId);
             if (response.status === 200) navigate("/forum");
             else {
-                setIsLoading(false);
-                setOpenPostModal(false);
+                toast.error(<p className="pr-2">Đã xảy ra lỗi khi xoá bài đăng!</p>, toastOptions);
             }
+            setIsLoading(false);
+            setOpenPostModal(false);
         } catch (error) {
             navigate("/error-500");
         }
@@ -230,9 +364,10 @@ const DetailPost = () => {
             const response = await deleteAReply(replyId);
             if (response.status === 200) getPostReply();
             else {
-                setIsLoading(false);
-                setOpenPostModal(false);
+                toast.error(<p className="pr-2">Đã xảy ra lỗi khi xoá phản hồi!</p>, toastOptions);
             }
+            setIsLoading(false);
+            setOpenReplyModal(false);
         } catch (error) {
             navigate("/error-500");
         }
@@ -295,7 +430,7 @@ const DetailPost = () => {
 
         const newHtmlContent = (
             <>
-                <div className="h-52">
+                <div className="h-60">
                     <ReactQuill
                         ref={(el) => (editQuill.current = el)}
                         theme="snow"
@@ -309,13 +444,15 @@ const DetailPost = () => {
                     />
                 </div>
 
-                <div className="pt-3 text-green-500 text-sm mt-2 flex justity-end space-x-3">
+                <div className="pt-3 text-green-500 text-sm mt-8 flex justity-end space-x-3">
                     <Button
                         className="ml-auto bg-green-400 enabled:hover:bg-green-500"
                         onClick={() => {
                             handleEditReply(reply.replyId);
-                        }}>
-                        <HiReply className="mr-2 h-5 w-5 " />
+                        }}
+                        isProcessing={isLoading}
+                        disabled={isLoading}>
+                        <TbMessageForward className="mr-2 h-5 w-5" />
                         Cập nhật phản hồi
                     </Button>
 
@@ -324,7 +461,8 @@ const DetailPost = () => {
                         onClick={() => {
                             render(oldHtmlContent, editReplySection);
                             editQuill.current.getEditor().setText("");
-                        }}>
+                        }}
+                        disabled={isLoading}>
                         <HiOutlineX className="mr-2 h-5 w-5 " />
                         Huỷ bỏ
                     </Button>
@@ -343,6 +481,8 @@ const DetailPost = () => {
         input.click();
 
         input.onchange = async () => {
+            setIsLoadingImage(true);
+
             const file = input.files[0];
 
             const formData = new FormData();
@@ -356,14 +496,20 @@ const DetailPost = () => {
 
             const response = await uploadImageForReply(formData, config);
 
-            const imageUrl = response.message;
+            setIsLoadingImage(false);
 
-            const quillEditor = mainQuill.current.getEditor();
+            if (response.status === 200) {
+                const imageUrl = response.message;
 
-            if (mainQuill) {
-                // Get the current selection range and insert the image at that index
-                const range = quillEditor.getSelection(true);
-                quillEditor.insertEmbed(range.index, "image", imageUrl, "user");
+                const quillEditor = mainQuill.current.getEditor();
+
+                if (mainQuill) {
+                    // Get the current selection range and insert the image at that index
+                    const range = quillEditor.getSelection(true);
+                    quillEditor.insertEmbed(range.index, "image", imageUrl, "user");
+                }
+            } else {
+                toast.error(<p className="pr-2">Đã xảy ra lỗi khi tải ảnh lên!</p>, toastOptions);
             }
         };
     }, []);
@@ -373,14 +519,19 @@ const DetailPost = () => {
             toolbar: {
                 container: [
                     [{ font: [] }],
+                    [{ size: ["small", false, "large", "huge"] }],
                     [{ header: [1, 2, 3, 4, 5, 6, false] }],
+                    [{ header: 1 }, { header: 2 }],
                     ["bold", "italic", "underline", "strike"],
                     [{ color: [] }, { background: [] }],
+                    [{ align: [] }],
+                    [{ indent: "-1" }, { indent: "+1" }],
+                    [{ direction: "rtl" }],
+                    [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
                     [{ script: "sub" }, { script: "super" }],
                     ["blockquote", "code-block"],
-                    [{ list: "ordered" }, { list: "bullet" }],
-                    [{ indent: "-1" }, { indent: "+1" }, { align: [] }],
-                    ["link", "image"],
+                    ["link", "image", "video", "formula"],
+                    ["emoji"],
                     ["clean"],
                 ],
                 handlers: {
@@ -390,6 +541,9 @@ const DetailPost = () => {
             clipboard: {
                 matchVisual: false,
             },
+            "emoji-toolbar": true,
+            "emoji-textarea": true,
+            "emoji-shortname": true,
         }),
         [imageHandler],
     );
@@ -402,6 +556,8 @@ const DetailPost = () => {
         input.click();
 
         input.onchange = async () => {
+            setIsLoadingImage(true);
+
             const file = input.files[0];
 
             const formData = new FormData();
@@ -415,14 +571,20 @@ const DetailPost = () => {
 
             const response = await uploadImageForReply(formData, config);
 
-            const imageUrl = response.message;
+            setIsLoadingImage(false);
 
-            const quillEditor = editQuill.current.getEditor();
+            if (response.status === 200) {
+                const imageUrl = response.message;
 
-            if (editQuill) {
-                // Get the current selection range and insert the image at that index
-                const range = quillEditor.getSelection(true);
-                quillEditor.insertEmbed(range.index, "image", imageUrl, "user");
+                const quillEditor = editQuill.current.getEditor();
+
+                if (editQuill) {
+                    // Get the current selection range and insert the image at that index
+                    const range = quillEditor.getSelection(true);
+                    quillEditor.insertEmbed(range.index, "image", imageUrl, "user");
+                }
+            } else {
+                toast.error(<p className="pr-2">Đã xảy ra lỗi khi tải ảnh lên!</p>, toastOptions);
             }
         };
     }, []);
@@ -432,14 +594,19 @@ const DetailPost = () => {
             toolbar: {
                 container: [
                     [{ font: [] }],
+                    [{ size: ["small", false, "large", "huge"] }],
                     [{ header: [1, 2, 3, 4, 5, 6, false] }],
+                    [{ header: 1 }, { header: 2 }],
                     ["bold", "italic", "underline", "strike"],
                     [{ color: [] }, { background: [] }],
+                    [{ align: [] }],
+                    [{ indent: "-1" }, { indent: "+1" }],
+                    [{ direction: "rtl" }],
+                    [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
                     [{ script: "sub" }, { script: "super" }],
                     ["blockquote", "code-block"],
-                    [{ list: "ordered" }, { list: "bullet" }],
-                    [{ indent: "-1" }, { indent: "+1" }, { align: [] }],
-                    ["link", "image"],
+                    ["link", "image", "video", "formula"],
+                    ["emoji"],
                     ["clean"],
                 ],
                 handlers: {
@@ -449,17 +616,20 @@ const DetailPost = () => {
             clipboard: {
                 matchVisual: false,
             },
+            "emoji-toolbar": true,
+            "emoji-textarea": true,
+            "emoji-shortname": true,
         }),
         [imageHandlerForEdit],
     );
 
-    const formats = ["header", "bold", "italic", "underline", "strike", "blockquote", "list", "bullet", "indent", "link", "image", "color", "clean"];
+    const formats = ["font", "header", "bold", "italic", "underline", "strike", "blockquote", "code-block", "list", "1", "2", "indent", "direction", "size", "link", "image", "video", "formula", "color", "background", "script", "align", "emoji", "clean"];
 
     if (notFound) return <Error404 name="post" />;
 
     return (
         <>
-            <PageHead title={post && post.title} description={post && post.content.replace(/(<([^>]+)>)/gi, "")} url={window.location.href} origin="forum" />
+            <PageHead title={post && post.title} description={`${post && post.content.replace(/(<([^>]+)>)/gi, "")} - learniverse & shariverse`} url={window.location.href} origin="forum" />
 
             <div className="w-[95%] m-auto min-h-screen h-max p-5 main-section">
                 <Breadcrumb aria-label="Post breadcrumb" className="breadcrumb cursor-pointer">
@@ -494,6 +664,14 @@ const DetailPost = () => {
                                 </div>
 
                                 <div>{post && post.updatedAt ? <p>{moment(post.updatedAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p> : <p>{moment(post && post.createdAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p>}</div>
+                            </div>
+
+                            <div className="flex space-x-2 items-end">
+                                <div className="flex items-end text-xl mb-1">
+                                    <HiOutlineChatAlt2 />
+                                </div>
+
+                                <p>{post && post.totalReplies}</p>
                             </div>
 
                             <div className="flex space-x-2 items-end">
@@ -548,12 +726,46 @@ const DetailPost = () => {
                             </div>
 
                             {post && post.userPosted && post.userPosted.badge && (
-                                <div className="flex justify-center mb-2">
-                                    <Tooltip content={post.userPosted.badge.badgeName}>
+                                <div className="flex justify-center mt-2">
+                                    <Tooltip content={post.userPosted.badge.badgeName} style="light">
                                         <Avatar alt="Badge" img={post.userPosted.badge.image} rounded />
                                     </Tooltip>
                                 </div>
                             )}
+
+                            <div className="flex justify-center text-green-500 mt-5">
+                                {post && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled ? (
+                                    <>
+                                        {post && post.subsection && post.subsection.postAcceptable && (
+                                            <>
+                                                {post.accepted ? (
+                                                    <Tooltip content="Bạn đã đánh dấu bài đăng này là hữu ích. Nhấn để bỏ đánh dấu" style="light">
+                                                        <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handlePostUndoAccept(postId)}>
+                                                            <PiCheckFatFill className="text-5xl hover:text-green-300 active:text-green-200 cursor-pointer" />
+                                                        </button>
+                                                    </Tooltip>
+                                                ) : (
+                                                    <Tooltip content="Đánh dấu bài đăng này nếu nó giúp ích cho bạn" style="light">
+                                                        <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handlePostAccept(postId)}>
+                                                            <PiCheckFat className="text-5xl hover:fill-green-500 active:fill-green-600 active:text-green-600 cursor-pointer" />
+                                                        </button>
+                                                    </Tooltip>
+                                                )}
+                                            </>
+                                        )}
+                                    </>
+                                ) : (
+                                    <>
+                                        {post && post.subsection && post.subsection.postAcceptable && (
+                                            <>
+                                                <button className="bg-transparent">
+                                                    <PiCheckFatFill className="text-5xl" />
+                                                </button>
+                                            </>
+                                        )}
+                                    </>
+                                )}
+                            </div>
                         </div>
 
                         <div className={`col-span-3 p-5 ${post && post.disabled ? "bg-red-100" : "bg-green-100"}`}>
@@ -605,28 +817,37 @@ const DetailPost = () => {
                             <div className="py-3">{post && <div className="content-format" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }} />}</div>
 
                             <div className="flex justify-between py-3 text-green-500 text-sm">
-                                <div className="flex space-x-2 items-end">
-                                    {post && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled && (
+                                <div className="flex items-end">
+                                    {post && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled ? (
                                         <>
-                                            {post && post.liked && (
-                                                <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handlePostLike(postId)}>
-                                                    <HiThumbUp className="text-2xl hover:text-green-300 active:text-green-200 cursor-pointer" />
-                                                </button>
+                                            {post && post.liked ? (
+                                                <Tooltip content="Bạn đã thích bài đăng này. Nhấn để bỏ thích" style="light">
+                                                    <button className="mr-3 transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handlePostLike(postId)}>
+                                                        <BsHeartFill className="text-xl text-red-600 hover:text-red-300 active:text-red-200 cursor-pointer" />
+                                                    </button>
+                                                </Tooltip>
+                                            ) : (
+                                                <Tooltip content="Thích bài đăng" style="light">
+                                                    <button className="mr-3 transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handlePostLike(postId)}>
+                                                        <BsHeart className="text-xl font-medium text-red-600 hover:fill-red-500 active:fill-red-600 active:text-red-600 cursor-pointer" />
+                                                    </button>
+                                                </Tooltip>
                                             )}
-                                            {post && !post.liked && (
-                                                <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handlePostLike(postId)}>
-                                                    <HiOutlineThumbUp className="text-2xl hover:fill-green-500 active:fill-green-600 active:text-green-600 cursor-pointer" />
-                                                </button>
-                                            )}
+                                        </>
+                                    ) : (
+                                        <>
+                                            <button className="mr-3 bg-transparent">
+                                                <BsHeartFill className="text-xl text-red-600" />
+                                            </button>
                                         </>
                                     )}
 
-                                    <p>{post && post.totalLikes} lượt thích</p>
+                                    {post && post.peopleLiked && post.peopleLiked.length > 0 && <AvatarGroup images={post.peopleLiked} />}
                                 </div>
 
                                 {post && !post.disabled && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled && (
                                     <div className="flex space-x-2 items-end cursor-pointer hover:text-orange-500 hover:underline" onClick={() => handleReplySection(null)}>
-                                        <HiReply className="text-2xl" />
+                                        <TbMessageForward className="text-2xl" />
                                         <p>Phản hồi</p>
                                     </div>
                                 )}
@@ -653,11 +874,45 @@ const DetailPost = () => {
 
                                                 {reply.user && reply.user.badge && (
                                                     <div className="flex justify-center mt-2">
-                                                        <Tooltip content={reply.user.badge.badgeName}>
+                                                        <Tooltip content={reply.user.badge.badgeName} style="light">
                                                             <Avatar alt="Badge" img={reply.user.badge.image} rounded />
                                                         </Tooltip>
                                                     </div>
                                                 )}
+
+                                                <div className="flex justify-center text-green-500 mt-5">
+                                                    {post && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled ? (
+                                                        <>
+                                                            {post && post.subsection && post.subsection.replyAcceptable && !reply.my && (
+                                                                <>
+                                                                    {reply && reply.accepted ? (
+                                                                        <Tooltip content="Bạn đã đánh dấu phản hồi này là hữu ích. Nhấn để bỏ đánh dấu" style="light">
+                                                                            <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handleReplyUndoAccept(reply)}>
+                                                                                <PiCheckFatFill className="text-5xl hover:text-green-300 active:text-green-200 cursor-pointer" />
+                                                                            </button>
+                                                                        </Tooltip>
+                                                                    ) : (
+                                                                        <Tooltip content="Đánh dấu phản hồi này nếu nó giải quyết vấn đề của bạn hoặc hữu ích nhất" style="light">
+                                                                            <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handleReplyAccept(reply)}>
+                                                                                <PiCheckFat className="text-5xl hover:fill-green-500 active:fill-green-600 active:text-green-600 cursor-pointer" />
+                                                                            </button>
+                                                                        </Tooltip>
+                                                                    )}
+                                                                </>
+                                                            )}
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            {post && post.subsection && post.subsection.postAcceptable && (
+                                                                <>
+                                                                    <button className="bg-transparent">
+                                                                        <PiCheckFatFill className="text-5xl" />
+                                                                    </button>
+                                                                </>
+                                                            )}
+                                                        </>
+                                                    )}
+                                                </div>
                                             </div>
 
                                             <div className={`col-span-3 p-5 ${reply.disabled && "bg-red-100"}`}>
@@ -737,28 +992,37 @@ const DetailPost = () => {
                                                 </div>
 
                                                 <div className="flex justify-between text-green-500 text-sm">
-                                                    <div className="flex space-x-2 items-end">
-                                                        {post && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled && (
+                                                    <div className="flex items-end">
+                                                        {post && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled ? (
                                                             <>
-                                                                {reply.liked && (
-                                                                    <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125  duration-150 bg-transparent" onClick={() => handleReplyLike(reply.replyId)}>
-                                                                        <HiThumbUp className="text-2xl hover:text-green-300 active:text-green-200 cursor-pointer" />
-                                                                    </button>
-                                                                )}
-
-                                                                {!reply.liked && (
-                                                                    <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125  duration-150 bg-transparent" onClick={() => handleReplyLike(reply.replyId)}>
-                                                                        <HiOutlineThumbUp className="text-2xl hover:fill-green-500 active:fill-green-600 active:text-green-600 cursor-pointer" />
-                                                                    </button>
+                                                                {reply.liked ? (
+                                                                    <Tooltip content="Bạn đã thích phản hồi này. Nhấn để bỏ thích" style="light">
+                                                                        <button className="mr-3 transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handleReplyLike(reply)}>
+                                                                            <BsHeartFill className="text-xl text-red-600 hover:text-red-300 active:text-red-200 cursor-pointer" />
+                                                                        </button>
+                                                                    </Tooltip>
+                                                                ) : (
+                                                                    <Tooltip content="Thích phản hồi" style="light">
+                                                                        <button className="mr-3 transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handleReplyLike(reply)}>
+                                                                            <BsHeart className="text-xl font-medium text-red-600 hover:fill-red-500 active:fill-red-600 active:text-red-600 cursor-pointer" />
+                                                                        </button>
+                                                                    </Tooltip>
                                                                 )}
                                                             </>
+                                                        ) : (
+                                                            <>
+                                                                <button className="mr-3 bg-transparent">
+                                                                    <BsHeartFill className="text-xl text-red-600" />
+                                                                </button>
+                                                            </>
                                                         )}
-                                                        <p>{reply.totalLikes} lượt thích</p>
+
+                                                        {reply && reply.peopleLiked && reply.peopleLiked.length > 0 && <AvatarGroup images={reply.peopleLiked} />}
                                                     </div>
 
                                                     {post && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled && (
                                                         <div className="flex space-x-2 items-end cursor-pointer hover:text-orange-500 hover:underline" onClick={() => handleReplySection(reply)}>
-                                                            <HiReply className="text-2xl" />
+                                                            <TbMessageForward className="text-2xl" />
                                                             <p>Phản hồi</p>
                                                         </div>
                                                     )}
@@ -799,17 +1063,19 @@ const DetailPost = () => {
                                 <div className="col-span-3 p-5" id="reply-section">
                                     <div id="parent-reply-section"></div>
 
-                                    <div className="h-52">
+                                    <div className="h-60">
                                         <ReactQuill ref={(el) => (mainQuill.current = el)} theme="snow" modules={modules} formats={formats} value={reply} onChange={(e) => setReply(e)} className="h-full" />
                                     </div>
 
-                                    <div className="pt-3 text-green-500 text-sm mt-2">
+                                    <div className="pt-3 text-green-500 text-sm mt-8">
                                         <Button
                                             className="ml-auto bg-green-400 enabled:hover:bg-green-500"
                                             onClick={() => {
                                                 handleAddReply();
-                                            }}>
-                                            <HiReply className="mr-2 h-5 w-5 " />
+                                            }}
+                                            isProcessing={isLoading}
+                                            disabled={isLoading}>
+                                            <TbMessageForward className="mr-2 h-5 w-5 " />
                                             Đăng phản hồi
                                         </Button>
                                     </div>
@@ -823,6 +1089,30 @@ const DetailPost = () => {
                         <Pagination layout="pagination" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} previousLabel="Trước" nextLabel="Tiếp" showIcons className="text-sm" />
                     </div>
                 )}
+
+                {postList.length > 0 && (
+                    <div className="w-fit bg-white mt-5 p-5 rounded-lg space-y-3 shadow-lg shadow-gray-300">
+                        <h2 className="text-2xl font-semibold">Có thể bạn quan tâm</h2>
+
+                        {postList.map((post, index) => (
+                            <div key={index} className="flex space-x-2 items-center">
+                                <div className="flex rounded bg-green-500 text-white p-2 items-center space-x-2 font-medium">
+                                    <LuEye />
+                                    <p className="text-sm">{post.totalViews}</p>
+                                </div>
+
+                                <div className="flex rounded bg-green-500 text-white p-2 items-center space-x-2 font-medium">
+                                    <HiOutlineChatAlt2 />
+                                    <p className="text-sm">{post.totalReplies}</p>
+                                </div>
+
+                                <Link className="hover:!text-green-600 cursor-pointer hover:!no-underline !not-italic related-post" to={`/forum/posts/${post.postId}`}>
+                                    {post.title}
+                                </Link>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
 
             <ReportModal target={target} targetId={targetId} openReportModal={openReportModal} triggerModal={triggerReportModal} />
@@ -834,7 +1124,7 @@ const DetailPost = () => {
                         <HiTrash className="mx-auto mb-4 h-14 w-14 text-red-600 dark:text-gray-200" />
                         <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có chắc chắn muốn xoá bài viết này không?</h3>
                         <div className="flex justify-center gap-4">
-                            <Button color="failure" isProcessing={isLoading} onClick={handleDeletePost}>
+                            <Button color="failure" isProcessing={isLoading} disabled={isLoading} onClick={handleDeletePost}>
                                 {"Chắc chắn"}
                             </Button>
                             <Button color="gray" disabled={isLoading} onClick={() => setOpenPostModal(false)}>
@@ -852,7 +1142,7 @@ const DetailPost = () => {
                         <HiTrash className="mx-auto mb-4 h-14 w-14 text-red-600 dark:text-gray-200" />
                         <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có chắc chắn muốn xoá phản hồi này không?</h3>
                         <div className="flex justify-center gap-4">
-                            <Button color="failure" isProcessing={isLoading} onClick={handleDeleteReply}>
+                            <Button color="failure" isProcessing={isLoading} disabled={isLoading} onClick={handleDeleteReply}>
                                 {"Chắc chắn"}
                             </Button>
                             <Button color="gray" disabled={isLoading} onClick={() => setOpenReplyModal(false)}>
@@ -862,6 +1152,8 @@ const DetailPost = () => {
                     </div>
                 </Modal.Body>
             </Modal>
+
+            <Spinner loading={isLoadingImage} />
         </>
     );
 };

@@ -1,6 +1,7 @@
 import { getRecentDocuments } from "@api/main/documentAPI";
 import usePrivateAxios from "@api/usePrivateAxios";
 import DocumentCard from "@components/student/card/Card";
+import PageHead from "components/shared/head/PageHead";
 import { Toast } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { HiOutlineCheck, HiX } from "react-icons/hi";
@@ -43,6 +44,8 @@ const RecentDocument = () => {
 
     return (
         <>
+            <PageHead title="Tài liệu gần đây" description="Tài liệu gần đây - learniverse & shariverse" url={window.location.href} origin="lib" />
+
             {status === -1 && (
                 <Toast className="top-1/4 right-5 w-100 fixed z-50">
                     <HiX className="h-5 w-5 bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200" />

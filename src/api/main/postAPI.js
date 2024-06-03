@@ -99,9 +99,36 @@ export const getRelatedPosts = async (config) => {
     }
 };
 
+export const getRelatedPostsForAPost = async (postId, config) => {
+    try {
+        const response = await axios.get(`/posts/related/${postId}`, config);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const likePost = async (postId, config) => {
     try {
         const response = await privateAxios.post(`/posts/${postId}/like`, config);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const acceptPost = async (postId) => {
+    try {
+        const response = await privateAxios.post(`/posts/${postId}/accept`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const undoAcceptPost = async (postId) => {
+    try {
+        const response = await privateAxios.post(`/posts/${postId}/undo-accept`);
         return response.data;
     } catch (error) {
         throw error;

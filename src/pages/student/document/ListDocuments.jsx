@@ -6,6 +6,7 @@ import usePrivateAxios from "@api/usePrivateAxios";
 import sortOptions from "@assets/json-data/sortOptions.json";
 import FullCard from "@components/student/card/FullCard";
 import SelectFilter from "@components/student/select/SelectFilter";
+import PageHead from "components/shared/head/PageHead";
 import { Pagination, Spinner, Tooltip } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { HiX } from "react-icons/hi";
@@ -184,6 +185,8 @@ const ListDocument = () => {
 
     return (
         <>
+            <PageHead title="Tài liệu" description="Tài liệu - learniverse & shariverse" url={window.location.href} origin="lib" />
+
             <div className="flex-1 p-4 bg-gray-50 h-full">
                 <div className="rounded-lg bg-white py-5 px-10 w-full">
                     <div className="flex items-end justify-between gap-5">
@@ -227,9 +230,7 @@ const ListDocument = () => {
                         />
 
                         <Tooltip content="Xoá bộ lọc" style="light">
-                            <div
-                                className="text-green-400 rounded-full border h-fit p-3 mb-2 cursor-pointer hover:bg-green-400 active:border-2 hover:text-white active:border-2 active:border-green-100"
-                                onClick={handleClearFilter}>
+                            <div className="text-green-400 rounded-full border h-fit p-3 mb-2 cursor-pointer hover:bg-green-400 active:border-2 hover:text-white active:border-2 active:border-green-100" onClick={handleClearFilter}>
                                 <HiX className=" w-4 h-4" />
                             </div>
                         </Tooltip>
@@ -251,9 +252,7 @@ const ListDocument = () => {
                         </div>
 
                         <Tooltip content="Xoá tìm kiếm" style="light">
-                            <div
-                                className="text-green-400 rounded-full border h-full p-3 cursor-pointer ml-2 hover:bg-green-400 active:border-2 hover:text-white active:border-2 active:border-green-100"
-                                onClick={handleClearSearch}>
+                            <div className="text-green-400 rounded-full border h-full p-3 cursor-pointer ml-2 hover:bg-green-400 active:border-2 hover:text-white active:border-2 active:border-green-100" onClick={handleClearSearch}>
                                 <HiX className=" w-4 h-4" />
                             </div>
                         </Tooltip>

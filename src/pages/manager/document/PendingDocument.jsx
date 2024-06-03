@@ -3,6 +3,7 @@ import usePrivateAxios from "@api/usePrivateAxios";
 import ActionButton from "@components/management/action-button/ActionButton";
 import SelectFilter from "@components/management/select/SelectFilter";
 import Table from "@components/management/table/Table";
+import PageHead from "@components/shared/head/PageHead";
 import { Badge, Button, Label, Modal, Pagination, Spinner, TextInput } from "flowbite-react";
 import moment from "moment";
 import { useEffect, useState } from "react";
@@ -13,24 +14,24 @@ import { MdRemoveDone } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
 
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
+
 const ManagerPendingDocuments = () => {
     const verifiedStatus = [
         { name: "Chưa phê duyệt", value: 0 },
         { name: "Đã phê duyệt", value: 1 },
         { name: "Từ chối", value: -1 },
     ];
-
-    const toastOptions = {
-        position: "bottom-center",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-    };
 
     const tableHead = ["", "Tên", "Giới thiệu", "Trạng thái", ""];
 
@@ -180,6 +181,8 @@ const ManagerPendingDocuments = () => {
 
     return (
         <div>
+            <PageHead title="Duyệt tài liệu - Quản lý" description="Duyệt tài liệu - learniverse & shariverse" url={window.location.href} origin="lib" />
+
             <div className="row">
                 <div className="px-[15px]">
                     <h2 className="page-header">Tài liệu được chia sẻ bởi người dùng</h2>

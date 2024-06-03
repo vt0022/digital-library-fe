@@ -7,6 +7,7 @@ import Select from "@components/management/select/Select";
 import { getProfile, updateAvatar, updatePassword, updateProfile } from "@api/main/userAPI";
 import usePrivateAxios from "@api/usePrivateAxios";
 import profileImage from "@assets/images/default_profile.jpg";
+import PageHead from "components/shared/head/PageHead";
 
 let selectedPage = 0;
 
@@ -308,6 +309,8 @@ const StudentProfile = () => {
 
     return (
         <div>
+            <PageHead title="Trang cá nhân" description="Trang cá nhân - learniverse & shariverse" url={window.location.href} origin="lib" />
+
             {status === -1 && (
                 <Toast className="top-1/4 right-5 w-100 fixed z-50">
                     <HiX className="h-5 w-5 bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200" />

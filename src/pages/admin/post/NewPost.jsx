@@ -4,13 +4,32 @@ import { addAPost, getRelatedPosts } from "@api/main/postAPI";
 import { getAllSubsections } from "@api/main/sectionAPI";
 import usePrivateAxios from "@api/usePrivateAxios";
 import Select from "@components/management/select/Select";
-import { Button, Toast } from "flowbite-react";
+import PageHead from "@components/shared/head/PageHead";
+import Spinner from "@components/shared/spinner/Spinner";
+import { Button } from "flowbite-react";
 import moment from "moment";
+import * as Emoji from "quill-emoji";
+import "quill-emoji/dist/quill-emoji.css";
+import "quill/dist/quill.snow.css";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { HiOutlineCheck, HiOutlinePencilAlt, HiX } from "react-icons/hi";
-import ReactQuill from "react-quill";
+import { HiOutlinePencilAlt } from "react-icons/hi";
+import ReactQuill, { Quill } from "react-quill";
 import { useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
+
+Quill.register("modules/emoji", Emoji);
+
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const NewPost = () => {
     const navigate = useNavigate();
@@ -25,23 +44,12 @@ const NewPost = () => {
     const [label, setLabel] = useState("");
     const [subsection, setSubsection] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingImage, setIsLoadingImage] = useState(false);
     const [isSubsectionValid, setIsSubsectionValid] = useState(true);
     const [isTitleValid, setIsTitleValid] = useState(true);
     const [isContentValid, setIsContentValid] = useState(true);
 
     const quill = useRef();
-
-        const toastOptions = {
-            position: "bottom-center",
-            autoClose: 4000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: false,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-            transition: Bounce,
-        };
 
     useEffect(() => {
         getLabelList();
@@ -101,7 +109,7 @@ const NewPost = () => {
 
                 if (response.status === 200) {
                     toast.success(<p className="pr-2">Tạo bài đăng thành công!</p>, toastOptions);
-                        navigate("/admin/posts");
+                    navigate("/admin/posts");
                 } else {
                     toast.error(<p className="pr-2">Đã xảy ra lỗi, vui lòng thử lại!</p>, toastOptions);
                 }
@@ -130,6 +138,8 @@ const NewPost = () => {
         input.click();
 
         input.onchange = async () => {
+            setIsLoadingImage(true);
+
             const file = input.files[0];
 
             const formData = new FormData();
@@ -143,14 +153,20 @@ const NewPost = () => {
 
             const response = await uploadImageForReply(formData, config);
 
-            const imageUrl = response.message;
+            setIsLoadingImage(false);
 
-            const quillEditor = quill.current.getEditor();
+            if (response.status === 200) {
+                const imageUrl = response.message;
 
-            if (quill) {
-                // Get the current selection range and insert the image at that index
-                const range = quillEditor.getSelection(true);
-                quillEditor.insertEmbed(range.index, "image", imageUrl, "user");
+                const quillEditor = quill.current.getEditor();
+
+                if (quill) {
+                    // Get the current selection range and insert the image at that index
+                    const range = quillEditor.getSelection(true);
+                    quillEditor.insertEmbed(range.index, "image", imageUrl, "user");
+                }
+            } else {
+                toast.error(<p className="pr-2">Đã xảy ra lỗi khi tải ảnh lên!</p>, toastOptions);
             }
         };
     }, []);
@@ -160,14 +176,19 @@ const NewPost = () => {
             toolbar: {
                 container: [
                     [{ font: [] }],
+                    [{ size: ["small", false, "large", "huge"] }],
                     [{ header: [1, 2, 3, 4, 5, 6, false] }],
+                    [{ header: 1 }, { header: 2 }],
                     ["bold", "italic", "underline", "strike"],
                     [{ color: [] }, { background: [] }],
+                    [{ align: [] }],
+                    [{ indent: "-1" }, { indent: "+1" }],
+                    [{ direction: "rtl" }],
+                    [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
                     [{ script: "sub" }, { script: "super" }],
                     ["blockquote", "code-block"],
-                    [{ list: "ordered" }, { list: "bullet" }],
-                    [{ indent: "-1" }, { indent: "+1" }, { align: [] }],
-                    ["link", "image"],
+                    ["link", "image", "video", "formula"],
+                    ["emoji"],
                     ["clean"],
                 ],
                 handlers: {
@@ -177,14 +198,19 @@ const NewPost = () => {
             clipboard: {
                 matchVisual: true,
             },
+            "emoji-toolbar": true,
+            "emoji-textarea": true,
+            "emoji-shortname": true,
         }),
         [imageHandler],
     );
 
-    const formats = ["header", "bold", "italic", "underline", "strike", "blockquote", "list", "bullet", "indent", "link", "image", "color", "clean"];
+    const formats = ["font", "header", "bold", "italic", "underline", "strike", "blockquote", "code-block", "list", "1", "2", "indent", "direction", "size", "link", "image", "video", "formula", "color", "background", "script", "align", "emoji", "clean"];
 
     return (
         <>
+            <PageHead title="Tạo bài đăng mới - Admin" description="Tạo bài đăng mới - learniverse & shariverse" url={window.location.href} origin="forum" />
+
             <div className="w-5/6 m-auto min-h-screen h-max mt-5 p-5">
                 <div className="items-center mb-5 w-full border-b border-black py-2">
                     <p className="text-3xl font-medium">Bài đăng mới</p>
@@ -193,7 +219,7 @@ const NewPost = () => {
                     <div>
                         <div className="flex space-x-10">
                             <div>
-                                <p className="font-medium">Phân mục</p>
+                                <p className="font-medium">* Chuyên mục</p>
                                 <Select
                                     options={sectionList}
                                     selectedValue={subsection}
@@ -202,7 +228,7 @@ const NewPost = () => {
                                     }}
                                     name="subName"
                                     field="subId"
-                                    defaultName="Chọn phân mục"
+                                    defaultName="Chọn chuyên mục"
                                     required
                                 />
                             </div>
@@ -222,11 +248,11 @@ const NewPost = () => {
                             </div>
                         </div>
 
-                        {!isSubsectionValid && <p className="text-sm text-red-500">Vui lòng chọn phân mục</p>}
+                        {!isSubsectionValid && <p className="text-sm text-red-500">Vui lòng chọn chuyên mục</p>}
                     </div>
 
                     <div className="w-full">
-                        <p className="font-medium">Tiêu đề</p>
+                        <p className="font-medium">* Tiêu đề</p>
                         <p className="text-sm text-gray-500 mb-2">Hãy cố gắng đặt tiêu đề một cách ngắn gọn, rõ ràng và đầy đủ ý nghĩa</p>
                         <input
                             type="text"
@@ -294,7 +320,7 @@ const NewPost = () => {
                     )}
 
                     <div>
-                        <p className="font-medium">Nội dung</p>
+                        <p className="font-medium">* Nội dung</p>
                         <p className="text-sm text-gray-500 mb-2">Nêu ra đầy đủ nội dung để người đọc hiểu rõ bài đăng của bạn</p>
 
                         <div className="h-80">
@@ -312,6 +338,8 @@ const NewPost = () => {
                     </div>
                 </div>
             </div>
+
+            <Spinner loading={isLoadingImage} />
         </>
     );
 };

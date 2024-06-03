@@ -72,8 +72,6 @@ export const getViewableRepliesOfUser = async (userId, config) => {
     }
 };
 
-
-
 export const getHistoryOfReply = async (replyId) => {
     try {
         const response = await axios.get(`/replies/${replyId}/history`);
@@ -91,6 +89,26 @@ export const likeReply = async (replyId, config) => {
         throw error;
     }
 };
+
+export const acceptReply = async (replyId) => {
+    try {
+        const response = await privateAxios.post(`/replies/${replyId}/accept`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+
+export const undoAcceptReply = async (replyId) => {
+    try {
+        const response = await privateAxios.post(`/replies/${replyId}/undo-accept`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
 
 export const getReplyLikes = async (config) => {
     try {

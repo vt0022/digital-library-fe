@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import KeyCard from "@components/student/card/KeyCard";
 import categoryImage from "@assets/images/category.webp";
 import { getAccessibleCategories } from "@api/main/categoryAPI";
+import PageHead from "components/shared/head/PageHead";
 
 const ListCategories = () => {
 
@@ -33,6 +34,8 @@ const ListCategories = () => {
 
     return (
         <>
+            <PageHead title="Danh mục" description="Danh mục - learniverse & shariverse" url={window.location.href} origin="lib" />
+
             <div className="bg-gray-50 h-full w-full overflow-auto">
                 <div className="px-[10%]">
                     <div className="grid place-items-center mt-20 mb-20">
@@ -42,7 +45,7 @@ const ListCategories = () => {
 
                     <div className="grid grid-cols-5 gap-8 mb-20">
                         {categoryList.map((category) => (
-                            <KeyCard name={category.categoryName} slug={category.slug} path="/categories/" icon="category"/>
+                            <KeyCard name={category.categoryName} slug={category.slug} path="/categories/" icon="category" />
                         ))}
                     </div>
                 </div>

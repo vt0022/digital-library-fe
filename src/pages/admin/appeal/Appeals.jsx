@@ -6,7 +6,7 @@ import ActionButton from "@components/management/action-button/ActionButton";
 import SelectFilter from "@components/management/select/SelectFilter";
 import Table from "@components/management/table/Table";
 import DetailAppealModal from "components/management/admin/modal/report/DetailAppealModal";
-import DOMPurify from "dompurify";
+import PageHead from "components/shared/head/PageHead";
 import { Button, Modal, Pagination, Spinner } from "flowbite-react";
 import moment from "moment";
 import { useEffect, useState } from "react";
@@ -85,7 +85,7 @@ const Appeals = () => {
                             />
                         </>
                     )}
-{/* 
+                    {/* 
                     <ActionButton
                         onClick={(e) => {
                             e.stopPropagation();
@@ -122,6 +122,7 @@ const Appeals = () => {
     const [appealList, setAppealList] = useState([]);
     const [appealId, setAppealId] = useState("");
     const [content, setContent] = useState("");
+    const [notSolved, setNotSolved] = useState(false);
 
     const [openRestoreModal, setOpenRestoreModal] = useState(false);
     const [openRemainModal, setOpenRemainModal] = useState(false);
@@ -152,14 +153,26 @@ const Appeals = () => {
         return item ? item.value : "";
     };
 
-        const onCloseViewModal = () => {
-            setOpenViewModal(false);
-        };
+    const onCloseViewModal = () => {
+        setOpenViewModal(false);
+    };
 
     const handleView = (appeal) => {
         if (appeal.status === "PENDING") readThisAppeal(appeal.appealId);
+        setNotSolved(appeal.status === "PENDING" || appeal.status === "REVIEWED");
+        setAppealId(appeal.appealId);
         setContent(appeal);
         setOpenViewModal(true);
+    };
+
+    const handleRestoreAction = () => {
+        setOpenViewModal(false);
+        setOpenRestoreModal(true);
+    };
+
+    const handleRemainAction = () => {
+        setOpenViewModal(false);
+        setOpenRemainModal(true);
     };
 
     const handleRemain = (appeal) => {
@@ -169,7 +182,7 @@ const Appeals = () => {
     };
 
     const handleRestore = (appeal) => {
-                                    if (appeal.status === "PENDING") readThisAppeal(appeal.appealId);
+        if (appeal.status === "PENDING") readThisAppeal(appeal.appealId);
         setOpenRestoreModal(true);
         setAppealId(appeal.appealId);
     };
@@ -281,129 +294,133 @@ const Appeals = () => {
     };
 
     return (
-        <div className="w-full m-auto">
-            <div className="row">
-                <div className="px-[15px]">
-                    <h2 className="page-header">Khiếu nại xử lý vi phạm</h2>
-                </div>
+        <>
+            <PageHead title="Quản lý khiếu nại - Admin" description="Quản lý khiếu nại - learniverse & shariverse" url={window.location.href} origin="forum" />
 
-                <div className="col-12">
-                    <div className="card">
-                        <div className="card__body flex space-x-10 items-end justify-between">
-                            <div className="flex space-x-5 items-end">
-                                <SelectFilter
-                                    selectName="Lý do khiếu nại"
-                                    options={appealReasons}
-                                    selectedValue={type}
-                                    onChangeHandler={(e) => {
-                                        setCurrentPage(1);
-                                        setType(e.target.value);
-                                    }}
-                                    name="value"
-                                    field="name"
-                                    required
-                                />
+            <div className="w-full m-auto">
+                <div className="row">
+                    <div className="px-[15px]">
+                        <h2 className="page-header">Khiếu nại xử lý vi phạm</h2>
+                    </div>
 
-                                <SelectFilter
-                                    selectName="Trạng thái"
-                                    options={processStatus}
-                                    selectedValue={status}
-                                    onChangeHandler={(e) => {
-                                        setCurrentPage(1);
-                                        setStatus(e.target.value);
-                                    }}
-                                    name="name"
-                                    field="value"
-                                    required
-                                />
-                            </div>
+                    <div className="col-12">
+                        <div className="card">
+                            <div className="card__body flex space-x-10 items-end justify-between">
+                                <div className="flex space-x-5 items-end">
+                                    <SelectFilter
+                                        selectName="Lý do khiếu nại"
+                                        options={appealReasons}
+                                        selectedValue={type}
+                                        onChangeHandler={(e) => {
+                                            setCurrentPage(1);
+                                            setType(e.target.value);
+                                        }}
+                                        name="value"
+                                        field="name"
+                                        required
+                                    />
 
-                            <div className="flex mb-2 font-medium">
-                                <div className={`px-5 py-3 rounded-s-lg h-fit shadow-md cursor-pointer ${target === "POST" ? "text-white" : ""}`} style={{ backgroundColor: target === "POST" ? "var(--main-color)" : "white" }} onClick={() => setTarget("POST")}>
-                                    Bài đăng
+                                    <SelectFilter
+                                        selectName="Trạng thái"
+                                        options={processStatus}
+                                        selectedValue={status}
+                                        onChangeHandler={(e) => {
+                                            setCurrentPage(1);
+                                            setStatus(e.target.value);
+                                        }}
+                                        name="name"
+                                        field="value"
+                                        required
+                                    />
                                 </div>
 
-                                <div className={`px-5 py-3 rounded-e-lg h-fit shadow-md cursor-pointer ${target === "REPLY" ? "text-white" : ""}`} style={{ backgroundColor: target === "REPLY" ? "var(--main-color)" : "white" }} onClick={() => setTarget("REPLY")}>
-                                    Phản hồi
+                                <div className="flex mb-2 font-medium">
+                                    <div className={`px-5 py-3 rounded-s-lg h-fit shadow-md cursor-pointer ${target === "POST" ? "text-white" : ""}`} style={{ backgroundColor: target === "POST" ? "var(--main-color)" : "white" }} onClick={() => setTarget("POST")}>
+                                        Bài đăng
+                                    </div>
+
+                                    <div className={`px-5 py-3 rounded-e-lg h-fit shadow-md cursor-pointer ${target === "REPLY" ? "text-white" : ""}`} style={{ backgroundColor: target === "REPLY" ? "var(--main-color)" : "white" }} onClick={() => setTarget("REPLY")}>
+                                        Phản hồi
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div className="card">
-                        <div className="card__body">
-                            {appealList.length === 0 && !isFetching && <p className="mt-2 mb-4 font-medium text-center">Không có kết quả!</p>}
+                        <div className="card">
+                            <div className="card__body">
+                                {appealList.length === 0 && !isFetching && <p className="mt-2 mb-4 font-medium text-center">Không có kết quả!</p>}
 
-                            {appealList.length > 0 && <Table totalPages="10" headData={tableHead} renderHead={(item, index) => renderHead(item, index)} bodyData={appealList} renderBody={(item, index) => renderBody(item, index)} />}
+                                {appealList.length > 0 && <Table totalPages="10" headData={tableHead} renderHead={(item, index) => renderHead(item, index)} bodyData={appealList} renderBody={(item, index) => renderBody(item, index)} />}
 
-                            {isFetching && <Spinner className="flex items-center w-full mb-2 mt-2" style={{ color: "var(--main-color)" }} />}
+                                {isFetching && <Spinner className="flex items-center w-full mb-2 mt-2" style={{ color: "var(--main-color)" }} />}
 
-                            {totalPages > 1 && (
-                                <div className="flex overflow-x-auto sm:justify-center">
-                                    <Pagination previousLabel="" nextLabel="" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} showIcons />
-                                </div>
-                            )}
+                                {totalPages > 1 && (
+                                    <div className="flex overflow-x-auto sm:justify-center">
+                                        <Pagination previousLabel="" nextLabel="" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} showIcons />
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <Modal show={openRestoreModal} size="md" onClose={() => setOpenRestoreModal(false)} popup className="z-40">
+                    <Modal.Header />
+                    <Modal.Body>
+                        <div className="text-center">
+                            <TbFlag3Filled className="mx-auto mb-4 h-14 w-14 text-green-600" />
+                            <h3 className="mb-5 text-lg font-normal text-gray-500">Bạn có chắc chắn muốn khôi phục {target === "POST" ? "bài đăng" : "phản hồi"} này không?</h3>
+                            <div className="flex justify-center gap-4">
+                                <Button color="success" isProcessing={isLoading} disabled={isLoading} onClick={() => handleAppeal(appealId, "restore")}>
+                                    Chắc chắn
+                                </Button>
+                                <Button color="gray" disabled={isLoading} onClick={() => setOpenRestoreModal(false)}>
+                                    Huỷ bỏ
+                                </Button>
+                            </div>
+                        </div>
+                    </Modal.Body>
+                </Modal>
+
+                <Modal show={openRemainModal} size="md" onClose={() => setOpenRemainModal(false)} popup className="z-40">
+                    <Modal.Header />
+                    <Modal.Body>
+                        <div className="text-center">
+                            <TbFlag3Filled className="mx-auto mb-4 h-14 w-14 text-amber-600" />
+                            <h3 className="mb-5 text-lg font-normal text-gray-500 ">Bạn có chắc chắn muốn giữ nguyên quyết định xử lý vi phạm {target === "POST" ? "bài đăng" : "phản hồi"} này không?</h3>
+                            <div className="flex justify-center gap-4">
+                                <Button color="warning" isProcessing={isLoading} disabled={isLoading} onClick={() => handleAppeal(appealId, "remain")}>
+                                    Chắc chắn
+                                </Button>
+                                <Button color="gray" disabled={isLoading} onClick={() => setOpenRemainModal(false)}>
+                                    Huỷ bỏ
+                                </Button>
+                            </div>
+                        </div>
+                    </Modal.Body>
+                </Modal>
+
+                <Modal show={openDeleteAppealModal} size="md" onClose={() => setOpenDeleteAppealModal(false)} popup className="z-40">
+                    <Modal.Header />
+                    <Modal.Body>
+                        <div className="text-center">
+                            <TbFlag3Filled className="mx-auto mb-4 h-14 w-14 text-red-600" />
+                            <h3 className="mb-5 text-lg font-normal text-gray-500">Bạn có chắc chắn muốn xoá khiếu nại {target === "POST" ? "bài đăng" : "phản hồi"} này không?</h3>
+                            <div className="flex justify-center gap-4">
+                                <Button color="failure" isProcessing={isLoading} disabled={isLoading} onClick={() => deleteThisAppeal(appealId)}>
+                                    Chắc chắn
+                                </Button>
+                                <Button color="gray" disabled={isLoading} onClick={() => setOpenDeleteAppealModal(false)}>
+                                    Huỷ bỏ
+                                </Button>
+                            </div>
+                        </div>
+                    </Modal.Body>
+                </Modal>
+
+                <DetailAppealModal target={target} content={content} openViewModal={openViewModal} onCloseViewModal={onCloseViewModal} restore={handleRestoreAction} remain={handleRemainAction} notSolved={notSolved} />
             </div>
-
-            <Modal show={openRestoreModal} size="md" onClose={() => setOpenRestoreModal(false)} popup className="z-40">
-                <Modal.Header />
-                <Modal.Body>
-                    <div className="text-center">
-                        <TbFlag3Filled className="mx-auto mb-4 h-14 w-14 text-green-600" />
-                        <h3 className="mb-5 text-lg font-normal text-gray-500">Bạn có chắc chắn muốn khôi phục {target === "POST" ? "bài đăng" : "phản hồi"} này không?</h3>
-                        <div className="flex justify-center gap-4">
-                            <Button color="success" isProcessing={isLoading} disabled={isLoading} onClick={() => handleAppeal(appealId, "restore")}>
-                                Chắc chắn
-                            </Button>
-                            <Button color="gray" disabled={isLoading} onClick={() => setOpenRestoreModal(false)}>
-                                Huỷ bỏ
-                            </Button>
-                        </div>
-                    </div>
-                </Modal.Body>
-            </Modal>
-
-            <Modal show={openRemainModal} size="md" onClose={() => setOpenRemainModal(false)} popup className="z-40">
-                <Modal.Header />
-                <Modal.Body>
-                    <div className="text-center">
-                        <TbFlag3Filled className="mx-auto mb-4 h-14 w-14 text-amber-600" />
-                        <h3 className="mb-5 text-lg font-normal text-gray-500 ">Bạn có chắc chắn muốn giữ nguyên quyết định xử lý vi phạm {target === "POST" ? "bài đăng" : "phản hồi"} này không?</h3>
-                        <div className="flex justify-center gap-4">
-                            <Button color="warning" isProcessing={isLoading} disabled={isLoading} onClick={() => handleAppeal(appealId, "remain")}>
-                                Chắc chắn
-                            </Button>
-                            <Button color="gray" disabled={isLoading} onClick={() => setOpenRemainModal(false)}>
-                                Huỷ bỏ
-                            </Button>
-                        </div>
-                    </div>
-                </Modal.Body>
-            </Modal>
-
-            <Modal show={openDeleteAppealModal} size="md" onClose={() => setOpenDeleteAppealModal(false)} popup className="z-40">
-                <Modal.Header />
-                <Modal.Body>
-                    <div className="text-center">
-                        <TbFlag3Filled className="mx-auto mb-4 h-14 w-14 text-red-600" />
-                        <h3 className="mb-5 text-lg font-normal text-gray-500">Bạn có chắc chắn muốn xoá khiếu nại {target === "POST" ? "bài đăng" : "phản hồi"} này không?</h3>
-                        <div className="flex justify-center gap-4">
-                            <Button color="failure" isProcessing={isLoading} disabled={isLoading} onClick={() => deleteThisAppeal(appealId)}>
-                                Chắc chắn
-                            </Button>
-                            <Button color="gray" disabled={isLoading} onClick={() => setOpenDeleteAppealModal(false)}>
-                                Huỷ bỏ
-                            </Button>
-                        </div>
-                    </div>
-                </Modal.Body>
-            </Modal>
-
-            <DetailAppealModal target={target} content={content} openViewModal={openViewModal} onCloseViewModal={onCloseViewModal} />
-        </div>
+        </>
     );
 };
 

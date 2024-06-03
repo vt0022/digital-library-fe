@@ -14,6 +14,7 @@ import profileImage from "../../../assets/images/default_profile.jpg";
 import profileBackground from "../../../assets/images/profile_bg.webp";
 
 import "../document/document.css";
+import PageHead from "components/shared/head/PageHead";
 
 const UserWall = () => {
     const { userId } = useParams();
@@ -106,6 +107,8 @@ const UserWall = () => {
 
     return (
         <div>
+            <PageHead title={user && user.lastName + " " + user && user.firstName} description={user && user.lastName + " " + user && user.firstName + " - learniverse & shariverse"} url={window.location.href} origin="both" />
+
             <div className="bg-gray-50 p-4 min-h-screen h-full">
                 <div className="flex w-full ">
                     <div className="p-0 h-min rounded-lg shadow-lg bg-white w-1/4 mr-5">
