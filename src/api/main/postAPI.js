@@ -74,7 +74,7 @@ export const getHistoryOfPost = async (postId) => {
 
 export const getPostsOfUser = async (userId, config) => {
     try {
-        const response = await privateAxios.get(`/posts/user/${userId}`, config);
+        const response = await axios.get(`/posts/user/${userId}`, config);
         return response.data;
     } catch (error) {
         throw error;

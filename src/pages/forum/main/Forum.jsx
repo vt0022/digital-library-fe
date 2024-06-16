@@ -22,17 +22,17 @@ const Forum = () => {
     };
 
     return (
-        <div className="bg-gray-50">
-            <div className="border-b border-gray-300">
+        <div className="relative bg-emerald-50">
+            <div className="sticky top-0 shadow-lg z-10">
                 <TopBar />
             </div>
 
-            <div className="flex">
-                <div className="w-1/5 border-r border-gray-300">
+            <div className="flex h-full bg-emerald-50">
+                <div className="w-1/6">
                     <Sidebar pinnedSections={pinnedSections} />
                 </div>
 
-                <div className="w-4/5">
+                <div className="w-5/6">
                     <ForumRouters onPinSection={handlePinSection} />
                 </div>
             </div>

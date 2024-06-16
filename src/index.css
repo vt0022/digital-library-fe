@@ -29,6 +29,11 @@ code {
   min-height: 100vh;
 } */
 
+/* src/index.css */
+body {
+  font-family: "Be Vietnam Pro", sans-serif;
+}
+
 .Toastify__toast-container {
   width:fit-content !important;
 }

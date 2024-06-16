@@ -1,22 +1,30 @@
-import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-
-import { Button, Modal, Pagination, Toast } from "flowbite-react";
+import { deleteADocument, getMyUploadedDocuments } from "@api/main/documentAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
+import PageHead from "@components/shared/head/PageHead";
+import DocumentCard from "@components/student/card/Card";
+import { initFlowbite } from "flowbite";
+import { Button, Modal, Pagination } from "flowbite-react";
+import { useEffect, useState } from "react";
 import { HiDocumentRemove, HiOutlineCheck, HiOutlineDotsHorizontal, HiX } from "react-icons/hi";
-
-import { deleteADocument, getMyUploadedDocuments } from "../../../api/main/documentAPI";
-import usePrivateAxios from "../../../api/usePrivateAxios";
-
-import DocumentCard from "../../../components/student/card/Card";
-
+import { useLocation, useNavigate } from "react-router-dom";
+import { Bounce, toast } from "react-toastify";
 import "./document.css";
 
-import { initFlowbite } from "flowbite";
-import PageHead from "components/shared/head/PageHead";
+initFlowbite();
+
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 4000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const UploadedDocument = () => {
-    initFlowbite();
-    
     usePrivateAxios();
 
     const navigate = useNavigate();
@@ -31,17 +39,13 @@ const UploadedDocument = () => {
     const [totalApprovedElements, setTotalApprovedElements] = useState(0);
     const [totalPendingElements, setTotalPendingElements] = useState(0);
     const [totalRejectedElements, setTotalRejectedElements] = useState(0);
-    const [size, setSize] = useState(12);
     const [search, setSearch] = useState("");
     const [message, setMessage] = useState("Đã xảy ra lỗi! Vui lòng thử lại!");
     const [verifiedStatus, setVerifiedStatus] = useState(1); // 0: not verified, 1: verified, -1: rejected
-    const [status, setStatus] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [openModal, setOpenModal] = useState(false);
     const [docId, setDocId] = useState("");
-    const [isVerifiedVisible, setIsVerifiedVisible] = useState(false);
-    const [isPendingVisible, setIsPendingVisible] = useState(false);
-    const [isRejectedVisible, setIsRejectedVisible] = useState(false);
+
     const [isVerifiedActive, setIsVerifiedActive] = useState("text-green-400");
     const [isPendingActive, setIsPendingActive] = useState("");
     const [isRejectedActive, setIsRejectedActive] = useState("");
@@ -74,7 +78,7 @@ const UploadedDocument = () => {
             const response = await getMyUploadedDocuments({
                 params: {
                     page: page - 1,
-                    size: size,
+                    size: 12,
                     order: "updatedAt",
                     organization: "all",
                     category: "all",
@@ -87,7 +91,6 @@ const UploadedDocument = () => {
             if (response.status === 200) {
                 setDocumentList(response.data.content);
                 setTotalPages(response.data.totalPages);
-            } else {
             }
         } catch (error) {
             navigate("/error-500");
@@ -101,20 +104,12 @@ const UploadedDocument = () => {
             setIsLoading(false);
             setOpenModal(false);
             if (response.status === 200) {
-                setStatus(1);
-                setMessage("Xoá tài liệu thành công!");
-                setTimeout(() => {
-                    setStatus(0);
-                }, 2000);
+                toast.success(<p className="pr-2">Xoá tài liệu thành công!</p>, toastOptions);
 
                 setCurrentPage(1);
                 getUploadedList(currentPage);
             } else {
-                setStatus(-1);
-                setMessage("Đã xảy ra lỗi! Vui lòng thử lại!");
-                setTimeout(() => {
-                    setStatus(0);
-                }, 2000);
+                toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
             }
         } catch (error) {
             navigate("/error-500");
@@ -132,7 +127,6 @@ const UploadedDocument = () => {
 
             if (response.status === 200) {
                 setTotalPendingElements(response.data.totalElements);
-            } else {
             }
         } catch (error) {
             navigate("/error-500");
@@ -150,7 +144,6 @@ const UploadedDocument = () => {
 
             if (response.status === 200) {
                 setTotalRejectedElements(response.data.totalElements);
-            } else {
             }
         } catch (error) {
             navigate("/error-500");
@@ -168,7 +161,6 @@ const UploadedDocument = () => {
 
             if (response.status === 200) {
                 setTotalApprovedElements(response.data.totalElements);
-            } else {
             }
         } catch (error) {
             navigate("/error-500");
@@ -199,21 +191,7 @@ const UploadedDocument = () => {
 
     return (
         <>
-        <PageHead title="Tài liệu của tôi" description="Tài liệu của tôi - learniverse & shariverse" url={window.location.href} origin="lib" />
-
-            {status === -1 && (
-                <Toast className="top-1/4 right-5 w-100 fixed z-50">
-                    <HiX className="h-5 w-5 bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200" />
-                    <div className="pl-4 text-sm font-normal">{message}</div>
-                </Toast>
-            )}
-
-            {status === 1 && (
-                <Toast className="top-1/4 right-5 fixed w-100 z-50">
-                    <HiOutlineCheck className="h-5 w-5 bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200" />
-                    <div className="pl-4 text-sm font-normal">{message}</div>
-                </Toast>
-            )}
+            <PageHead title="Tài liệu của tôi" description="Tài liệu của tôi - learniverse & shariverse" url={window.location.href} origin="lib" />
 
             <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>
                 <Modal.Header />
@@ -233,7 +211,7 @@ const UploadedDocument = () => {
                 </Modal.Body>
             </Modal>
 
-            <div className="flex-1 p-4 bg-gray-50 h-full">
+            <div className="flex-1 p-4 h-full">
                 <div className="rounded-lg bg-white py-8 px-8 ">
                     <div className="grid place-items-center mt-5">
                         <div className="mb-4 border-b border-gray-200 dark:border-gray-700 ">

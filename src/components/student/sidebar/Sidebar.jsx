@@ -15,9 +15,12 @@ const CustomSidebar = () => {
 
     const user = JSON.parse(sessionStorage.getItem("profile"));
 
+    const active = "side-bar-icon--active shadow-lg text-green-500 bg-white hover:bg-white";
+    const inactive = "side-bar-icon text-gray-700 hover:bg-neutral-100 active:text-green-400 hover:text-green-400";
+
     return (
-        <Sidebar aria-label="Sidebar" className="side-bar w-full bg-white min-h-screen">
-            <Sidebar.Items className="bg-white h-full p-4">
+        <Sidebar aria-label="Sidebar" className="side-bar w-full min-h-screen">
+            <Sidebar.Items className="bg-emerald-50 h-full p-4 py-12">
                 <Avatar alt="User settings" img={user && user.image ? user.image : ""} rounded bordered size="lg" className="mb-2 mt-2" />
                 <p className="mb-3 text-base font-medium text-center">
                     {user && user.lastName} {user && user.firstName}
@@ -29,27 +32,59 @@ const CustomSidebar = () => {
                         </Button>
 
                         <Sidebar.ItemGroup>
-                            <Sidebar.Item as={Link} to="/me/uploads" icon={HiCollection} className={`gap-x-2 py-3 active:bg-green-300 active:text-white hover:text-green-400 hover:bg-green-100 ${currentPath === "/me/uploads" ? "text-green-400 bg-green-100" : ""}`}>
+                            <Sidebar.Item
+                                as={Link}
+                                to="/me/uploads"
+                                icon={HiCollection}
+                                className={`rounded-full gap-x-2 px-4 py-2 text-sm font-medium ${
+                                    currentPath === "/me/uploads" ? active : inactive
+                                }`}>
                                 Tài liệu của tôi
                             </Sidebar.Item>
 
-                            <Sidebar.Item as={Link} to="/me/likes" icon={HiHeart} className={`gap-x-2 py-3 active:bg-green-300 active:text-white hover:text-green-400 hover:bg-green-100 ${currentPath === "/me/likes" ? "text-green-400 bg-green-100" : ""}`}>
+                            <Sidebar.Item
+                                as={Link}
+                                to="/me/likes"
+                                icon={HiHeart}
+                                className={`rounded-full gap-x-2 px-4 py-2 text-sm font-medium ${currentPath === "/me/likes" ? active : inactive}`}>
                                 Yêu thích
                             </Sidebar.Item>
 
-                            <Sidebar.Item as={Link} to="/me/saves" icon={HiBookmark} className={`gap-x-2 py-3 active:bg-green-300 active:text-white hover:text-green-400 hover:bg-green-100 ${currentPath === "/me/saves" ? "text-green-400 bg-green-100" : ""}`}>
+                            <Sidebar.Item
+                                as={Link}
+                                to="/me/saves"
+                                icon={HiBookmark}
+                                className={`rounded-full gap-x-2 px-4 py-2 text-sm font-medium ${currentPath === "/me/saves" ? active : inactive}`}>
                                 Đã lưu
                             </Sidebar.Item>
 
-                            <Sidebar.Item as={Link} to="/me/recents" icon={HiDuplicate} className={`gap-x-2 py-3 active:bg-green-300 active:text-white hover:text-green-400 hover:bg-green-100 ${currentPath === "/me/recents" ? "text-green-400 bg-green-100" : ""}`}>
+                            <Sidebar.Item
+                                as={Link}
+                                to="/me/recents"
+                                icon={HiDuplicate}
+                                className={`rounded-full gap-x-2 px-4 py-2 text-sm font-medium ${
+                                    currentPath === "/me/recents" ? active : inactive
+                                }`}>
                                 Gần đây
                             </Sidebar.Item>
 
-                            <Sidebar.Item as={Link} to="/me/collections" icon={TbAppsFilled} className={`gap-x-2 py-3 active:bg-green-300 active:text-white hover:text-green-400 hover:bg-green-100 ${currentPath === "/me/collections" ? "text-green-400 bg-green-100" : ""}`}>
+                            <Sidebar.Item
+                                as={Link}
+                                to="/me/collections"
+                                icon={TbAppsFilled}
+                                className={`rounded-full gap-x-2 px-4 py-2 text-sm font-medium ${
+                                    currentPath === "/me/collections" ? active : inactive
+                                }`}>
                                 Bộ sưu tập
                             </Sidebar.Item>
 
-                            <Sidebar.Item as={Link} to="/me/reviews" icon={MdRateReview} className={`gap-x-2 py-3 active:bg-green-300 active:text-white hover:text-green-400 hover:bg-green-100 ${currentPath === "/me/reviews" ? "text-green-400 bg-green-100" : ""}`}>
+                            <Sidebar.Item
+                                as={Link}
+                                to="/me/reviews"
+                                icon={MdRateReview}
+                                className={`rounded-full gap-x-2 px-4 py-2 text-sm font-medium ${
+                                    currentPath === "/me/reviews" ? active : inactive
+                                }`}>
                                 Đánh giá của tôi
                             </Sidebar.Item>
                         </Sidebar.ItemGroup>

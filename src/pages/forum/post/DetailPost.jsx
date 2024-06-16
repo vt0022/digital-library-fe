@@ -3,7 +3,6 @@ import { acceptPost, deleteAPost, getAPost, getAPostForGuest, getHistoryOfPost, 
 import { acceptReply, addAReply, deleteAReply, editAReply, getHistoryOfReply, getRepliesForGuest, getViewableRepliesOfPost, likeReply, undoAcceptReply } from "@api/main/replyAPI";
 import usePrivateAxios from "@api/usePrivateAxios";
 import "@assets/css/standard.css";
-import AvatarGroup from "@components/forum/avatar/AvatarGroup";
 import Error404 from "@components/forum/error/404Error";
 import PostHistoryModal from "@components/forum/modal/PostHistoryModal";
 import ReplyHistoryModal from "@components/forum/modal/ReplyHistoryModal";
@@ -13,23 +12,26 @@ import Spinner from "@components/shared/spinner/Spinner";
 import DOMPurify from "dompurify";
 import { Avatar, Breadcrumb, Button, Modal, Pagination, Tooltip } from "flowbite-react";
 import moment from "moment";
+import numeral from "numeral";
 import * as Emoji from "quill-emoji";
 import "quill-emoji/dist/quill-emoji.css";
 import "quill/dist/quill.snow.css";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { render } from "react-dom";
-import { BsHeart, BsHeartFill } from "react-icons/bs";
-import { HiFlag, HiHome, HiOutlineChatAlt2, HiOutlineUser, HiOutlineX, HiPencil, HiTrash } from "react-icons/hi";
-import { IoEyeOff } from "react-icons/io5";
+import { FaHashtag, FaStar } from "react-icons/fa";
+import { HiHome, HiOutlineX, HiPencil, HiTrash } from "react-icons/hi";
+import { IoChatbubble, IoChatbubblesOutline, IoEyeOff, IoEyeSharp, IoHeartCircle } from "react-icons/io5";
 import { LuEye } from "react-icons/lu";
-import { PiCheckFat, PiCheckFatFill } from "react-icons/pi";
-import { RiChatHistoryFill, RiChatHistoryLine } from "react-icons/ri";
+import { MdReport } from "react-icons/md";
+import { PiChatCircleTextFill, PiCheckFatFill } from "react-icons/pi";
+import { RiChatHistoryFill, RiTimeFill } from "react-icons/ri";
 import { TbMessageForward } from "react-icons/tb";
-import { WiTime4 } from "react-icons/wi";
 import ReactQuill, { Quill } from "react-quill";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
 import "./post.css";
+import { TiStarFullOutline } from "react-icons/ti";
+import { PiPaperPlaneTiltFill } from "react-icons/pi";
 
 Quill.register("modules/emoji", Emoji);
 
@@ -227,8 +229,6 @@ const DetailPost = () => {
                 if (response.status === 200) {
                     toast.success(<p className="pr-2">Đã đánh dấu bài đăng là hữu ích!</p>, toastOptions);
                     getPostDetail();
-                } else {
-                    toast.error(<p className="pr-2">Đã xảy ra lỗi khi đánh dấu bài đăng!</p>, toastOptions);
                 }
             } catch (error) {
                 navigate("/error-500");
@@ -245,8 +245,6 @@ const DetailPost = () => {
                 if (response.status === 200) {
                     toast.success(<p className="pr-2">Đã xoá đánh dấu bài đăng!</p>, toastOptions);
                     getPostDetail();
-                } else {
-                    toast.error(<p className="pr-2">Đã xảy ra lỗi khi xoá đánh dấu bài đăng!</p>, toastOptions);
                 }
             } catch (error) {
                 navigate("/error-500");
@@ -265,8 +263,6 @@ const DetailPost = () => {
                 if (response.status === 200) {
                     toast.success(<p className="pr-2">Đã đánh dấu phản hồi là hữu ích!</p>, toastOptions);
                     getPostReply();
-                } else {
-                    toast.error(<p className="pr-2">Đã xảy ra lỗi khi đánh dấu phản hồi!</p>, toastOptions);
                 }
             } catch (error) {
                 navigate("/error-500");
@@ -283,10 +279,8 @@ const DetailPost = () => {
             try {
                 const response = await undoAcceptReply(reply && reply.replyId);
                 if (response.status === 200) {
-                    toast.success(<p className="pr-2">Đã xoá đánh dấu bài đăng!</p>, toastOptions);
+                    toast.success(<p className="pr-2">Đã xoá đánh dấu phản hồi!</p>, toastOptions);
                     getPostReply();
-                } else {
-                    toast.error(<p className="pr-2">Đã xảy ra lỗi khi xoá đánh dấu bài đăng!</p>, toastOptions);
                 }
             } catch (error) {
                 navigate("/error-500");
@@ -394,15 +388,21 @@ const DetailPost = () => {
         const parentReplySection = document.getElementById("parent-reply-section");
         if (parentReply) {
             const htmlContent = (
-                <div className="bg-gray-200 border-l-4 border-green-800">
-                    <div className="text-red-600 font-medium bg-gray-300 p-3 flex justify-between">
-                        <p>
-                            {parentReply.user && parentReply.user.lastName} {parentReply.user && parentReply.user.firstName}
-                        </p>
+                <div className="bg-green-100 border-2 border-dashed rounded-t-[50px] rounded-br-[50px] p-5 cursor-pointer mb-3" onClick={() => handleParentReplySection(parentReply && parentReply.replyId)}>
+                    <div className="flex justify-between text-red-600 font-medium">
+                        <div className="flex items-center space-x-4 ">
+                            <Avatar alt="User" img={parentReply && parentReply.user && parentReply.user.image} rounded bordered color="info" size="md" />
+
+                            <p className="text-emerald-600">
+                                {parentReply && parentReply.user && parentReply.user.lastName} {parentReply && parentReply.user && parentReply.user.firstName}
+                            </p>
+                        </div>
+
                         <HiOutlineX className="h-5 w-5 cursor-pointer hover:text-orange-500" onClick={() => handleReplySection(null)} />
                     </div>
-                    <div className="px-3">
-                        <div className="py-3 content-format" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(parentReply.content) }} />
+
+                    <div className="ml-5 !border-l-2 border-gray-300">
+                        <div className="p-3 content-format" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(parentReply && parentReply.content) }} />
                     </div>
                 </div>
             );
@@ -444,7 +444,7 @@ const DetailPost = () => {
                     />
                 </div>
 
-                <div className="pt-3 text-green-500 text-sm mt-8 flex justity-end space-x-3">
+                <div className="pt-3 text-green-500 text-sm mt-2 flex justity-end space-x-3">
                     <Button
                         className="ml-auto bg-green-400 enabled:hover:bg-green-500"
                         onClick={() => {
@@ -452,7 +452,7 @@ const DetailPost = () => {
                         }}
                         isProcessing={isLoading}
                         disabled={isLoading}>
-                        <TbMessageForward className="mr-2 h-5 w-5" />
+                        <PiPaperPlaneTiltFill className="mr-2 h-5 w-5" />
                         Cập nhật phản hồi
                     </Button>
 
@@ -643,230 +643,286 @@ const DetailPost = () => {
                     </Breadcrumb.Item>
                 </Breadcrumb>
 
-                <div className="items-center mb-5 mt-5 w-full border-b border-black py-2">
-                    <p className="text-3xl font-normal">{post && post.title}</p>
-
-                    <div className="flex text-gray-500 font-medium mt-2 justify-between">
-                        <div className="flex space-x-5">
-                            <div className="flex space-x-2 items-end">
-                                <div className="flex items-end text-xl mb-1">
-                                    <HiOutlineUser />
-                                </div>
-
-                                <p className="hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/users/${post.userPosted.userId}`)}>
-                                    {post && post.userPosted && post.userPosted.lastName} {post && post.userPosted && post.userPosted.firstName}
-                                </p>
-                            </div>
-
-                            <div className="flex space-x-2 items-end">
-                                <div className="flex items-end text-xl mb-1">
-                                    <WiTime4 />
-                                </div>
-
-                                <div>{post && post.updatedAt ? <p>{moment(post.updatedAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p> : <p>{moment(post && post.createdAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p>}</div>
-                            </div>
-
-                            <div className="flex space-x-2 items-end">
-                                <div className="flex items-end text-xl mb-1">
-                                    <HiOutlineChatAlt2 />
-                                </div>
-
-                                <p>{post && post.totalReplies}</p>
-                            </div>
-
-                            <div className="flex space-x-2 items-end">
-                                <div className="flex items-end text-xl mb-1">
-                                    <LuEye />
-                                </div>
-
-                                <p>{post && post.totalViews}</p>
-                            </div>
-                        </div>
-
-                        <div className="items-end">
-                            {post && post.updatedAt && (
-                                <Tooltip content="Xem lịch sử chỉnh sửa" style="light">
-                                    <button
-                                        onClick={() => {
-                                            getPostHistory();
-                                            setTriggerPostModal(triggerPostModal + 1);
-                                            setOpenPostHistoryModal(true);
-                                        }}>
-                                        <RiChatHistoryLine className="text-xl mb-1 hover:text-teal-500 active:text-teal-400 cursor-pointer" />
-                                    </button>
-                                </Tooltip>
-                            )}
-
-                            <PostHistoryModal triggerPostModal={triggerPostModal} openPostHistoryModal={openPostHistoryModal} postHistory={postHistory} />
-                        </div>
-                    </div>
-                </div>
-                {totalPages > 1 && (
-                    <div className="bg-white rounded-lg w-fit flex justify-end ml-auto items-center shadow-lg shadow-gray-300">
-                        <Pagination layout="pagination" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} previousLabel="Trước" nextLabel="Tiếp" showIcons className="text-sm" />
-                    </div>
-                )}
-                <div className="bg-white mt-2 p-5 rounded-lg grid gap-y-6 shadow-lg shadow-gray-300">
+                <div className="relative bg-white mt-5 p-5 rounded-lg shadow-lg shadow-gray-300 z-10">
                     {post && (post.disabled || post.labelDisabled || post.subsectionDisabled || post.sectionDisabled) && (
                         <div className="flex w-full border rounded-lg bg-red-100 p-3 font-bold text-sm text-black items-center space-x-3">
                             <IoEyeOff className="text-xl mb-1" />
                             <p>Bài đăng này đã bị ẩn. Xem chi tiết trong hoạt động người dùng.</p>
                         </div>
                     )}
-                    <div className="w-full grid grid-cols-4 border border-gray-200 rounded-lg" id="post-section">
-                        <div className="bg-gray-100 p-5">
-                            <Avatar alt="User" img={post && post.userPosted && post.userPosted.image} rounded bordered size="lg" className="mb-4 mt-2" />
 
-                            <div className="text-center text-sm hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/users/${post.userPosted.userId}`)}>
-                                {post && post.userPosted && post.userPosted.email.split("@")[0]}
+                    <div className="w-full rounded-lg" id="post-section">
+                        <div className="flex space-x-4 p-5 mb-5">
+                            <div className="bg-gradient-to-r from-teal-300 to-green-500 h-fit aspect-square p-1 rounded-xl">
+                                <IoChatbubblesOutline className="text-white text-4xl" />
                             </div>
 
-                            <div className="text-center font-semibold hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/users/${post.userPosted.userId}`)}>
-                                {post && post.userPosted && post.userPosted.lastName} {post && post.userPosted && post.userPosted.firstName}
-                            </div>
+                            <div>
+                                <p className="text-4xl font-medium mb-5">{post && post.title}</p>
 
-                            {post && post.userPosted && post.userPosted.badge && (
-                                <div className="flex justify-center mt-2">
-                                    <Tooltip content={post.userPosted.badge.badgeName} style="light">
-                                        <Avatar alt="Badge" img={post.userPosted.badge.image} rounded />
-                                    </Tooltip>
+                                <div className="flex space-x-4">
+                                    <div className="w-fit px-2 py-1 rounded-lg flex space-x-1 items-center bg-teal-50">
+                                        <RiTimeFill className="text-xl text-teal-600" />
+
+                                        <p className="font-medium text-gray-500">{moment(post && post.createdAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p>
+                                    </div>
+
+                                    <div className="w-fit px-2 py-1 rounded-lg flex space-x-1 items-center bg-rose-50">
+                                        <PiChatCircleTextFill className="text-xl text-rose-600" />
+
+                                        <p className="font-medium text-gray-500">{post && post.totalReplies}</p>
+                                    </div>
+
+                                    <div className="w-fit px-2 py-1 rounded-lg flex space-x-1 items-center bg-emerald-50">
+                                        <IoEyeSharp className="text-xl text-emerald-600" />
+
+                                        <p className="font-medium text-gray-500">{post && post.totalViews}</p>
+                                    </div>
+
+                                    {post && post.label && (
+                                        <div className="w-fit px-2 py-1 rounded-lg flex space-x-1 items-center bg-sky-50">
+                                            <FaHashtag className="text-xl" style={{ color: post && post.label && post.label.color }} />
+
+                                            <p className="font-medium text-gray-500">{post && post.label && post.label.labelName}</p>
+                                        </div>
+                                    )}
                                 </div>
-                            )}
+                            </div>
+                        </div>
 
-                            <div className="flex justify-center text-green-500 mt-5">
-                                {post && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled ? (
-                                    <>
-                                        {post && post.subsection && post.subsection.postAcceptable && (
+                        <div className="flex">
+                            <div className="w-1/5">
+                                <Avatar alt="User" img={post && post.userPosted && post.userPosted.image} rounded size="md" bordered color="success" className="mb-4 main-avatar" />
+
+                                <div className="text-center font-semibold hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/users/${post.userPosted.userId}`)}>
+                                    {post && post.userPosted && post.userPosted.lastName} {post && post.userPosted && post.userPosted.firstName}
+                                </div>
+
+                                {post && post.userPosted && post.userPosted.badge && (
+                                    <div className="flex justify-center mt-2">
+                                        <Tooltip content={post.userPosted.badge.badgeName} style="light" placement="bottom">
+                                            <Avatar alt="Badge" img={post.userPosted.badge.image} rounded />
+                                        </Tooltip>
+                                    </div>
+                                )}
+
+                                {post && post.subsection && post.subsection.postAcceptable && (
+                                    <div
+                                        className={`flex flex-col items-center justify-center text-green-500 mt-10 space-y-3 border-4 border-gray-200 border-dashed m-4 p-4 rounded-lg hover:shadow-lg hover:shadow-yellow-100 ${
+                                            post && !post.my && post.accepted ? "border-yellow-100 shadow-lg shadow-yellow-100" : ""
+                                        }`}>
+                                        {post && (post.disabled || post.labelDisabled || post.subsectionDisabled || post.sectionDisabled) ? (
+                                            <button className="bg-transparent">
+                                                <FaStar className="text-[3.75rem] text-gray-400 border-2 border-gray-400 rounded-full p-1" />
+                                            </button>
+                                        ) : (
                                             <>
                                                 {post.accepted ? (
                                                     <Tooltip content="Bạn đã đánh dấu bài đăng này là hữu ích. Nhấn để bỏ đánh dấu" style="light">
                                                         <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handlePostUndoAccept(postId)}>
-                                                            <PiCheckFatFill className="text-5xl hover:text-green-300 active:text-green-200 cursor-pointer" />
+                                                            <FaStar className="text-[3.75rem] text-amber-300 hover:text-amber-200 active:text-amber-100 cursor-pointer border-2 border-amber-300 hover:border-amber-200 active:border-amber-100 rounded-full p-1" />
                                                         </button>
                                                     </Tooltip>
                                                 ) : (
                                                     <Tooltip content="Đánh dấu bài đăng này nếu nó giúp ích cho bạn" style="light">
                                                         <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handlePostAccept(postId)}>
-                                                            <PiCheckFat className="text-5xl hover:fill-green-500 active:fill-green-600 active:text-green-600 cursor-pointer" />
+                                                            <FaStar className="text-[3.75rem] text-gray-400 hover:text-amber-200 active:text-amber-100 cursor-pointer border-2 border-gray-400 hover:border-amber-200 active:border-amber-100 rounded-full p-1" />
                                                         </button>
                                                     </Tooltip>
                                                 )}
                                             </>
                                         )}
-                                    </>
-                                ) : (
-                                    <>
-                                        {post && post.subsection && post.subsection.postAcceptable && (
-                                            <>
-                                                <button className="bg-transparent">
-                                                    <PiCheckFatFill className="text-5xl" />
-                                                </button>
-                                            </>
+
+                                        {post && post.totalAcceptances > 0 && (
+                                            <Tooltip content="Tổng số lượt chấp nhận" style="light" placement="bottom">
+                                                <p className="text-2xl font-medium text-red-500 text-center">{post.totalAcceptances}</p>
+                                            </Tooltip>
                                         )}
-                                    </>
-                                )}
-                            </div>
-                        </div>
-
-                        <div className={`col-span-3 p-5 ${post && post.disabled ? "bg-red-100" : "bg-green-100"}`}>
-                            <div className="flex justify-between items-center pb-2 border-b border-gray-200 text-gray-500 text-sm">
-                                {post && post.updatedAt ? <p>{moment(post.updatedAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p> : <p>{moment(post && post.createdAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p>}
-
-                                <div className="space-x-3 flex items-center">
-                                    {post && post.updatedAt && (
-                                        <Tooltip content="Xem lịch sử chỉnh sửa" style="light">
-                                            <button
-                                                onClick={() => {
-                                                    getPostHistory();
-                                                    setTriggerPostModal(triggerPostModal + 1);
-                                                    setOpenPostHistoryModal(true);
-                                                }}>
-                                                <RiChatHistoryFill className="text-base hover:text-teal-500 active:text-teal-400 cursor-pointer" />
-                                            </button>
-                                        </Tooltip>
-                                    )}
-
-                                    {post && post.my && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled && (
-                                        <>
-                                            <Tooltip content="Chỉnh sửa bài đăng" style="light">
-                                                <button className="bg-transparent" onClick={() => navigate(`/forum/posts/${post.postId}/edit`)}>
-                                                    <HiPencil className="text-base hover:text-yellow-500 active:text-yellow-400 cursor-pointer" />
-                                                </button>
-                                            </Tooltip>
-
-                                            <Tooltip content="Xoá bài đăng" style="light">
-                                                <button className="bg-transparent" onClick={() => setOpenPostModal(true)}>
-                                                    <HiTrash className="text-base hover:text-red-500 active:text-red-400 cursor-pointer" />
-                                                </button>
-                                            </Tooltip>
-                                        </>
-                                    )}
-
-                                    {post && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled && !post.my && isLoggedIn && (
-                                        <Tooltip content="Báo cáo bài đăng" style="light">
-                                            <button className="bg-transparent" onClick={handleReportPost}>
-                                                <HiFlag className="text-base hover:text-amber-500 active:text-amber-400 cursor-pointer" />
-                                            </button>
-                                        </Tooltip>
-                                    )}
-
-                                    <p className="mb-1">#1</p>
-                                </div>
-                            </div>
-
-                            <div className="py-3">{post && <div className="content-format" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }} />}</div>
-
-                            <div className="flex justify-between py-3 text-green-500 text-sm">
-                                <div className="flex items-end">
-                                    {post && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled ? (
-                                        <>
-                                            {post && post.liked ? (
-                                                <Tooltip content="Bạn đã thích bài đăng này. Nhấn để bỏ thích" style="light">
-                                                    <button className="mr-3 transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handlePostLike(postId)}>
-                                                        <BsHeartFill className="text-xl text-red-600 hover:text-red-300 active:text-red-200 cursor-pointer" />
-                                                    </button>
-                                                </Tooltip>
-                                            ) : (
-                                                <Tooltip content="Thích bài đăng" style="light">
-                                                    <button className="mr-3 transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handlePostLike(postId)}>
-                                                        <BsHeart className="text-xl font-medium text-red-600 hover:fill-red-500 active:fill-red-600 active:text-red-600 cursor-pointer" />
-                                                    </button>
-                                                </Tooltip>
-                                            )}
-                                        </>
-                                    ) : (
-                                        <>
-                                            <button className="mr-3 bg-transparent">
-                                                <BsHeartFill className="text-xl text-red-600" />
-                                            </button>
-                                        </>
-                                    )}
-
-                                    {post && post.peopleLiked && post.peopleLiked.length > 0 && <AvatarGroup images={post.peopleLiked} />}
-                                </div>
-
-                                {post && !post.disabled && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled && (
-                                    <div className="flex space-x-2 items-end cursor-pointer hover:text-orange-500 hover:underline" onClick={() => handleReplySection(null)}>
-                                        <TbMessageForward className="text-2xl" />
-                                        <p>Phản hồi</p>
                                     </div>
                                 )}
                             </div>
+
+                            <div className={`w-4/5 ${post && post.disabled ? "bg-red-100" : ""}`}>
+                                <div className="w-full p-5 border-2 border-dashed rounded-r-[50px]">
+                                    <div className="flex justify-between items-center pb-2 border-b border-gray-200 text-gray-500 text-sm">
+                                        <p>{moment(post && post.createdAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p>
+                                        {/* {post && post.updatedAt ? <p>{moment(post.updatedAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p> :  */}
+                                        <div className="space-x-3 flex items-center">
+                                            {post && post.updatedAt && (
+                                                <Tooltip content="Xem lịch sử chỉnh sửa" style="light">
+                                                    <button
+                                                        onClick={() => {
+                                                            getPostHistory();
+                                                            setTriggerPostModal(triggerPostModal + 1);
+                                                            setOpenPostHistoryModal(true);
+                                                        }}>
+                                                        <RiChatHistoryFill className="text-base hover:text-teal-500 active:text-teal-400 cursor-pointer" />
+                                                    </button>
+                                                </Tooltip>
+                                            )}
+
+                                            <PostHistoryModal triggerPostModal={triggerPostModal} openPostHistoryModal={openPostHistoryModal} postHistory={postHistory} />
+
+                                            {post && post.my && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled && (
+                                                <>
+                                                    <Tooltip content="Chỉnh sửa bài đăng" style="light">
+                                                        <button className="bg-transparent" onClick={() => navigate(`/forum/posts/${post.postId}/edit`)}>
+                                                            <HiPencil className="text-base hover:text-yellow-500 active:text-yellow-400 cursor-pointer" />
+                                                        </button>
+                                                    </Tooltip>
+
+                                                    <Tooltip content="Xoá bài đăng" style="light">
+                                                        <button className="bg-transparent" onClick={() => setOpenPostModal(true)}>
+                                                            <HiTrash className="text-base hover:text-red-500 active:text-red-400 cursor-pointer" />
+                                                        </button>
+                                                    </Tooltip>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div className="py-3">{post && <div className="content-format" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }} />}</div>
+                                </div>
+
+                                <div className="flex justify-between py-3 text-green-500 text-sm">
+                                    <div className="flex items-center space-x-2">
+                                        {post && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled ? (
+                                            <>
+                                                {isLoggedIn && post && post.liked ? (
+                                                    <Tooltip content="Bạn đã thích bài đăng này. Nhấn để bỏ thích" style="light" placement="bottom">
+                                                        <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handlePostLike(postId)}>
+                                                            <IoHeartCircle className="text-red-500 hover:text-red-300 text-4xl active:text-red-200 cursor-pointer" />
+                                                        </button>
+                                                    </Tooltip>
+                                                ) : (
+                                                    <Tooltip content="Thích bài đăng" style="light" placement="bottom">
+                                                        <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handlePostLike(postId)}>
+                                                            <IoHeartCircle className="text-red-500 hover:text-red-300 text-4xl active:text-red-200 cursor-pointer" />
+                                                        </button>
+                                                    </Tooltip>
+                                                )}
+                                            </>
+                                        ) : (
+                                            <>
+                                                <button className="bg-transparent">
+                                                    <IoHeartCircle className="text-red-500 text-4xl" />
+                                                </button>
+                                            </>
+                                        )}
+
+                                        {post && post.totalLikes > 0 && <p className="text-lg font-medium">{post.totalLikes}</p>}
+                                    </div>
+
+                                    <div className="flex space-x-8">
+                                        {post && !post.disabled && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled && (
+                                            <div className="flex space-x-2 items-center cursor-pointer hover:text-green-400" onClick={() => handleReplySection(null)}>
+                                                <IoChatbubble className="text-2xl transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150" />
+                                                <p className="font-medium">Phản hồi</p>
+                                            </div>
+                                        )}
+
+                                        {post && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled && !post.my && isLoggedIn && (
+                                            <div className="flex space-x-2 items-center cursor-pointer text-orange-500 hover:text-orange-400" onClick={handleReportPost}>
+                                                <MdReport className="text-2xl transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150" />
+                                                <p className="font-medium">Báo cáo</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                </div>
 
-                    <div className="w-11/12 m-auto grid gap-y-6">
-                        {replyList &&
-                            replyList.map(
-                                (reply, index) =>
-                                    !reply.disabled && (
-                                        <div className="w-full grid grid-cols-4 border border-gray-200 rounded-lg" key={index} id={reply.replyId}>
-                                            <div className="bg-gray-100 p-5">
-                                                <Avatar alt="User" img={reply.user && reply.user.image} rounded bordered size="lg" className="mb-4 mt-2" />
+                {post && post.bestReply && (
+                    <div className="w-full flex justify-center -mt-10 z-0">
+                        <div className="w-11/12 flex pt-20 pb-5 px-5 shadow-xl shadow-amber-100 hover:shadow-amber-200 bg-white rounded-lg cursor-pointer" id={post && post.bestReply.replyId}>
+                            <div className="w-1/5">
+                                <Avatar alt="User" img={post && post.bestReply && post.bestReply.user && post.bestReply.user.image} rounded size="md" bordered color="success" className="mb-4 main-avatar" />
 
-                                                <div className="text-center text-sm hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/users/${reply.user && reply.user.userId}`)}>
-                                                    {reply.user && reply.user.email.split("@")[0]}
-                                                </div>
+                                <div className="text-center font-semibold hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/users/${post && post.bestReply && post.bestReply.user && post.bestReply.user.userId}`)}>
+                                    {post && post.bestReply && post.bestReply.user && post.bestReply.user.lastName} {post && post.bestReply && post.bestReply.user && post.bestReply.user.firstName}
+                                </div>
+
+                                {post && post.bestReply && post.bestReply.user && post.bestReply.user.badge && (
+                                    <div className="flex justify-center mt-2">
+                                        <Tooltip content={post && post.bestReply && post.bestReply.user && post.bestReply.user.badge.badgeName} style="light" placement="bottom">
+                                            <Avatar alt="Badge" img={post && post.bestReply && post.bestReply.user && post.bestReply.user.badge.image} rounded />
+                                        </Tooltip>
+                                    </div>
+                                )}
+
+                                <div className="flex justify-center text-green-500 mt-5">
+                                    <Tooltip content="Tác giả bài đăng đã đánh dấu phản hồi này là hữu ích" style="light" placement="bottom">
+                                        <button>
+                                            <PiCheckFatFill className="text-5xl" />
+                                        </button>
+                                    </Tooltip>
+                                </div>
+                            </div>
+
+                            <div className={`w-4/5 ${reply.disabled && "bg-red-100"}`}>
+                                <div className={`border-2 border-dashed rounded-b-[50px] rounded-tr-[50px] p-5 ${reply.disabled && "bg-red-100"}`}>
+                                    <div className="flex justify-between pb-2 border-b border-gray-200 text-gray-500 text-sm">
+                                        {post && post.bestReply && post.bestReply.updatedAt ? (
+                                            <p>{moment(post && post.bestReply && post.bestReply.updatedAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p>
+                                        ) : (
+                                            <p>{moment(post && post.bestReply && post.bestReply.createdAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p>
+                                        )}
+                                    </div>
+
+                                    <div className="py-3">
+                                        <div className="content-format" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post && post.bestReply && post.bestReply.content) }} id={`edit-${post && post.bestReply && post.bestReply.replyId}`} />
+                                    </div>
+                                </div>
+
+                                <div className="flex justify-between text-green-500 text-sm mt-3">
+                                    <div className="flex items-center space-x-2">
+                                        <button className="bg-transparent">
+                                            <IoHeartCircle className="text-red-500 text-4xl" />
+                                        </button>
+
+                                        {post && post.bestReply && post.bestReply.totalLikes > 0 && <p className="text-lg font-medium">{post && post.bestReply && post.bestReply.totalLikes}</p>}
+                                    </div>
+
+                                    <div className="w-fit px-2 py-1 rounded-lg flex space-x-1 items-center bg-amber-100 text-amber-500 shadow-lg">
+                                        <TiStarFullOutline className="text-2xl" />
+
+                                        <p className="font-medium">Phản hồi nổi bật</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                <div className="mt-12" />
+
+                {totalPages > 1 && (
+                    <div className="bg-white rounded-lg w-fit flex justify-end ml-auto items-center shadow-lg shadow-gray-300 pb-2 mb-2">
+                        <Pagination layout="pagination" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} previousLabel="" nextLabel="" showIcons className="text-sm" />
+                    </div>
+                )}
+
+                <div className="rounded-lg grid gap-y-6 space-y-3">
+                    {replyList &&
+                        replyList.map(
+                            (reply, index) =>
+                                !reply.disabled && (
+                                    <div key={index} className="w-full flex space-x-2">
+                                        <div className="w-[5%] h-full">
+                                            <p className="flex items-center justify-center bg-white shadow-lg rounded-full h-fit aspect-square font-medium text-xl">#{(currentPage - 1) * 10 + index + 1}</p>
+
+                                            <div className="flex flex-col justify-center items-center w-full h-full">
+                                                <div className="w-2 h-2 rounded-full border-2 border-white" />
+                                                <div className="flex-grow border" />
+                                                <div className="w-2 h-2 rounded-full border-2 border-white" />
+                                            </div>
+                                        </div>
+
+                                        <div className="w-[95%] flex p-5 shadow-lg shadow-gray-300 bg-white rounded-lg" key={index} id={reply.replyId}>
+                                            <div className="w-1/5">
+                                                <Avatar alt="User" img={reply.user && reply.user.image} rounded size="md" bordered color="success" className="mb-4 main-avatar" />
 
                                                 <div className="text-center font-semibold hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/users/${reply.user && reply.user.userId}`)}>
                                                     {reply.user && reply.user.lastName} {reply.user && reply.user.firstName}
@@ -874,40 +930,58 @@ const DetailPost = () => {
 
                                                 {reply.user && reply.user.badge && (
                                                     <div className="flex justify-center mt-2">
-                                                        <Tooltip content={reply.user.badge.badgeName} style="light">
+                                                        <Tooltip content={reply.user.badge.badgeName} style="light" placement="bottom">
                                                             <Avatar alt="Badge" img={reply.user.badge.image} rounded />
                                                         </Tooltip>
                                                     </div>
                                                 )}
 
                                                 <div className="flex justify-center text-green-500 mt-5">
-                                                    {post && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled ? (
+                                                    {post && post.subsection && post.subsection.replyAcceptable && (
                                                         <>
-                                                            {post && post.subsection && post.subsection.replyAcceptable && !reply.my && (
+                                                            {post && (post.disabled || post.labelDisabled || post.subsectionDisabled || post.sectionDisabled) ? (
                                                                 <>
                                                                     {reply && reply.accepted ? (
-                                                                        <Tooltip content="Bạn đã đánh dấu phản hồi này là hữu ích. Nhấn để bỏ đánh dấu" style="light">
-                                                                            <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handleReplyUndoAccept(reply)}>
-                                                                                <PiCheckFatFill className="text-5xl hover:text-green-300 active:text-green-200 cursor-pointer" />
+                                                                        <Tooltip content="Tác giả bài đăng đã đánh dấu phản hồi này là hữu ích" style="light" placement="bottom">
+                                                                            <button>
+                                                                                <PiCheckFatFill className="text-5xl" />
                                                                             </button>
                                                                         </Tooltip>
                                                                     ) : (
-                                                                        <Tooltip content="Đánh dấu phản hồi này nếu nó giải quyết vấn đề của bạn hoặc hữu ích nhất" style="light">
-                                                                            <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handleReplyAccept(reply)}>
-                                                                                <PiCheckFat className="text-5xl hover:fill-green-500 active:fill-green-600 active:text-green-600 cursor-pointer" />
-                                                                            </button>
-                                                                        </Tooltip>
+                                                                        <button className="bg-transparent">
+                                                                            <PiCheckFatFill className="text-5xl text-gray-400" />
+                                                                        </button>
                                                                     )}
                                                                 </>
-                                                            )}
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            {post && post.subsection && post.subsection.postAcceptable && (
+                                                            ) : (
                                                                 <>
-                                                                    <button className="bg-transparent">
-                                                                        <PiCheckFatFill className="text-5xl" />
-                                                                    </button>
+                                                                    {post && post.my ? (
+                                                                        <>
+                                                                            {reply && reply.accepted ? (
+                                                                                <Tooltip content="Bạn đã đánh dấu phản hồi này là hữu ích. Nhấn để bỏ đánh dấu" style="light" placement="bottom">
+                                                                                    <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handleReplyUndoAccept(reply)}>
+                                                                                        <PiCheckFatFill className="text-5xl text-emerald-500 hover:text-emerald-300 active:text-emerald-200 cursor-pointer border-2 border-emerald-500 hover:border-emerald-200 active:border-emerald-100 rounded-full p-1" />
+                                                                                    </button>
+                                                                                </Tooltip>
+                                                                            ) : (
+                                                                                <Tooltip content="Đánh dấu phản hồi này nếu nó giải quyết vấn đề của bạn hoặc hữu ích nhất" style="light" placement="bottom">
+                                                                                    <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handleReplyAccept(reply)}>
+                                                                                        <PiCheckFatFill className="text-5xl text-gray-400 hover:text-emerald-300 active:text-emerald-200 cursor-pointer border-2 border-gray-400 hover:border-emerald-200 active:border-emerald-100 rounded-full p-1" />
+                                                                                    </button>
+                                                                                </Tooltip>
+                                                                            )}
+                                                                        </>
+                                                                    ) : (
+                                                                        <>
+                                                                            {reply && reply.accepted && (
+                                                                                <Tooltip content="Tác giả bài đăng đã đánh dấu phản hồi này là hữu ích" style="light" placement="bottom">
+                                                                                    <button>
+                                                                                        <PiCheckFatFill className="text-5xl" />
+                                                                                    </button>
+                                                                                </Tooltip>
+                                                                            )}
+                                                                        </>
+                                                                    )}
                                                                 </>
                                                             )}
                                                         </>
@@ -915,202 +989,228 @@ const DetailPost = () => {
                                                 </div>
                                             </div>
 
-                                            <div className={`col-span-3 p-5 ${reply.disabled && "bg-red-100"}`}>
-                                                <div className="flex justify-between pb-2 border-b border-gray-200 text-gray-500 text-sm">
-                                                    {reply && reply.updatedAt ? <p>{moment(reply.updatedAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p> : <p>{moment(reply && reply.createdAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p>}
-
-                                                    <div className="space-x-3 flex items-center">
-                                                        {reply.updatedAt && (
-                                                            <Tooltip content="Xem lịch sử chỉnh sửa" style="light">
-                                                                <button
-                                                                    onClick={() => {
-                                                                        getReplyHistory(reply.replyId);
-                                                                        setReplyId(reply.replyId);
-                                                                        setTriggerReplyModal(triggerReplyModal + 1);
-                                                                        setOpenReplyHistoryModal(true);
-                                                                    }}>
-                                                                    <RiChatHistoryFill className="text-base hover:text-teal-500 active:text-teal-400 cursor-pointer" />
-                                                                </button>
-                                                            </Tooltip>
-                                                        )}
-
-                                                        {reply && reply.my && !reply.disabled && !reply.postDisabled && (
-                                                            <>
-                                                                <Tooltip content="Chỉnh sửa phản hồi" style="light">
-                                                                    <button className="bg-transparent" onClick={() => handleEditReplySection(reply)}>
-                                                                        <HiPencil className="text-lg hover:text-orange-500 active:text-orange-400 cursor-pointer" />
-                                                                    </button>
-                                                                </Tooltip>
-
-                                                                <Tooltip content="Xoá phản hồi" style="light">
-                                                                    <button
-                                                                        className="bg-transparent"
-                                                                        onClick={() => {
-                                                                            setOpenReplyModal(true);
-                                                                            setReplyId(reply.replyId);
-                                                                        }}>
-                                                                        <HiTrash className="text-lg hover:text-red-500 active:text-red-400 cursor-pointer" />
-                                                                    </button>
-                                                                </Tooltip>
-                                                            </>
-                                                        )}
-
-                                                        {reply && !reply.disabled && !reply.postDisabled && !reply.my && isLoggedIn && (
-                                                            <Tooltip content="Báo cáo phản hồi" style="light">
-                                                                <button className="bg-transparent" onClick={() => handleReportReply(reply.replyId)}>
-                                                                    <HiFlag className="text-base hover:text-amber-500 active:text-amber-400 cursor-pointer" />
-                                                                </button>
-                                                            </Tooltip>
-                                                        )}
-
-                                                        <p className="mb-1">#{(currentPage - 1) * 10 + index + 2}</p>
-                                                    </div>
-                                                </div>
-
+                                            <div className={`w-4/5 ${reply.disabled && "bg-red-100"}`}>
                                                 {reply.parentReply && reply.parentReply.disabled && (
-                                                    <div className="bg-gray-200 border-l-4 border-green-800 mt-3 p-3">
+                                                    <div className="bg-red-100 border-2 border-dashed rounded-t-[50px] rounded-br-[50px] p-5 cursor-pointer mb-3">
                                                         <p className="text-red-500 font-semibold italic text-sm">Phản hồi đã bị gỡ</p>
                                                     </div>
                                                 )}
 
                                                 {reply.parentReply && !reply.parentReply.disabled && (
-                                                    <div className="bg-gray-200 border-l-4 border-green-800 cursor-pointer mt-3" onClick={() => handleParentReplySection(reply.parentReply.replyId)}>
-                                                        <div className="text-red-600 font-medium bg-gray-300 p-3">
-                                                            <p>
+                                                    <div className="bg-green-100 border-2 border-dashed rounded-t-[50px] rounded-br-[50px] p-5 cursor-pointer mb-3" onClick={() => handleParentReplySection(reply.parentReply.replyId)}>
+                                                        <div className="flex items-center space-x-4 text-red-600 font-medium">
+                                                            <Avatar alt="User" img={reply.parentReply && reply.parentReply.user && reply.parentReply.user.image} rounded bordered color="info" size="md" />
+
+                                                            <p className="text-emerald-600">
                                                                 {reply.parentReply && reply.parentReply.user && reply.parentReply.user.lastName} {reply.parentReply && reply.parentReply.user && reply.parentReply.user.firstName}
                                                             </p>
                                                         </div>
 
-                                                        <div className="px-3">
-                                                            <div className="py-3 content-format" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(reply.parentReply && reply.parentReply.content) }} />
+                                                        <div className="ml-5 !border-l-2 border-gray-300">
+                                                            <div className="p-3 content-format" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(reply.parentReply && reply.parentReply.content) }} />
                                                         </div>
                                                     </div>
                                                 )}
 
-                                                <div className="py-3">
-                                                    <div className="content-format" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(reply.content) }} id={`edit-${reply.replyId}`} />
+                                                <div className={`border-2 border-dashed rounded-b-[50px] rounded-tr-[50px] p-5 ${reply.disabled && "bg-red-100"}`}>
+                                                    <div className="flex justify-between pb-2 border-b border-gray-200 text-gray-500 text-sm">
+                                                        {reply && reply.updatedAt ? <p>{moment(reply.updatedAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p> : <p>{moment(reply && reply.createdAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p>}
+
+                                                        <div className="space-x-3 flex items-center">
+                                                            {reply.updatedAt && (
+                                                                <Tooltip content="Xem lịch sử chỉnh sửa" style="light" placement="bottom">
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            getReplyHistory(reply.replyId);
+                                                                            setReplyId(reply.replyId);
+                                                                            setTriggerReplyModal(triggerReplyModal + 1);
+                                                                            setOpenReplyHistoryModal(true);
+                                                                        }}>
+                                                                        <RiChatHistoryFill className="text-base hover:text-teal-500 active:text-teal-400 cursor-pointer" />
+                                                                    </button>
+                                                                </Tooltip>
+                                                            )}
+
+                                                            {reply && reply.my && !reply.disabled && !reply.postDisabled && (
+                                                                <>
+                                                                    <Tooltip content="Chỉnh sửa phản hồi" style="light" placement="bottom">
+                                                                        <button className="bg-transparent" onClick={() => handleEditReplySection(reply)}>
+                                                                            <HiPencil className="text-lg hover:text-orange-500 active:text-orange-400 cursor-pointer" />
+                                                                        </button>
+                                                                    </Tooltip>
+
+                                                                    <Tooltip content="Xoá phản hồi" style="light" placement="bottom">
+                                                                        <button
+                                                                            className="bg-transparent"
+                                                                            onClick={() => {
+                                                                                setOpenReplyModal(true);
+                                                                                setReplyId(reply.replyId);
+                                                                            }}>
+                                                                            <HiTrash className="text-lg hover:text-red-500 active:text-red-400 cursor-pointer" />
+                                                                        </button>
+                                                                    </Tooltip>
+                                                                </>
+                                                            )}
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="py-3">
+                                                        <div className="content-format" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(reply.content) }} id={`edit-${reply.replyId}`} />
+                                                    </div>
                                                 </div>
 
-                                                <div className="flex justify-between text-green-500 text-sm">
-                                                    <div className="flex items-end">
+                                                <div className="flex justify-between text-green-500 text-sm mt-3">
+                                                    <div className="flex items-center space-x-2">
                                                         {post && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled ? (
                                                             <>
                                                                 {reply.liked ? (
-                                                                    <Tooltip content="Bạn đã thích phản hồi này. Nhấn để bỏ thích" style="light">
-                                                                        <button className="mr-3 transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handleReplyLike(reply)}>
-                                                                            <BsHeartFill className="text-xl text-red-600 hover:text-red-300 active:text-red-200 cursor-pointer" />
+                                                                    <Tooltip content="Bạn đã thích phản hồi này. Nhấn để bỏ thích" style="light" placement="bottom">
+                                                                        <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handleReplyLike(reply)}>
+                                                                            <IoHeartCircle className="text-red-500 hover:text-red-300 text-4xl active:text-red-200 cursor-pointer" />
                                                                         </button>
                                                                     </Tooltip>
                                                                 ) : (
-                                                                    <Tooltip content="Thích phản hồi" style="light">
-                                                                        <button className="mr-3 transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handleReplyLike(reply)}>
-                                                                            <BsHeart className="text-xl font-medium text-red-600 hover:fill-red-500 active:fill-red-600 active:text-red-600 cursor-pointer" />
+                                                                    <Tooltip content="Thích phản hồi" style="light" placement="bottom">
+                                                                        <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handleReplyLike(reply)}>
+                                                                            <IoHeartCircle className="text-4xl text-gray-400 hover:text-red-400 active:text-red-500 cursor-pointer" />
                                                                         </button>
                                                                     </Tooltip>
                                                                 )}
                                                             </>
                                                         ) : (
                                                             <>
-                                                                <button className="mr-3 bg-transparent">
-                                                                    <BsHeartFill className="text-xl text-red-600" />
+                                                                <button className="bg-transparent">
+                                                                    <IoHeartCircle className="text-red-500 text-4xl" />
                                                                 </button>
                                                             </>
                                                         )}
 
-                                                        {reply && reply.peopleLiked && reply.peopleLiked.length > 0 && <AvatarGroup images={reply.peopleLiked} />}
+                                                        {post && post.totalLikes > 0 && <p className="text-lg font-medium">{post.totalLikes}</p>}
                                                     </div>
 
-                                                    {post && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled && (
-                                                        <div className="flex space-x-2 items-end cursor-pointer hover:text-orange-500 hover:underline" onClick={() => handleReplySection(reply)}>
-                                                            <TbMessageForward className="text-2xl" />
-                                                            <p>Phản hồi</p>
-                                                        </div>
-                                                    )}
+                                                    <div className="flex space-x-8">
+                                                        {post && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled && (
+                                                            <div className="flex space-x-2 items-center cursor-pointer hover:text-green-400" onClick={() => handleReplySection(reply)}>
+                                                                <IoChatbubble className="text-2xl transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150" />
+                                                                <p className="font-medium">Phản hồi</p>
+                                                            </div>
+                                                        )}
+
+                                                        {reply && !reply.disabled && !reply.postDisabled && !reply.my && isLoggedIn && (
+                                                            <div className="flex space-x-2 items-center cursor-pointer text-orange-500 hover:text-orange-400" onClick={() => handleReportReply(reply.replyId)}>
+                                                                <MdReport className="text-2xl transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150" />
+                                                                <p className="font-medium">Báo cáo</p>
+                                                            </div>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    ),
-                            )}
+                                    </div>
+                                ),
+                        )}
 
-                        <ReplyHistoryModal triggerReplyModal={triggerReplyModal} openReplyHistoryModal={openReplyHistoryModal} replyHistory={replyHistory} />
+                    <ReplyHistoryModal triggerReplyModal={triggerReplyModal} openReplyHistoryModal={openReplyHistoryModal} replyHistory={replyHistory} />
 
-                        {post && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled && (
-                            <div className="w-full grid grid-cols-4 border border-gray-200 rounded-lg">
-                                <div className="bg-gray-100 p-5">
-                                    <Avatar alt="User" img={user && user.image} rounded bordered size="lg" className="mb-4 mt-2" />
+                    {post && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled && (
+                        <div className="w-full grid grid-cols-4 bg-white shadow-lg rounded-lg">
+                            <div className="p-5">
+                                <Avatar alt="User" img={user && user.image} rounded bordered size="lg" className="mb-4 mt-2 main-avatar" color="success" />
 
-                                    {user ? (
-                                        <>
-                                            <div className="text-center text-sm">{user && user.email.split("@")[0]}</div>
+                                {user ? (
+                                    <>
+                                        <div className="text-center font-semibold">
+                                            {user && user.lastName} {user && user.firstName}
+                                        </div>
 
-                                            <div className="text-center font-semibold">
-                                                {user && user.lastName} {user && user.firstName}
+                                        {user && user.badge && (
+                                            <div className="flex justify-center mt-2">
+                                                <Tooltip content={user.badge.badgeName} placement="bottom">
+                                                    <Avatar alt="Badge" img={user.badge.image} rounded />
+                                                </Tooltip>
                                             </div>
+                                        )}
+                                    </>
+                                ) : (
+                                    <div className="text-center font-semibold text-red-500">Khách</div>
+                                )}
+                            </div>
 
-                                            {user && user.badge && (
-                                                <div className="flex justify-center mt-2">
-                                                    <Tooltip content={user.badge.badgeName}>
-                                                        <Avatar alt="Badge" img={user.badge.image} rounded />
-                                                    </Tooltip>
-                                                </div>
-                                            )}
-                                        </>
-                                    ) : (
-                                        <div className="text-center font-semibold text-red-500">Khách</div>
-                                    )}
+                            <div className="col-span-3 p-5" id="reply-section">
+                                <div id="parent-reply-section"></div>
+
+                                <div className="h-60">
+                                    <ReactQuill ref={(el) => (mainQuill.current = el)} theme="snow" modules={modules} formats={formats} value={reply} onChange={(e) => setReply(e)} className="h-full" />
                                 </div>
 
-                                <div className="col-span-3 p-5" id="reply-section">
-                                    <div id="parent-reply-section"></div>
-
-                                    <div className="h-60">
-                                        <ReactQuill ref={(el) => (mainQuill.current = el)} theme="snow" modules={modules} formats={formats} value={reply} onChange={(e) => setReply(e)} className="h-full" />
-                                    </div>
-
-                                    <div className="pt-3 text-green-500 text-sm mt-8">
-                                        <Button
-                                            className="ml-auto bg-green-400 enabled:hover:bg-green-500"
-                                            onClick={() => {
-                                                handleAddReply();
-                                            }}
-                                            isProcessing={isLoading}
-                                            disabled={isLoading}>
-                                            <TbMessageForward className="mr-2 h-5 w-5 " />
-                                            Đăng phản hồi
-                                        </Button>
-                                    </div>
+                                <div className="pt-3 text-green-500 text-sm mt-2">
+                                    <Button
+                                        className="ml-auto bg-green-400 enabled:hover:bg-green-500"
+                                        onClick={() => {
+                                            handleAddReply();
+                                        }}
+                                        isProcessing={isLoading}
+                                        disabled={isLoading}>
+                                        <PiPaperPlaneTiltFill className="mr-2 h-5 w-5 " />
+                                        Đăng phản hồi
+                                    </Button>
                                 </div>
                             </div>
-                        )}
-                    </div>
+                        </div>
+                    )}
                 </div>
+
                 {totalPages > 1 && (
-                    <div className="bg-white rounded-lg w-fit flex justify-end ml-auto items-cente mt-2 shadow-lg shadow-gray-300">
-                        <Pagination layout="pagination" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} previousLabel="Trước" nextLabel="Tiếp" showIcons className="text-sm" />
+                    <div className="bg-white rounded-lg w-fit flex justify-end ml-auto items-cente mt-2 shadow-lg shadow-gray-300 pb-2">
+                        <Pagination layout="pagination" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} previousLabel="" nextLabel="" showIcons className="text-sm" />
                     </div>
                 )}
 
                 {postList.length > 0 && (
-                    <div className="w-fit bg-white mt-5 p-5 rounded-lg space-y-3 shadow-lg shadow-gray-300">
+                    <div className="w-full bg-white mt-5 p-5 rounded-lg space-y-3 shadow-lg shadow-gray-300">
                         <h2 className="text-2xl font-semibold">Có thể bạn quan tâm</h2>
 
-                        {postList.map((post, index) => (
-                            <div key={index} className="flex space-x-2 items-center">
-                                <div className="flex rounded bg-green-500 text-white p-2 items-center space-x-2 font-medium">
-                                    <LuEye />
-                                    <p className="text-sm">{post.totalViews}</p>
-                                </div>
+                        <div className="flex space-x-4">
+                            <div className="w-1/2 w-full space-y-5">
+                                {postList.slice(0, 5).map((post, index) => (
+                                    <div key={index} className="flex space-x-2 items-center" title={post.title}>
+                                        <div className="flex rounded bg-green-500 text-white p-2 items-center space-x-2 font-medium min-w-16 w-16">
+                                            <LuEye />
+                                            <p className="text-sm">{numeral(post.totalViews).format("0.a")}</p>
+                                        </div>
 
-                                <div className="flex rounded bg-green-500 text-white p-2 items-center space-x-2 font-medium">
-                                    <HiOutlineChatAlt2 />
-                                    <p className="text-sm">{post.totalReplies}</p>
-                                </div>
+                                        <div className="flex rounded bg-green-500 text-white p-2 items-center space-x-2 font-medium min-w-14 w-14">
+                                            <PiChatCircleTextFill />
+                                            <p className="text-sm">{post.totalReplies < 9 ? post.totalReplies : "9+"}</p>
+                                        </div>
 
-                                <Link className="hover:!text-green-600 cursor-pointer hover:!no-underline !not-italic related-post" to={`/forum/posts/${post.postId}`}>
-                                    {post.title}
-                                </Link>
+                                        <Link className="text-sm hover:!text-green-600 cursor-pointer hover:!no-underline !not-italic related-post truncate whitespace-normal line-clamp-1" to={`/forum/posts/${post.postId}`}>
+                                            {post.title}
+                                        </Link>
+                                    </div>
+                                ))}
                             </div>
-                        ))}
+
+                            <div className="w-1/2 w-full space-y-5">
+                                {postList.slice(-5).map((post, index) => (
+                                    <div key={index} className="flex space-x-2 items-center" title={post.title}>
+                                        <div className="flex rounded bg-green-500 text-white p-2 items-center space-x-2 font-medium min-w-16 w-16">
+                                            <LuEye />
+                                            <p className="text-sm">{numeral(post.totalViews).format("0.a")}</p>
+                                        </div>
+
+                                        <div className="flex rounded bg-green-500 text-white p-2 items-center space-x-2 font-medium min-w-14 w-14">
+                                            <PiChatCircleTextFill />
+                                            <p className="text-sm">{post.totalReplies < 9 ? post.totalReplies : "9+"}</p>
+                                        </div>
+
+                                        <Link className="text-sm hover:!text-green-600 cursor-pointer hover:!no-underline !not-italic related-post truncate whitespace-normal line-clamp-1" to={`/forum/posts/${post.postId}`}>
+                                            {post.title}
+                                        </Link>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 )}
             </div>

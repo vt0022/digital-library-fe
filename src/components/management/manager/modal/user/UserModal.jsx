@@ -1,14 +1,11 @@
+import { createUser, getAUser, updateUser } from "@api/main/userAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
+import profileImage from "@assets/images/default_profile.jpg";
+import Select from "@components/management/select/Select";
 import { Button, Datepicker, FileInput, Label, Modal, TextInput, Toast } from "flowbite-react";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { HiChevronLeft, HiChevronUp, HiOutlineCheck, HiX } from "react-icons/hi";
-
-import Select from "../../../select/Select";
-
-import { createUser, getAUser, updateUser } from "../../../../../api/main/userAPI";
-import usePrivateAxios from "../../../../../api/usePrivateAxios";
-
-import moment from "moment/moment";
-import profileImage from "../../../../../assets/images/default_profile.jpg";
 
 const UserModal = (props) => {
     usePrivateAxios();

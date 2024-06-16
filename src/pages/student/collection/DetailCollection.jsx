@@ -8,6 +8,19 @@ import { useEffect, useState } from "react";
 import { CgExtensionRemove } from "react-icons/cg";
 import { HiOutlineCheck, HiX } from "react-icons/hi";
 import { useNavigate, useParams } from "react-router-dom";
+import { Bounce, toast } from "react-toastify";
+
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const DetailCollection = () => {
     const { collectionSlug } = useParams();
@@ -18,7 +31,6 @@ const DetailCollection = () => {
 
     const [collection, setCollection] = useState(null);
     const [docId, setDocId] = useState(null);
-    const [status, setStatus] = useState(0);
     const [openModal, setOpenModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -53,15 +65,10 @@ const DetailCollection = () => {
 
             if (response.status === 200) {
                 getCollection();
-                setStatus(1);
-                setTimeout(() => {
-                    setStatus(0);
-                }, 4000);
+                
+                toast.error(<p className="pr-2">Xoá khỏi bộ sưu tập thành công!</p>, toastOptions);
             } else {
-                setStatus(-1);
-                setTimeout(() => {
-                    setStatus(0);
-                }, 4000);
+                toast.error(<p className="pr-2">Đã xảy ra lỗi! Vui lòng thử lại!</p>, toastOptions);
             }
 
             setIsLoading(false);
@@ -112,20 +119,6 @@ const DetailCollection = () => {
                             />
                         ))}
                 </div>
-
-                {status === -1 && (
-                    <Toast className="top-1/4 right-5 w-100 fixed z-50">
-                        <HiX className="h-5 w-5 bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200" />
-                        <div className="pl-4 text-sm font-normal">Đã xảy ra lỗi! Vui lòng thử lại!</div>
-                    </Toast>
-                )}
-
-                {status === 1 && (
-                    <Toast className="top-1/4 right-5 fixed w-100 z-50">
-                        <HiOutlineCheck className="h-5 w-5 bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200" />
-                        <div className="pl-4 text-sm font-normal">Xoá khỏi bộ sưu tập thành công!</div>
-                    </Toast>
-                )}
 
                 <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup className="z-40">
                     <Modal.Header />

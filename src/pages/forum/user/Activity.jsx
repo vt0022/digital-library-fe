@@ -42,9 +42,12 @@ const Activity = () => {
 
     const myTab = useRef(null);
 
-    const userId = JSON.parse(sessionStorage.getItem("profile")).userId;
+    const savedUser = JSON.parse(sessionStorage.getItem("profile"));
 
     useEffect(() => {
+        if (!savedUser) {
+            navigate("/login");
+        }
         getUserProfile();
         getBadgeList();
     }, []);
@@ -111,7 +114,7 @@ const Activity = () => {
 
     const getPostList = async () => {
         try {
-            const response = await getAllPostsOfUser(userId, {
+            const response = await getAllPostsOfUser(savedUser && savedUser.userId, {
                 params: {
                     page: currentPostPage - 1,
                     size: 10,
@@ -131,7 +134,7 @@ const Activity = () => {
 
     const getReplyList = async () => {
         try {
-            const response = await getAllRepliesOfUser(userId, {
+            const response = await getAllRepliesOfUser(savedUser && savedUser.userId, {
                 params: {
                     page: currentReplyPage - 1,
                     size: 10,
@@ -191,7 +194,7 @@ const Activity = () => {
 
     const getUserProfile = async () => {
         try {
-            const response = await getAUser(userId);
+            const response = await getAUser(savedUser && savedUser.userId);
 
             if (response.status === 200) {
                 const user = response.data;
@@ -206,7 +209,7 @@ const Activity = () => {
 
     const getBadgeList = async () => {
         try {
-            const response = await getBadgesOfUser(userId);
+            const response = await getBadgesOfUser(savedUser && savedUser.userId);
             if (response.status === 200) {
                 setBadgeList(response.data);
             }

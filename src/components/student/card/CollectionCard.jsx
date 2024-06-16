@@ -1,15 +1,15 @@
 import { deleteCollection } from "@api/main/collectionAPI";
-import colors from "@assets/json-data/colors.json";
 import heights from "@assets/json-data/heights.json";
+import colors from "@assets/json-data/light_colors.json";
 import { Button, Modal, Toast, Tooltip } from "flowbite-react";
 import { useState } from "react";
+import { BiSolidLock } from "react-icons/bi";
 import { CgExtensionRemove } from "react-icons/cg";
-import { GiPadlock } from "react-icons/gi";
-import { HiOutlineCheck, HiX } from "react-icons/hi";
-import { RiDeleteBinFill, RiEditCircleLine } from "react-icons/ri";
+import { HiOutlineCheck, HiOutlinePencilAlt, HiOutlineTrash, HiX } from "react-icons/hi";
+import { HiClipboardDocumentList } from "react-icons/hi2";
+import { IoHeart } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import CollectionModal from "../modal/CollectionModal";
-import { HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
+import CollectionModal from "@components/student/modal/CollectionModal";
 
 const CollectionCard = (props) => {
     const { collection, isMine, refreshList } = props;
@@ -70,57 +70,83 @@ const CollectionCard = (props) => {
     };
 
     return (
-        <div className="w-full rounded-lg h-fit p-5 rounded-lg shadow-md space-y-2 collection-card bg-white cursor-pointer" style={{ "--hover-color": getRandomColor.hover }}>
-            <div className="h-7 w-1/2 rounded-md m-auto -mt-8 flex items-center justify-center" style={{ backgroundColor: getRandomColor.bg }}>
-                <div className="w-3 h-3 rounded-full bg-white"></div>
-            </div>
-            <div className="relative">
-                <div className="flex h-56 rounded-md shadow-md gap-x-[2px] hover:shadow-md" onClick={() => navigate(`/collections/${collection.slug}`)}>
-                    {collection.thumbnails[0] && <img className="w-2/3 object-cover rounded-l-md" src={collection.thumbnails[0]} alt="collection" />}
-                    <div className="w-1/3 max-h-full flex flex-col space-y-[2px]">
-                        {collection.thumbnails[1] && <img className="h-[142px] w-full object-cover rounded-tr-md" src={collection.thumbnails[1]} alt="collection" />}
-                        {collection.thumbnails[2] && <img className="h-[142px] w-full object-cover rounded-br-md" src={collection.thumbnails[2]} alt="collection" />}
+        <div
+            className="relative overflow-hidden w-full border rounded-lg h-fit rounded-lg shadow-lg space-y-2 collection-card bg-white cursor-pointer transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-110 duration-150 z-20"
+            style={{ "--hover-color": getRandomColor.hover }}
+            onClick={() => navigate(`/collections/${collection.slug}`)}>
+            <div className="absolute w-3/5 aspect-square rounded-full -top-10 -left-10 z-0" style={{ backgroundColor: getRandomColor.hover }} />
+
+            <div className="absolute w-2/5 aspect-square rounded-lg rotate-45 -bottom-10 -right-10 z-0" style={{ backgroundColor: getRandomColor.bg }} />
+
+            {isMine && collection.private && (
+                <div className="absolute top-1 right-1 rounded-full bg-white z-20 p-1 bg-amber-50" title="Bộ sưu tập riêng tư">
+                    <BiSolidLock className="text-2xl text-amber-500" />
+                </div>
+            )}
+
+            <div className="relative p-5 z-10">
+                <div className="relative">
+                    <div className="flex space-x-2 justify-center">
+                        {collection.thumbnails[0] && (
+                            <div className="w-1/3 mt-2">
+                                <img className="object-cover rounded-lg border" src={collection.thumbnails[0]} alt="collection" />
+                            </div>
+                        )}
+
+                        {collection.thumbnails[1] && (
+                            <div className="w-1/3">
+                                <img className="object-cover rounded-lg border" src={collection.thumbnails[1]} alt="collection" />
+                            </div>
+                        )}
+
+                        {collection.thumbnails[2] && (
+                            <div className="w-1/3 mt-2">
+                                <img className="object-cover rounded-lg border" src={collection.thumbnails[2]} alt="collection" />
+                            </div>
+                        )}
                     </div>
                 </div>
 
-                {isMine && collection.private && (
-                    <div className="absolute top-3 left-3 p-2 rounded-full bg-white">
-                        <GiPadlock className="text-2xl" />
+                <div className="flex w-full items-center justify-center space-x-3 text-xl mt-3 mb-2">
+                    <div className="flex items-center justify-center space-x-2">
+                        <HiClipboardDocumentList className="text-emerald-500" />
+                        <p className="font-medium text-gray-600">1</p>
+                    </div>
+
+                    <div className="flex items-center justify-center space-x-2">
+                        <IoHeart className="text-rose-500" />
+                        <p className="font-medium text-gray-600">2</p>
+                    </div>
+                </div>
+
+                <p className="font-medium text-center mb-3 cursor-pointer collection-name" onClick={() => navigate(`/collections/${collection.slug}`)} style={{ color: getRandomColor.active }}>
+                    {collection.collectionName}
+                </p>
+
+                {isMine && (
+                    <div className="flex items-center ml-auto">
+                        <Tooltip content="Chỉnh sửa" style="light">
+                            <HiOutlinePencilAlt
+                                className="w-7 h-7 text-yellow-500 hover:text-yellow-300 active:text-yellow-200 mr-2"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleEdit();
+                                }}
+                            />
+                        </Tooltip>
+
+                        <Tooltip content="Xoá" style="light">
+                            <HiOutlineTrash
+                                className="w-7 h-7 text-red-500 hover:text-red-300 active:text-red-200"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDelete();
+                                }}
+                            />
+                        </Tooltip>
                     </div>
                 )}
             </div>
-
-            <p className="font-medium text-base text-center mb-3 cursor-pointer collection-name" onClick={() => navigate(`/collections/${collection.slug}`)} style={{ "--hover-color": getRandomColor.hover, "--active-color": getRandomColor.active }}>
-                {collection.collectionName}
-            </p>
-            {/* 
-            <div className="flex items-center mt-3">
-                <Avatar alt="collect" img="" rounded size="sm" />
-                <p className="text-sm">Lê Anh Tuấn</p>
-            </div> */}
-            {isMine && (
-                <div className="flex items-center ml-auto">
-                    <Tooltip content="Chỉnh sửa" style="light">
-                        <HiOutlinePencilAlt
-                            className="w-7 h-7 text-yellow-500 hover:text-yellow-300 active:text-yellow-200 mr-2"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleEdit();
-                            }}
-                        />
-                    </Tooltip>
-
-                    <Tooltip content="Xoá" style="light">
-                        <HiOutlineTrash
-                            className="w-7 h-7 text-red-500 hover:text-red-300 active:text-red-200"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleDelete();
-                            }}
-                        />
-                    </Tooltip>
-                </div>
-            )}
 
             <Modal show={openDeleteModal} size="md" onClose={() => setOpenDeleteModal(false)} popup className="z-40">
                 <Modal.Header />

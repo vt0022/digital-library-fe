@@ -34,7 +34,7 @@ const Subsections = () => {
         { name: "Cho phép thành viên đăng", value: "true" },
     ];
 
-    const tableHead = ["", "Tên", "Trạng thái", "Quyền đăng", "Số bài đăng", ""];
+    const tableHead = ["", "Tên", "Trạng thái", "Quyền đăng", "Đánh dấu hữu ích", "Số bài đăng", ""];
 
     const renderHead = (item, index) => (
         <th className="text-center" key={index}>
@@ -45,11 +45,11 @@ const Subsections = () => {
     const renderBody = (item, index) => (
         <tr key={index} className="cursor-pointer" onClick={() => navigate("/admin/subsections/" + item.slug)}>
             <td className="w-1/12 min-w-1/12 text-center font-bold">{(currentPage - 1) * 2 + index + 1}</td>
-            <td className="w-4/12 min-w-4/12 text-center">{item.subName}</td>
+            <td className="w-2/12 min-w-4/12 text-center">{item.subName}</td>
             <td className="w-2/12 text-center">
                 <div className="m-auto w-fit">
                     {item.disabled ? (
-                        <Tooltip content="Kích hoạt phân mục" style="light">
+                        <Tooltip content="Kích hoạt chuyên mục" style="light">
                             <Badge
                                 color="warning"
                                 icon={HiX}
@@ -81,6 +81,28 @@ const Subsections = () => {
                     )}
                 </div>
             </td>
+
+            <td className="w-2/12 text-center">
+                <div className="m-auto w-fit">
+                    {item.postAcceptable && !item.replyAcceptable && (
+                        <Badge color="lime" icon={HiCheck}>
+                            Bài đăng
+                        </Badge>
+                    )}
+
+                    {!item.postAcceptable && item.replyAcceptable && (
+                        <Badge color="green" icon={HiX}>
+                            Phản hồi
+                        </Badge>
+                    )}
+
+                    {!item.postAcceptable && !item.replyAcceptable && (
+                        <Badge color="red" icon={HiX}>
+                            Không
+                        </Badge>
+                    )}
+                </div>
+            </td>
             <td className="w-2/12 text-center">{item.totalPosts}</td>
             <td className="w-1/12 text-center">
                 <div className="flex space-x-0">
@@ -91,7 +113,7 @@ const Subsections = () => {
                         }}
                         icon="bx bx-pencil"
                         color="amber"
-                        content="Chỉnh sửa phân mục"
+                        content="Chỉnh sửa chuyên mục"
                     />
                     <ActionButton
                         onClick={(e) => {
@@ -100,7 +122,7 @@ const Subsections = () => {
                         }}
                         icon="bx bx-trash"
                         color="red"
-                        content="Xoá phân mục"
+                        content="Xoá chuyên mục"
                     />
                 </div>
             </td>
@@ -189,8 +211,8 @@ const Subsections = () => {
             setIsLoading(false);
             setOpenDeleteModal(false);
             if (response.status === 200) {
-                if (response.message === "Delete subsection from system successfully") toast.success(<p className="pr-2">Xoá phân mục thành công!</p>, toastOptions);
-                else toast.warn(<p className="pr-2">Phân mục có bài đăng, đã huỷ kích hoạt!</p>, toastOptions);
+                if (response.message === "Delete subsection from system successfully") toast.success(<p className="pr-2">Xoá chuyên mục thành công!</p>, toastOptions);
+                else toast.warn(<p className="pr-2">Chuyên mục có bài đăng, đã huỷ kích hoạt!</p>, toastOptions);
 
                 getSubsectionList(1);
                 setCurrentPage(1);
@@ -207,7 +229,7 @@ const Subsections = () => {
         try {
             const response = await activateSubsection(subsectionId);
             if (response.status === 200) {
-                toast.success(<p className="pr-2">Kích hoạt phân mục thành công!</p>, toastOptions);
+                toast.success(<p className="pr-2">Kích hoạt chuyên mục thành công!</p>, toastOptions);
 
                 getSubsectionList(1);
                 setCurrentPage(1);
@@ -228,13 +250,13 @@ const Subsections = () => {
         <>
             <PageHead title="Quản lý chuyên mục - Admin" description="Quản lý chuyên mục - learniverse & shariverse" url={window.location.href} origin="forum" />
 
-            <div className="w-4/5 m-auto">
+            <div className="w-full m-auto">
                 <div className="row">
                     <div className="px-[15px]">
-                        <h2 className="page-header">Phân mục</h2>
+                        <h2 className="page-header">Chuyên mục</h2>
                         <Button color="gray" className="mt-7 justify-self-end bg-white py-1.5" style={{ boxShadow: "var(--box-shadow)", borderRadius: "var(--border-radius)" }} onClick={handleAdd}>
                             <i className="bx bxs-calendar-plus mr-3 text-xl hover:text-white" style={{ color: "var(--main-color)" }}></i>
-                            Thêm phân mục
+                            Thêm chuyên mục
                         </Button>
                     </div>
 
@@ -317,7 +339,7 @@ const Subsections = () => {
                     <Modal.Body>
                         <div className="text-center">
                             <HiDocumentRemove className="mx-auto mb-4 h-14 w-14 text-red-600 dark:text-gray-200" />
-                            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có chắc chắn muốn xoá phân mục này không?</h3>
+                            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có chắc chắn muốn xoá chuyên mục này không?</h3>
                             <div className="flex justify-center gap-4">
                                 <Button color="failure" isProcessing={isLoading} disabled={isLoading} onClick={() => deleteThisSubsection(subsectionId)}>
                                     Chắc chắn

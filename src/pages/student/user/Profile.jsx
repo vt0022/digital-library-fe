@@ -1,15 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button, Datepicker, FileInput, Label, TextInput, Toast } from "flowbite-react";
-import { HiAdjustments, HiOutlineCheck, HiX } from "react-icons/hi";
-import moment from "moment";
-import Select from "@components/management/select/Select";
 import { getProfile, updateAvatar, updatePassword, updateProfile } from "@api/main/userAPI";
 import usePrivateAxios from "@api/usePrivateAxios";
 import profileImage from "@assets/images/default_profile.jpg";
-import PageHead from "components/shared/head/PageHead";
+import Select from "@components/management/select/Select";
+import PageHead from "@components/shared/head/PageHead";
+import { Button, Datepicker, FileInput, Label, TextInput, Toast } from "flowbite-react";
+import moment from "moment";
+import { useEffect, useState } from "react";
+import { HiAdjustments, HiOutlineCheck, HiX } from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
+import { Bounce, toast } from "react-toastify";
 
-let selectedPage = 0;
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const StudentProfile = () => {
     const genderList = [
@@ -24,7 +35,6 @@ const StudentProfile = () => {
     const [gender, setGender] = useState(0);
     const [dateOfBirth, setDateOfBirth] = useState("1900-01-01");
     const [email, setEmail] = useState("");
-    const [phone, setPhone] = useState("");
 
     const [oldPassword, setOldPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
@@ -35,12 +45,10 @@ const StudentProfile = () => {
     const [isLoadingInfo, setIsLoadingInfo] = useState(false);
     const [isLoadingAvatar, setIsLoadingAvatar] = useState(false);
     const [isLoadingPassword, setIsLoadingPassword] = useState(false);
-    const [status, setStatus] = useState(0);
 
     const [isLastNameValid, setIsLastNameValid] = useState(true);
     const [isFirstNameValid, setIsFirstNameValid] = useState(true);
     const [isEmailValid, setIsEmailValid] = useState(true);
-    const [isPhoneValid, setIsPhoneValid] = useState(true);
     const [isDateOfBirthValid, setIsDateOfBirthValid] = useState(true);
     const [isOldPasswordValid, setIsOldPasswordValid] = useState(true);
     const [isNewPasswordValid, setIsNewPasswordValid] = useState(true);
@@ -48,7 +56,6 @@ const StudentProfile = () => {
     const [isFileValid, setIsFileValid] = useState(true);
     const [fileMessage, setFileMessage] = useState("");
     const [confirmPasswordMessage, setConfirmPasswordMessage] = useState("");
-    const [message, setMessage] = useState("Đã xảy ra lỗi! Xin vui lòng thử lại!");
 
     const [user, setUser] = useState(null);
 
@@ -71,7 +78,6 @@ const StudentProfile = () => {
                 setGender(user.gender);
                 setDateOfBirth(user.dateOfBirth ? user.dateOfBirth : new Date());
                 setEmail(user.email);
-                setPhone(user.phone);
 
                 sessionStorage.setItem("profile", JSON.stringify(user));
             } else {
@@ -100,11 +106,6 @@ const StudentProfile = () => {
     const validateEmail = () => {
         if (email === "" || email.trim() === "") setIsEmailValid(false);
         else setIsEmailValid(true);
-    };
-
-    const validatePhone = () => {
-        if (phone === "" || phone.trim() === "") setIsPhoneValid(false);
-        else setIsPhoneValid(true);
     };
 
     const validateDateOfBirth = () => {
@@ -156,10 +157,9 @@ const StudentProfile = () => {
         validateLastName();
         validateFirstName();
         validateEmail();
-        validatePhone();
         validateDateOfBirth();
 
-        if (!isLastNameValid || !isFirstNameValid || !isEmailValid || !isPhoneValid || !isDateOfBirthValid) {
+        if (!isLastNameValid || !isFirstNameValid || !isEmailValid || !isDateOfBirthValid) {
             return false;
         } else return true;
     };
@@ -175,7 +175,6 @@ const StudentProfile = () => {
                     firstName: firstName,
                     lastName: lastName,
                     email: email,
-                    phone: phone,
                     gender: gender,
                     dateOfBirth: dateOfBirth,
                 };
@@ -185,11 +184,7 @@ const StudentProfile = () => {
                 setIsLoadingInfo(false);
 
                 if (response.status === 200) {
-                    setStatus(1);
-                    setMessage("Cập nhật thông tin thành công!");
-                    setTimeout(() => {
-                        setStatus(0);
-                    }, 4000);
+                    toast.success(<p className="pr-2">Cập nhật thông tin thành công!</p>, toastOptions);
 
                     setUser(response.data);
 
@@ -200,17 +195,14 @@ const StudentProfile = () => {
                     setGender(response.data.gender);
                     setDateOfBirth(new Date(response.data.dateOfBirth));
                     setEmail(response.data.email);
-                    setPhone(response.data.phone);
                 } else {
-                    setStatus(-1);
-
-                    if (response.message === "Email already registered") setMessage("Email đã tồn tại!");
-                    else if (response.message === "User not found") setMessage("Người dùng không tồn tại!");
-                    else setMessage("Đã xảy ra lỗi! Xin vui lòng thử lại!");
-
-                    setTimeout(() => {
-                        setStatus(0);
-                    }, 4000);
+                    if (response.message === "Email already registered") {
+                        toast.error(<p className="pr-2">Email đã tồn tại!</p>, toastOptions);
+                    } else if (response.message === "User not found") {
+                        toast.error(<p className="pr-2">Người dùng không tồn tại!</p>, toastOptions);
+                    } else {
+                        toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
+                    }
                 }
             } catch (error) {
                 navigate("/error-500");
@@ -239,21 +231,14 @@ const StudentProfile = () => {
                 if (response.status === 200) {
                     setImage(profileImage);
                     setImageFile(null);
-                    setStatus(1);
-                    setMessage("Cập nhật ảnh đại diện thành công!");
-                    setTimeout(() => {
-                        setStatus(0);
-                    }, 4000);
+
+                    toast.success(<p className="pr-2">Cập nhật ảnh đại diện thành công!</p>, toastOptions);
+
                     setUser(response.data);
 
                     sessionStorage.setItem("profile", JSON.stringify(response.data));
                 } else {
-                    setStatus(-1);
-                    setMessage("Đã xảy ra lỗi! Xin vui lòng thử lại!");
-
-                    setTimeout(() => {
-                        setStatus(0);
-                    }, 4000);
+                    toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
                 }
             } catch (error) {
                 navigate("/error-500");
@@ -283,23 +268,19 @@ const StudentProfile = () => {
                 setIsLoadingPassword(false);
 
                 if (response.status === 200) {
-                    setStatus(1);
-                    setMessage("Cập nhật mật khẩu thành công!");
-                    setTimeout(() => {
-                        setStatus(0);
-                    }, 4000);
+                    toast.success(<p className="pr-2">Cập nhật mật khẩu thành công!</p>, toastOptions);
+
                     setUser(response.data);
                 } else {
-                    setStatus(-1);
-
-                    if (response.message === "Password incorrect") setMessage("Mật khẩu cũ không đúng!");
-                    else if (response.message === "Passwords not matched") setMessage("Mật khẩu mới không khớp!");
-                    else if (response.message === "User not found") setMessage("Người dùng không tồn tại!");
-                    else setMessage("Đã xảy ra lỗi! Xin vui lòng thử lại!");
-
-                    setTimeout(() => {
-                        setStatus(0);
-                    }, 4000);
+                    if (response.message === "Password incorrect") {
+                        toast.error(<p className="pr-2">Mật khẩu cũ không đúng!</p>, toastOptions);
+                    } else if (response.message === "Passwords not matched") {
+                        toast.error(<p className="pr-2">Mật khẩu mới không khớp!</p>, toastOptions);
+                    } else if (response.message === "User not found") {
+                        toast.error(<p className="pr-2">Người dùng không tồn tại!</p>, toastOptions);
+                    } else {
+                        toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
+                    }
                 }
             } catch (error) {
                 navigate("/error-500");
@@ -311,21 +292,7 @@ const StudentProfile = () => {
         <div>
             <PageHead title="Trang cá nhân" description="Trang cá nhân - learniverse & shariverse" url={window.location.href} origin="lib" />
 
-            {status === -1 && (
-                <Toast className="top-1/4 right-5 w-100 fixed z-50">
-                    <HiX className="h-5 w-5 bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200" />
-                    <div className="pl-4 text-sm font-normal">{message}</div>
-                </Toast>
-            )}
-
-            {status === 1 && (
-                <Toast className="top-1/4 right-5 fixed w-100 z-50">
-                    <HiOutlineCheck className="h-5 w-5 bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200" />
-                    <div className="pl-4 text-sm font-normal">{message}</div>
-                </Toast>
-            )}
-
-            <div className="bg-gray-50 p-4">
+            <div className="p-4">
                 <div className="flex">
                     <div className="flex flex-col w-2/3 ">
                         <div className="bg-white rounded-lg h-min mr-5 p-8 shadow-lg">
@@ -395,14 +362,6 @@ const StudentProfile = () => {
                                                 required
                                             />
                                             {!isDateOfBirthValid && <p className="block mt-2 text-sm font-medium text-red-600 italic">* Người dùng cần ít nhất 15 tuổi</p>}
-                                        </div>
-
-                                        <div className="mb-2 ">
-                                            <div className="block mb-2">
-                                                <Label htmlFor="phone" value="Số điện thoại" style={{ color: "var(--txt-color)" }} />
-                                            </div>
-                                            <TextInput id="phone" value={phone} placeholder="0123456789" required onChange={(e) => setPhone(e.target.value)} maxLength={11} />
-                                            {!isPhoneValid && <p className="block mt-2 text-sm font-medium text-red-600 italic">* Vui lòng nhập số điện thoại</p>}
                                         </div>
                                     </div>
                                 </div>

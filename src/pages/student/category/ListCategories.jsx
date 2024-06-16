@@ -25,7 +25,6 @@ const ListCategories = () => {
             });
             if (response.status === 200) {
                 setCategoryList(response.data);
-            } else {
             }
         } catch (error) {
             navigate("/error-500");
@@ -36,9 +35,9 @@ const ListCategories = () => {
         <>
             <PageHead title="Danh mục" description="Danh mục - learniverse & shariverse" url={window.location.href} origin="lib" />
 
-            <div className="bg-gray-50 h-full w-full overflow-auto">
+            <div className="h-full w-full overflow-auto">
                 <div className="px-[10%]">
-                    <div className="grid place-items-center mt-20 mb-20">
+                    <div className="grid place-items-center mt-10 mb-10">
                         <img src={categoryImage} alt="" width="20%" height="20%" />
                         <h2 className="text-3xl font-semibold text-gray-500 dark:text-white">Bạn muốn tìm danh mục nào?</h2>
                     </div>

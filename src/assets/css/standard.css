@@ -13,7 +13,7 @@
 .content-format,
 .content-format p{
     font-size: 14px !important;
-    text-align: justify;
+    /* text-align: justify; */
 }
 
 .content-format h1,

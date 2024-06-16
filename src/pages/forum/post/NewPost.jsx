@@ -6,15 +6,15 @@ import usePrivateAxios from "@api/usePrivateAxios";
 import SelectFilter from "@components/forum/select/SelectFilter";
 import PageHead from "@components/shared/head/PageHead";
 import Spinner from "@components/shared/spinner/Spinner";
-import { Button, Toast } from "flowbite-react";
+import { Button } from "flowbite-react";
 import moment from "moment";
 import * as Emoji from "quill-emoji";
 import "quill-emoji/dist/quill-emoji.css";
 import "quill/dist/quill.snow.css";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { HiOutlineCheck, HiOutlinePencilAlt, HiX } from "react-icons/hi";
+import { HiOutlinePencilAlt } from "react-icons/hi";
 import ReactQuill, { Quill } from "react-quill";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
 
 Quill.register("modules/emoji", Emoji);
@@ -48,6 +48,7 @@ const NewPost = () => {
     const [isSubsectionValid, setIsSubsectionValid] = useState(true);
     const [isTitleValid, setIsTitleValid] = useState(true);
     const [isContentValid, setIsContentValid] = useState(true);
+    const [acceptable, setAcceptable] = useState("");
 
     const quill = useRef();
 
@@ -109,7 +110,7 @@ const NewPost = () => {
 
                 if (response.status === 200) {
                     toast.success(<p className="pr-2">Đăng bài thành công!</p>, toastOptions);
-                        navigate("/forum");
+                    navigate("/forum");
                 } else {
                     toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
                 }
@@ -118,6 +119,19 @@ const NewPost = () => {
             }
         } else {
             setIsLoading(false);
+        }
+    };
+
+    const checkAcceptance = (subId) => {
+        const subsection = sectionList.find((subsection) => subsection.subId === subId);
+        if (subsection) {
+            if (subsection.postAcceptable) {
+                setAcceptable("0");
+            } else if (subsection.replyAcceptable) {
+                setAcceptable("1");
+            } else {
+                setAcceptable("");
+            }
         }
     };
 
@@ -175,16 +189,16 @@ const NewPost = () => {
             toolbar: {
                 container: [
                     [{ font: [] }],
-                    [{ size: ["small", false, "large", "huge"] }], 
+                    [{ size: ["small", false, "large", "huge"] }],
                     [{ header: [1, 2, 3, 4, 5, 6, false] }],
-                    [{ header: 1 }, { header: 2 }], 
-                    ["bold", "italic", "underline", "strike"], 
-                    [{ color: [] }, { background: [] }], 
+                    [{ header: 1 }, { header: 2 }],
+                    ["bold", "italic", "underline", "strike"],
+                    [{ color: [] }, { background: [] }],
                     [{ align: [] }],
                     [{ indent: "-1" }, { indent: "+1" }],
-                    [{ direction: "rtl" }], 
+                    [{ direction: "rtl" }],
                     [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
-                    [{ script: "sub" }, { script: "super" }], 
+                    [{ script: "sub" }, { script: "super" }],
                     ["blockquote", "code-block"],
                     ["link", "image", "video", "formula"],
                     ["emoji"],
@@ -226,6 +240,7 @@ const NewPost = () => {
                                     selectedValue={subsection}
                                     onChangeHandler={(e) => {
                                         setSubsection(e.target.value);
+                                        checkAcceptance(e.target.value);
                                     }}
                                     name="subName"
                                     field="subId"
@@ -253,6 +268,25 @@ const NewPost = () => {
                                 />
                             </div>
                         </div>
+                        {acceptable === "0" && (
+                            <p className="text-sm text-red-500 mt-2">
+                                Chuyên mục này cho phép người dùng đánh dấu hữu ích cho bài đăng.
+                                <Link to="#" className="text-green-500">
+                                    {" "}
+                                    Tìm hiểu về tính năng này.
+                                </Link>
+                            </p>
+                        )}
+
+                        {acceptable === "1" && (
+                            <p className="text-sm text-red-500 mt-2">
+                                Chuyên mục này cho phép người dùng đánh dấu hữu ích cho bình luận trong bài đăng.{" "}
+                                <Link to="#" className="text-green-500">
+                                    {" "}
+                                    Tìm hiểu về tính năng này.
+                                </Link>
+                            </p>
+                        )}
 
                         {!isSubsectionValid && <p className="text-sm text-red-500">Vui lòng chọn chuyên mục</p>}
                     </div>

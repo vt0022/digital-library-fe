@@ -1,17 +1,26 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import Select from "@components/management/select/Select";
+import { getAccessibleCategories } from "@api/main/categoryAPI";
+import { getADocument, updateDocument } from "@api/main/documentAPI";
+import { getAccessibleFields } from "@api/main/fieldAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
+import PageHead from "@components/shared/head/PageHead";
+import { Button } from "flowbite-react";
+import { HiChevronLeft, HiChevronUp, HiOutlineCloudUpload } from "react-icons/hi";
+import { Bounce, toast } from "react-toastify";
 
-import Select from "../../../components/management/select/Select";
-
-import { getAccessibleCategories } from "../../../api/main/categoryAPI";
-import { getADocument, updateDocument } from "../../../api/main/documentAPI";
-import { getAccessibleFields } from "../../../api/main/fieldAPI";
-import { getAccessibleOrganizations } from "../../../api/main/organizationAPI";
-import usePrivateAxios from "../../../api/usePrivateAxios";
-
-import { Button, Toast } from "flowbite-react";
-import { HiChevronLeft, HiChevronUp, HiExclamation, HiOutlineCloudUpload } from "react-icons/hi";
-import PageHead from "components/shared/head/PageHead";
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const StudentEditDocument = () => {
     usePrivateAxios();
@@ -29,11 +38,9 @@ const StudentEditDocument = () => {
     const [fieldId, setFieldId] = useState("");
     const [isInternal, setIsInternal] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
-    const [organizationList, setOrganizationList] = useState([]);
     const [categoryList, setCategoryList] = useState([]);
     const [fieldList, setFieldList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [status, setStatus] = useState(0);
 
     const [isNameValid, setIsNameValid] = useState(true);
     const [isIntroductionValid, setIsIntroductionValid] = useState(true);
@@ -45,7 +52,7 @@ const StudentEditDocument = () => {
 
     const getDocumentBySlug = async () => {
         try {
-                    const accessToken = localStorage.getItem("accessToken");
+            const accessToken = localStorage.getItem("accessToken");
             const response = await getADocument(slug, {
                 headers: {
                     Authorization: "Bearer " + accessToken,
@@ -55,27 +62,10 @@ const StudentEditDocument = () => {
             if (response.status === 200) {
                 setDocument(response.data);
             } else {
-                navigate("/error-404")
+                navigate("/error-404");
             }
         } catch (error) {
             navigate("/error-500");
-        }
-    };
-
-    const getOrganizationList = async () => {
-        try {
-            const response = await getAccessibleOrganizations({
-                params: {
-                    page: 0,
-                    size: 100,
-                },
-            });
-            if (response.status === 200) {
-                setOrganizationList(response.data);
-            } else {
-            }
-        } catch (error) {
-            console.log(error);
         }
     };
 
@@ -89,10 +79,9 @@ const StudentEditDocument = () => {
             });
             if (response.status === 200) {
                 setCategoryList(response.data);
-            } else {
             }
         } catch (error) {
-            console.log(error);
+            navigate("/error-500");
         }
     };
 
@@ -106,17 +95,15 @@ const StudentEditDocument = () => {
             });
             if (response.status === 200) {
                 setFieldList(response.data);
-            } else {
             }
         } catch (error) {
-            throw error;
+            navigate("/error-500");
         }
     };
 
     useEffect(() => {
         getCategoryList();
         getFieldList();
-        getOrganizationList();
         getDocumentBySlug();
     }, []);
 
@@ -231,15 +218,10 @@ const StudentEditDocument = () => {
                 setIsLoading(false);
 
                 if (response.status === 200) {
-                    setStatus(1);
-                    setTimeout(() => {
-                        navigate(-1);
-                    }, 2000);
+                    toast.success(<p className="pr-2">Cập nhật tài liệu thành công!</p>, toastOptions);
+                    navigate(-1);
                 } else {
-                    setStatus(-1);
-                    setTimeout(() => {
-                        setStatus(0);
-                    }, 2000);
+                    toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
                 }
             } catch (error) {
                 navigate("/error-500");
@@ -251,24 +233,10 @@ const StudentEditDocument = () => {
         <>
             <PageHead title={"Chỉnh sửa tài liệu - " + document && document.docName} description={"Chỉnh sửa tài liệu - " + document && document.docIntroduction} imageUrl={document && document.thumbnail} url={window.location.href} origin="lib" />
 
-            <div className="p-4 bg-gray-50 overflow-auto">
+            <div className="p-4 overflow-auto">
                 <div className="w-full grid place-items-center ">
                     <h1 className="mb-3 text-3xl font-bold dark:text-white mt-10 ">Chỉnh sửa tài liệu</h1>
                     <h5 className="mb-10 text-base font-medium italic text-red-400">(Lưu ý: tài liệu sẽ được duyệt lại)</h5>
-
-                    {status === -1 && (
-                        <Toast className="top-1/4 right-5 w-100 fixed z-50">
-                            <HiExclamation className="h-5 w-5 text-amber-400 dark:text-amber-300" />
-                            <div className="pl-4 text-sm font-normal">Đã xảy ra lỗi! Xin vui lòng thử lại!</div>
-                        </Toast>
-                    )}
-
-                    {status === 1 && (
-                        <Toast className="top-1/4 right-5 fixed w-100 z-50">
-                            <HiOutlineCloudUpload className="h-5 w-5 text-green-600 dark:text-green-500" />
-                            <div className="pl-4 text-sm font-normal">Cập nhật thành công!</div>
-                        </Toast>
-                    )}
 
                     <div className="flex w-7/12">
                         <div className="w-full rounded-lg shadow-lg bg-white p-10 border border-gray-50 mb-10">

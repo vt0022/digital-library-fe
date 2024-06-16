@@ -1,10 +1,12 @@
 import { getCollections, getPublicCollections } from "@api/main/collectionAPI";
 import CollectionCard from "@components/student/card/CollectionCard";
+import PageHead from "components/shared/head/PageHead";
 import { Spinner } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Bounce } from "react-toastify";
 import "./collection.css";
-import PageHead from "components/shared/head/PageHead";
+import collectionImage from "@assets/images/collection.webp"
 
 const ListCollections = () => {
     const navigate = useNavigate();
@@ -29,7 +31,7 @@ const ListCollections = () => {
 
             // Kiểm tra xem đã lướt xuống cuối trang chưa
             if (scrollTop + clientHeight >= scrollHeight) {
-                setNoOfCollections(noOfCollections + 8);
+                if (noOfCollections < totalCollections) setNoOfCollections(noOfCollections + 8);
             }
         };
 
@@ -41,7 +43,7 @@ const ListCollections = () => {
     }, [noOfCollections]);
 
     useEffect(() => {
-        if (noOfCollections - 8 <= totalCollections) getCollectionList();
+        getCollectionList();
     }, [noOfCollections]);
 
     const getCollectionList = async () => {
@@ -75,41 +77,6 @@ const ListCollections = () => {
         }
     };
 
-    // const handleScroll = () => {
-    //     const element = collectionSectionRef.current;
-    //     if (element) {
-    //         const isAtBottom = element.scrollTop + element.clientHeight >= element.scrollHeight;
-    //         if (isAtBottom) {
-    //             if (noOfCollections < totalCollections) setNoOfCollections(noOfCollections + 12);
-    //         }
-    //     }
-    // };
-
-    // const handleScroll = () => {
-    //             console.log(window.innerHeight, document.documentElement.scrollTop, document.documentElement.offsetHeight);
-    //     if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight) return;
-    //     if (noOfCollections < totalCollections) setNoOfCollections(noOfCollections + 12);
-    // };
-
-    // const handleScroll = () => {
-    //     if (window.innerHeight + Math.max(window.scrollY, document.documentElement.scrollTop, document.body.scrollTop) > document.documentElement.offsetHeight - 100) {
-    //         if (noOfCollections < totalCollections) setNoOfCollections(noOfCollections + 8);
-    //     } else {
-    //         return;
-    //     }
-    // };
-
-    // function handleOnScroll(e) {
-    //     const { scrollTop, scrollHeight, offsetHeight } = e.target;
-
-    //     console.log(scrollTop, scrollHeight, offsetHeight);
-    //     const hasScrollReachedBottom = offsetHeight + scrollTop > scrollHeight - 40;
-
-    //     if (hasScrollReachedBottom) {
-    //         if (noOfCollections < totalCollections) setNoOfCollections(noOfCollections + 12);
-    //     }
-    // }
-
     const splitCollectionList = (collectionList) => {
         let a = [];
         let b = [];
@@ -132,10 +99,12 @@ const ListCollections = () => {
         <>
             <PageHead title="Bộ sưu tập" description="Bộ sưu tập - learniverse & shariverse" url={window.location.href} origin="lib" />
 
-            <div className="p-10 bg-slate-100">
-                <h1 className="text-3xl text-center font-medium mb-20">Khám phá những bộ sưu tập hữu ích dành cho bạn</h1>
+            <div className="px-10 pt-5 pb-10 abc">
+                <img src={collectionImage} alt="Ảnh" width="40%" height="40%" className="m-auto"/>
 
-                <div className="flex justify-evenly space-x-10" id="collection-section" ref={collectionSectionRef}>
+                <h1 className="text-3xl text-center font-medium mb-10">Khám phá những bộ sưu tập hữu ích dành cho bạn</h1>
+
+                <div className="flex justify-evenly space-x-8" id="collection-section" ref={collectionSectionRef}>
                     <div className="flex flex-col flex-1 space-y-12">
                         {collectionListCol1.map((collection, index) => (
                             <CollectionCard collection={collection} key={index} />

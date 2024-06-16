@@ -4,12 +4,12 @@ import Spinner from "@components/shared/spinner/Spinner";
 import { useGoogleLogin } from "@react-oauth/google";
 import loginAction from "@redux/actions/AuthenAction";
 import { emailRegrex } from "@utils/regrex";
+import PageHead from "components/shared/head/PageHead";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
 import "./login.css";
-import PageHead from "components/shared/head/PageHead";
 
 const toastOptions = {
     position: "bottom-center",
@@ -241,7 +241,7 @@ const Login = () => {
                                             }`}
                                             onClick={onClickLogin}
                                             disabled={email.trim() === "" || password.trim() === ""}>
-                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                                 <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
                                                 <circle cx="8.5" cy="7" r="4" />
                                                 <path d="M20 8v6M23 11h-6" />

@@ -10,7 +10,7 @@ import PageHead from "components/shared/head/PageHead";
 import { Button, Datepicker, FileInput, Label, Modal, Pagination, Spinner, TextInput } from "flowbite-react";
 import moment from "moment/moment";
 import { useEffect, useState } from "react";
-import { HiAdjustments, HiAtSymbol, HiCake, HiDocumentRemove, HiPhone, HiUser } from "react-icons/hi";
+import { HiAdjustments, HiAtSymbol, HiCake, HiDocumentRemove, HiUser } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
 
@@ -344,7 +344,7 @@ const ManagerProfile = () => {
                     setImage(profileImage);
                     setImageFile(null);
 
-                                        toast.success(<p className="pr-2">Cập nhật ảnh đại diện thành công!</p>, toastOptions);
+                    toast.success(<p className="pr-2">Cập nhật ảnh đại diện thành công!</p>, toastOptions);
 
                     setUser(response.data);
                 } else {

@@ -14,17 +14,17 @@ import { HiDocumentRemove } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
 
-    const toastOptions = {
-        position: "bottom-center",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-    };
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const Reports = () => {
     const processStatus = [
@@ -139,11 +139,7 @@ const Reports = () => {
 
     useEffect(() => {
         getReportList(currentPage);
-    }, [currentPage]);
-
-    useEffect(() => {
-        getReportList(currentPage);
-    }, [type, status, target]);
+    }, [currentPage, type, status, target]);
 
     const findReasonByType = (name) => {
         const item = reportReasons.find((item) => item.name === name);
@@ -152,7 +148,7 @@ const Reports = () => {
 
     const handleView = (report) => {
         if (report.status === "PENDING") readThisReport(report.reportId);
-        setNotSolved(report.status !== "DISABLED")
+        setNotSolved(report.status !== "DISABLED");
         setReportId(report.reportId);
         setContent(report);
         getRelatedReports(report.reportId);
@@ -212,8 +208,6 @@ const Reports = () => {
             if (response.status === 200) {
                 setReportList(response.data.content);
                 setTotalPages(response.data.totalPages);
-            } else {
-                toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
             }
         } catch (error) {
             navigate("/error-500");
@@ -249,8 +243,6 @@ const Reports = () => {
 
                 setCurrentPage(1);
                 getReportList(1);
-            } else {
-                toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
             }
         } catch (error) {
             setIsLoading(false);
@@ -290,8 +282,6 @@ const Reports = () => {
                 getReportList(currentPage);
 
                 toast.success(<p className="pr-2">Xoá {target === "POST" ? "bài đăng" : "phản hồi"} thành công!</p>, toastOptions);
-            } else {
-                toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
             }
         } catch (error) {}
     };
@@ -377,7 +367,7 @@ const Reports = () => {
 
                 <ReportModal target={target} reportId={reportId} action={action} openReportModal={openReportModal} triggerReportModal={triggerReportModal} refresh={refresh} />
 
-                <DetailReportModal target={target} content={content} relatedContent={relatedContent} openViewModal={openViewModal} onCloseViewModal={onCloseViewModal} handleView={handleView} action={handleAction} notSolved={notSolved}/>
+                <DetailReportModal target={target} content={content} relatedContent={relatedContent} openViewModal={openViewModal} onCloseViewModal={onCloseViewModal} handleView={handleView} action={handleAction} notSolved={notSolved} />
 
                 <Modal show={openDeleteReportModal} size="md" onClose={() => setOpenDeleteReportModal(false)} popup className="z-40">
                     <Modal.Header />

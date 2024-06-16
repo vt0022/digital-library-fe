@@ -1,12 +1,24 @@
+import { getLikedDocuments, undoUnlikeDocument, unlikeDocument } from "@api/main/documentAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
+import PageHead from "@components/shared/head/PageHead";
+import DocumentCard from "@components/student/card/Card";
 import { Pagination } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
-import { getLikedDocuments, undoUnlikeDocument, unlikeDocument } from "../../../api/main/documentAPI";
-import usePrivateAxios from "../../../api/usePrivateAxios";
-import DocumentCard from "../../../components/student/card/Card";
 import "./document.css";
-import PageHead from "components/shared/head/PageHead";
+
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 4000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const LikedDocument = () => {
     usePrivateAxios();
@@ -20,18 +32,6 @@ const LikedDocument = () => {
 
     const previousLike = useRef(null);
     const myToast = useRef(null);
-
-    const toastOptions = {
-        position: "bottom-center",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-    };
 
     useEffect(() => {
         getLikedList(currentPage);
@@ -134,7 +134,7 @@ const LikedDocument = () => {
         <>
             <PageHead title="Danh sách yêu thích" description="Danh sách yêu thích - learniverse & shariverse" url={window.location.href} origin="lib" />
 
-            <div className="flex-1 p-4 bg-gray-50 h-full">
+            <div className="flex-1 p-4 h-full">
                 <div className="rounded-lg bg-white py-8 px-8 ">
                     <div className="mb-5 flex items-center">
                         <p className="text-2xl font-medium text-green-400">Danh sách yêu thích</p>

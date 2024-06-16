@@ -2,8 +2,8 @@ import { getActiveLabels } from "@api/main/labelAPI";
 import { getAllPosts } from "@api/main/postAPI";
 import PageHead from "@components/shared/head/PageHead";
 import SelectFilter from "@components/student/select/SelectFilter";
-import { Avatar, Button, Pagination, Spinner } from "flowbite-react";
-import moment from "moment";
+import Post from "components/forum/card/Post";
+import { Button, Pagination, Spinner } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
@@ -121,8 +121,8 @@ const ListPosts = () => {
         <>
             <PageHead title={"Danh sách bài đăng" + (section === "" ? "" : "của chuyên mục " + section)} description={"Danh sách bài đăng" + (section === "" ? "" : "của " + section) + " - learniverse & shariverse"} url={window.location.href} origin="forum" />
 
-            <div className="w-11/12 m-auto p-5">
-                <div className="w-fit flex justify-end ml-auto items-center mb-2 ">
+            <div className="w-10/12 m-auto p-5">
+                <div className="w-fit flex justify-end ml-auto items-center mb-4 ">
                     <Button className="bg-green-400 enabled:hover:bg-green-500 shadow-lg shadow-gray-300" onClick={() => navigate("/forum/posts/new")}>
                         <HiOutlinePencilAlt className="mr-2 h-5 w-5 " />
                         Tạo bài viết
@@ -163,107 +163,23 @@ const ListPosts = () => {
                     </div>
 
                     {totalPages > 1 && (
-                        <div className="w-fit flex justify-end ml-auto items-center">
-                            <Pagination layout="pagination" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} previousLabel="Trước" nextLabel="Tiếp" showIcons className="text-sm" />
+                        <div className="w-fit flex justify-end ml-auto items-center pb-2">
+                            <Pagination layout="pagination" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} previousLabel="" nextLabel="" showIcons className="text-sm" />
                         </div>
                     )}
                 </div>
 
-                <div className="bg-white mt-2 p-5 rounded-lg shadow-lg shadow-gray-300">
+                <div className="mt-8">
                     {isFetching && <Spinner color="success" className="flex items-center w-full mb-2 mt-2" />}
 
                     {postList.length === 0 && !isFetching && <p className="text-center font-medium mb-3">Không tìm thấy bài đăng nào!!!</p>}
 
-                    <div className="overflow-x-auto">
-                        <table>
-                            <thead>
-                                <tr className="bg-gray-100 border-y border-gray-300">
-                                    <th className="w-8/12 text-base pl-4 font-medium ">Bài đăng</th>
-                                    <th className="w-2/12 text-base font-medium ">Thống kê</th>
-                                    <th className="w-2/12 text-base font-medium ">Mới nhất</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {postList &&
-                                    postList.map((post, index) => (
-                                        <tr className="border-y border-gray-300 hover:bg-inherit" key={index}>
-                                            <td className="pl-4 h-full">
-                                                <div className="flex space-x-3 items-center h-full">
-                                                    <div>
-                                                        <Avatar alt="User" img={post.userPosted.image} rounded size="md" />
-                                                    </div>
-
-                                                    <div>
-                                                        <p className="text-lg truncate whitespace-normal line-clamp-2 font-medium text-green-600 hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/posts/${post.postId}`)}>
-                                                            {post.label && (
-                                                                <span
-                                                                    className="text-white rounded-md text-xs p-1 font-medium"
-                                                                    style={{ backgroundColor: post.label && post.label.color }}
-                                                                    onClick={(e) => {
-                                                                        e.stopPropagation();
-                                                                        navigate(`/forum/labels/${post.label.slug}`);
-                                                                    }}>
-                                                                    #{post.label && post.label.labelName}
-                                                                </span>
-                                                            )}{" "}
-                                                            {post.title}
-                                                        </p>
-
-                                                        <p>
-                                                            <span className="text-sky-600 hover:text-sky-400 cursor-pointer" onClick={() => navigate(`/forum/users/${post.userPosted.userId}`)}>
-                                                                {post.userPosted.lastName} {post.userPosted.firstName}
-                                                            </span>
-                                                            <span className="text-gray-900"> ● </span>
-                                                            <span className="text-gray-400 text-sm">{moment(post.createdAt).calendar()}</span>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="text-sm pr-10">
-                                                <div className="flex justify-between items-end">
-                                                    <p className="text-gray-500">Phản hồi:</p>
-                                                    <p className="text-gray-900 font-semibold text-lg">{post.totalReplies}</p>
-                                                </div>
-
-                                                <div className="flex justify-between items-end">
-                                                    <p className="text-gray-500">Lượt xem:</p>
-                                                    <p className="text-gray-900 font-semibold text-lg">{post.totalViews}</p>
-                                                </div>
-
-                                                <div className="flex justify-between items-end">
-                                                    <p className="text-gray-500">Lượt thích: </p>
-                                                    <p className="text-gray-900 font-semibold text-lg">{post.totalLikes}</p>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                {post.latestReply && (
-                                                    <>
-                                                        <p className="text-green-600 hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/users/${post.post.latestReply.user.userId}`)}>
-                                                            {post.latestReply.user && post.latestReply.user.lastName} {post.latestReply.user && post.latestReply.user.firstName}
-                                                        </p>
-                                                        <p className="text-gray-400 text-sm">{moment(post.latestReply.createdAt).calendar()}</p>
-                                                    </>
-                                                )}
-
-                                                {!post.latestReply && (
-                                                    <>
-                                                        <p className="text-green-600 hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/users/${post.userPosted.userId}`)}>
-                                                            {post.userPosted.lastName} {post.userPosted.firstName}
-                                                        </p>
-                                                        <p className="text-gray-400 text-sm">{moment(post.createdAt).calendar()}</p>
-                                                    </>
-                                                )}
-                                            </td>
-                                        </tr>
-                                    ))}
-                            </tbody>
-                        </table>
-                    </div>
+                    <div className="flex flex-col space-y-8">{postList && postList.map((post, index) => <Post post={post} key={index}/>)}</div>
                 </div>
 
                 {totalPages > 1 && (
-                    <div className="bg-white rounded-lg mt-2 w-fit shadow-lg shadow-gray-300 flex justify-end ml-auto items-center">
-                        <Pagination layout="pagination" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} previousLabel="Trước" nextLabel="Tiếp" showIcons className="text-sm" />
+                    <div className="bg-white rounded-lg mt-2 w-fit shadow-lg shadow-gray-300 flex justify-end ml-auto items-center pb-2">
+                        <Pagination layout="pagination" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} previousLabel="" nextLabel="" showIcons className="text-sm" />
                     </div>
                 )}
             </div>

@@ -1,48 +1,42 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import { getAccessibleFields } from "@api/main/fieldAPI";
+import fieldImage from "@assets/images/field.png";
+import PageHead from "@components/shared/head/PageHead";
+import KeyCard from "@components/student/card/KeyCard";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import KeyCard from "../../../components/student/card/KeyCard";
-
-import fieldImage from "../../../assets/images/field.png";
-
-import { getAccessibleFields } from "../../../api/main/fieldAPI";
-import PageHead from "components/shared/head/PageHead";
-
 const ListFields = () => {
+    const navigate = useNavigate();
 
-        const navigate = useNavigate();
+    const [fieldList, setFieldList] = useState([]);
 
-        const [fieldList, setFieldList] = useState([]);
+    useEffect(() => {
+        getFieldList();
+    }, []);
 
-        useEffect(() => {
-            getFieldList();
-        }, []);
-
-        const getFieldList = async () => {
-            try {
-                const response = await getAccessibleFields({
-                    params: {
-                        page: 0,
-                        size: 100,
-                    },
-                });
-                if (response.status === 200) {
-                    setFieldList(response.data);
-                } else {
-                }
-            } catch (error) {
-                navigate("/error-500");
+    const getFieldList = async () => {
+        try {
+            const response = await getAccessibleFields({
+                params: {
+                    page: 0,
+                    size: 100,
+                },
+            });
+            if (response.status === 200) {
+                setFieldList(response.data);
             }
-        };
+        } catch (error) {
+            navigate("/error-500");
+        }
+    };
 
     return (
         <>
             <PageHead title="Lĩnh vực" description="Lĩnh vực - learniverse & shariverse" url={window.location.href} origin="lib" />
 
-            <div className="bg-gray-50 h-full w-full overflow-auto">
+            <div className="h-full w-full overflow-auto">
                 <div className="px-[10%]">
-                    <div className="grid place-items-center mt-20 mb-20">
+                    <div className="grid place-items-center mt-10 mb-10">
                         <img src={fieldImage} alt="" width="20%" height="20%" />
                         <h2 className="text-3xl font-semibold text-gray-500 dark:text-white mt-10">Bạn muốn tìm lĩnh vực nào?</h2>
                     </div>

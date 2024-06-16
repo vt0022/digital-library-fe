@@ -4,6 +4,8 @@ import { MdInsertChart } from "react-icons/md";
 import { RiHomeWifiFill, RiPushpinFill } from "react-icons/ri";
 import { Link, useLocation } from "react-router-dom";
 import "./sidebar.css";
+import { FaHouseSignal } from "react-icons/fa6";
+import { BiSolidNews } from "react-icons/bi";
 
 const CustomSidebar = ({ pinnedSections }) => {
     const location = useLocation();
@@ -13,24 +15,40 @@ const CustomSidebar = ({ pinnedSections }) => {
     const user = JSON.parse(sessionStorage.getItem("profile"));
 
     return (
-        <Sidebar aria-label="Sidebar" className="side-bar w-full bg-white">
-            <Sidebar.Items className="bg-white h-full px-8 py-12">
+        <Sidebar aria-label="Sidebar" className="side-bar w-full h-fit">
+            <Sidebar.Items className="h-full px-4 py-12 bg-emerald-50">
                 <Sidebar.ItemGroup>
-                    <Sidebar.Item as={Link} to="/forum/posts/new" className="gap-x-2 py-3 bg-green-400 text-white hover:text-green-400 hover:bg-green-100 mb-10 font-medium text-center">
-                        Tạo bài đăng mới
+                    <Sidebar.Item as={Link} to="/forum/posts/new" className="rounded-full shadow-lg gap-x-2 py-3 bg-green-400 text-white hover:text-green-400 hover:bg-green-100 mb-8 font-medium text-center">
+                        Đăng bài
                     </Sidebar.Item>
+                </Sidebar.ItemGroup>
 
-                    <Sidebar.Item as={Link} to="/forum" icon={RiHomeWifiFill} className={`gap-x-2 py-3 active:text-green-400 hover:text-green-400 ${currentPath === "/forum" || currentPath === "/forum/home" ? "text-green-400 bg-green-100" : ""}`}>
+                <Sidebar.ItemGroup>
+                    <Sidebar.Item
+                        as={Link}
+                        to="/forum"
+                        icon={FaHouseSignal}
+                        className={`rounded-full gap-x-2 px-4 py-2 text-sm font-medium ${currentPath === "/forum" || currentPath === "/forum/home" ? "side-bar-icon--active shadow-lg text-green-500 bg-white hover:bg-white" : "side-bar-icon text-gray-700 hover:bg-neutral-100 active:text-green-400 hover:text-green-400"
+                        }`}>
                         Trang chủ
                     </Sidebar.Item>
 
-                    <Sidebar.Item as={Link} to="/forum/posts" icon={LiaForumbee} className={`gap-x-2 py-3 active:text-green-400 hover:text-green-400 ${currentPath === "/forum/posts" ? "text-green-400 bg-green-100" : ""}`}>
-                        Tất cả bài đăng
+                    <Sidebar.Item
+                        as={Link}
+                        to="/forum/posts"
+                        icon={BiSolidNews}
+                        className={`rounded-full gap-x-2 px-4 py-2 text-sm font-medium ${currentPath === "/forum/posts" ? "side-bar-icon--active shadow-lg text-green-500 bg-white hover:bg-white" : "side-bar-icon text-gray-700 hover:bg-neutral-100 active:text-green-400 hover:text-green-400"}`}>
+                        Bài đăng
                     </Sidebar.Item>
 
                     {user && (
-                        <Sidebar.Item as={Link} to="/forum/users/my-activity" icon={MdInsertChart} className={`gap-x-2 py-3 active:text-green-400 hover:text-green-400 ${currentPath === "/forum/users/my-activity" ? "text-green-400 bg-green-100" : ""}`}>
-                            Hoạt động của tôi
+                        <Sidebar.Item
+                            as={Link}
+                            to="/forum/users/my-activity"
+                            icon={MdInsertChart}
+                            className={`rounded-full gap-x-2 px-4 py-2 text-sm font-medium ${currentPath === "/forum/users/my-activity" ? "side-bar-icon--active shadow-lg text-green-500 bg-white hover:bg-white" : "side-bar-icon text-gray-700 hover:bg-neutral-100 active:text-green-400 hover:text-green-400"
+                            }`}>
+                            Hoạt động
                         </Sidebar.Item>
                     )}
                 </Sidebar.ItemGroup>
@@ -42,7 +60,9 @@ const CustomSidebar = ({ pinnedSections }) => {
                                 as={Link}
                                 to={`/forum/sections/${section.slug}`}
                                 icon={RiPushpinFill}
-                                className={`gap-x-2 py-3 active:bg-teal-300 active:text-white hover:text-green-400 hover:bg-teal-100 ${currentPath === `/forum/sections/${section.slug}` ? "text-teal-400 bg-teal-100" : ""}`}>
+                                className={`rounded-full gap-x-2 px-4 py-2 text-sm font-medium ${
+                                    currentPath === `/forum/sections/${section.slug}` ? "side-bar-icon--active shadow-lg text-green-500 bg-white hover:bg-white" : "side-bar-icon text-gray-700 hover:bg-neutral-100 active:text-green-400 hover:text-green-400"
+                                }`}>
                                 {section?.subName}
                             </Sidebar.Item>
                         ))}

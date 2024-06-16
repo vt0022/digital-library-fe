@@ -1,19 +1,15 @@
-import { login, loginWithGoogle, sendEmail, signupWithGoogle } from "@api/main/authAPI";
-import { getAccessibleOrganizations } from "@api/main/organizationAPI";
+import { login, loginWithGoogle, sendEmail } from "@api/main/authAPI";
 import bg from "@assets/images/background.jpg";
 import Spinner from "@components/shared/spinner/Spinner";
-import SimpleNavbar from "@components/student/navbar/SimpleNavbar";
 import { useGoogleLogin } from "@react-oauth/google";
+import loginAction from "@redux/actions/AuthenAction";
 import { emailRegrex } from "@utils/regrex";
-import { Button, Modal, Select, Toast } from "flowbite-react";
+import PageHead from "components/shared/head/PageHead";
 import { useEffect, useState } from "react";
-import { HiX } from "react-icons/hi";
 import { useDispatch } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
-import loginAction from "@redux/actions/AuthenAction";
 import "./login.css";
-import PageHead from "components/shared/head/PageHead";
 
 const toastOptions = {
     position: "bottom-center",
@@ -173,12 +169,12 @@ const Login = () => {
         } catch (error) {
             toast.error(<p className="pr-2">Đã xảy ra lỗi, vui lòng thử lại!</p>, toastOptions);
         }
-    }
+    };
 
     return (
         <>
             <PageHead title="Đăng nhập - Admin" description="Đăng nhập - learniverse & shariverse" url={window.location.href} origin="both" />
-            
+
             <div style={{ backgroundImage: `url(${bg})` }} className=" flex flex-col bg-cover bg-center">
                 <div className="min-h-screen text-gray-900 flex justify-center">
                     <div className="max-w-screen-lg m-0 sm:m-10 bg-white shadow-lg rounded-lg sm:rounded-lg flex justify-center flex-1">
@@ -245,7 +241,7 @@ const Login = () => {
                                             }`}
                                             onClick={onClickLogin}
                                             disabled={email.trim() === "" || password.trim() === ""}>
-                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                                 <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
                                                 <circle cx="8.5" cy="7" r="4" />
                                                 <path d="M20 8v6M23 11h-6" />

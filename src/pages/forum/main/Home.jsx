@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { getActiveSections } from "@api/main/sectionAPI";
 import Subsection from "@components/forum/card/Subsection";
+import PageHead from "@components/shared/head/PageHead";
+import { useEffect, useState } from "react";
+import { BsThreads } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 import "./home.css";
-import PageHead from "components/shared/head/PageHead";
 
 const Home = ({ onPinSection }) => {
     const navigate = useNavigate();
@@ -23,25 +24,26 @@ const Home = ({ onPinSection }) => {
         }
     };
 
-      const handlePinClick = (subsection) => {
-          onPinSection(subsection);
-      };
+    const handlePinClick = (subsection) => {
+        onPinSection(subsection);
+    };
 
     return (
         <>
             <PageHead title="Trang chủ" description="Trang chủ - learniverse & shariverse" url={window.location.href} origin="forum" />
 
-            <div className="w-11/12 m-auto p-5">
+            <div className="p-5">
                 <div className="space-y-5">
                     {sectionList &&
                         sectionList.map((section, index) => (
-                            <div className="bg-white mt-2 rounded-lg shadow-lg shadow-gray-300 p-5">
+                            <div className="mt-2 p-5">
                                 <div className="space-y-4" key={index}>
-                                    <div className="p-4 bg-green-400 tlbr-rounded shadow-lg shadow-gray-300 w-fit text-white font-medium text-xl">
+                                    <div className="flex items-center px-5 py-2 bg-green-400 tlbr-rounded shadow-lg shadow-gray-300 w-fit text-white font-medium text-xl space-x-2">
+                                        <BsThreads className="text-4xl font-bold" />
                                         <p>{section.sectionName}</p>
                                     </div>
 
-                                    {section.subsections && section.subsections.map((subsection, index) => <Subsection key={index} subsection={subsection} handlePinClick={() => handlePinClick(subsection)} />)}
+                                    <div className="grid grid-cols-3 gap-10">{section.subsections && section.subsections.map((subsection, index) => <Subsection key={index} subsection={subsection} handlePinClick={() => handlePinClick(subsection)} />)}</div>
                                 </div>
                             </div>
                         ))}

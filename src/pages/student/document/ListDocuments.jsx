@@ -6,13 +6,24 @@ import usePrivateAxios from "@api/usePrivateAxios";
 import sortOptions from "@assets/json-data/sortOptions.json";
 import FullCard from "@components/student/card/FullCard";
 import SelectFilter from "@components/student/select/SelectFilter";
-import PageHead from "components/shared/head/PageHead";
+import PageHead from "@components/shared/head/PageHead";
 import { Pagination, Spinner, Tooltip } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { HiX } from "react-icons/hi";
 import { useNavigate, useParams } from "react-router-dom";
+import { Bounce } from "react-toastify";
 
-let selectedPage = 0;
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const ListDocument = () => {
     const navigate = useNavigate();
@@ -46,10 +57,6 @@ const ListDocument = () => {
         getOrganizationList();
     }, []);
 
-    // useEffect(() => {
-    //     if (organizationSlug) setOrganization(organizationSlug);
-    // }, [organizationSlug]);
-
     useEffect(() => {
         getDocumentList(currentPage);
     }, [currentPage]);
@@ -61,7 +68,6 @@ const ListDocument = () => {
 
     const onPageChange = (page) => {
         setCurrentPage(page);
-        selectedPage = page - 1;
         window.scrollTo({
             top: 0,
             behavior: "smooth",
@@ -75,8 +81,6 @@ const ListDocument = () => {
             setIsFetching(false);
             if (response.status === 200) {
                 setCategoryList(response.data);
-            } else {
-                // navigate("/admin/login");
             }
         } catch (error) {
             navigate("/error-500");
@@ -90,9 +94,7 @@ const ListDocument = () => {
             setIsFetching(false);
             if (response.status === 200) {
                 setFieldList(response.data);
-            } else {
-                // navigate("/admin/login");
-            }
+            } 
         } catch (error) {
             navigate("/error-500");
         }
@@ -110,8 +112,6 @@ const ListDocument = () => {
             setIsFetching(false);
             if (response.status === 200) {
                 setOrganizationList(response.data);
-            } else {
-                // navigate("/admin/login");
             }
         } catch (error) {
             navigate("/error-500");
@@ -157,9 +157,7 @@ const ListDocument = () => {
                 setDocumentList(response.data.content);
                 setTotalPages(response.data.totalPages);
                 setTotalRecords(response.data.totalElements);
-            } else {
-                // navigate("/admin/login");
-            }
+            } 
         } catch (error) {
             navigate("/error-500");
         }
@@ -179,15 +177,11 @@ const ListDocument = () => {
         setOrganization("all");
     };
 
-    const handleDetail = (slug) => {
-        navigate(`/documents/${slug}`);
-    };
-
     return (
         <>
             <PageHead title="Tài liệu" description="Tài liệu - learniverse & shariverse" url={window.location.href} origin="lib" />
 
-            <div className="flex-1 p-4 bg-gray-50 h-full">
+            <div className="flex-1 p-4 h-full">
                 <div className="rounded-lg bg-white py-5 px-10 w-full">
                     <div className="flex items-end justify-between gap-5">
                         <SelectFilter

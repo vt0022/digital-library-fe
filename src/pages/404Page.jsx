@@ -1,7 +1,5 @@
-import React from "react";
+import mainImage from "@assets/images/404.svg";
 import { useNavigate } from "react-router-dom";
-
-import mainImage from "../assets/images/404.svg";
 
 const Page404 = () => {
     const navigate = useNavigate();

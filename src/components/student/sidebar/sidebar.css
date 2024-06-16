@@ -7,3 +7,11 @@
     padding-top: 0px;
     padding-bottom: 0px;
 }
+
+.side-bar-icon svg {
+    color: #6b7280;
+}
+
+.side-bar-icon--active svg {
+    color: #05b471;
+}

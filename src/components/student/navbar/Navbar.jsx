@@ -20,7 +20,7 @@ const CustomNavbar = () => {
             </div>
 
             <div className="flex items-center gap-x-[5%] w-4/5 justify-end">
-                <div className="flex md:order-2 mr-10">
+                <div className="flex order-2 mr-10">
                     {user && (
                         <Dropdown arrowIcon={false} inline label={<Avatar alt={user.lastName} img={user.image} rounded />}>
                             <Dropdown.Header>
@@ -48,25 +48,25 @@ const CustomNavbar = () => {
                 </div>
 
                 <Navbar.Collapse className="ml-0">
-                    <Navbar.Link as={Link} to="/home" active={currentPath === "/home"} className={`text-base md:active:text-green-400 md:hover:text-green-500 ${currentPath === "/home" ? "md:text-green-400" : ""}`}>
+                    <Navbar.Link as={Link} to="/home" className={`text-base active:!text-green-400 hover:!text-green-300 focus:!text-green-400 ${currentPath === "/home" ? "text-green-400" : ""}`}>
                         Trang chủ
                     </Navbar.Link>
-                    <Navbar.Link as={Link} to="/documents" active={currentPath === "/documents"} className={`text-base md:active:text-green-400 md:hover:text-green-500 ${currentPath === "/documents" ? "md:text-green-400" : ""}`}>
+                    <Navbar.Link as={Link} to="/documents" className={`text-base active:!text-green-400 hover:!text-green-300 focus:!text-green-400 ${currentPath === "/documents" ? "text-green-400" : ""}`}>
                         Tài liệu
                     </Navbar.Link>
-                    <Navbar.Link as={Link} to="/institutions" active={currentPath === "/institutions"} className={`text-base md:active:text-green-400 md:hover:text-green-500 ${currentPath === "/institutions" ? "md:text-green-400" : ""}`}>
+                    <Navbar.Link as={Link} to="/institutions" className={`text-base active:!text-green-400 hover:!text-green-300 focus:!text-green-400 ${currentPath === "/institutions" ? "text-green-400" : ""}`}>
                         Trường học
                     </Navbar.Link>
-                    <Navbar.Link as={Link} to="/fields" active={currentPath === "/fields"} className={`text-base md:active:text-green-400 md:hover:text-green-500 ${currentPath === "/fields" ? "md:text-green-400" : ""}`}>
+                    <Navbar.Link as={Link} to="/fields" className={`text-base active:!text-green-400 hover:!text-green-300 focus:!text-green-400 ${currentPath === "/fields" ? "text-green-400" : ""}`}>
                         Lĩnh vực
                     </Navbar.Link>
-                    <Navbar.Link as={Link} to="/categories" active={currentPath === "/categories"} className={`text-base md:active:text-green-400 md:hover:text-green-500 ${currentPath === "/categories" ? "md:text-green-400" : ""}`}>
+                    <Navbar.Link as={Link} to="/categories" className={`text-base active:!text-green-400 hover:!text-green-300 focus:!text-green-400 ${currentPath === "/categories" ? "text-green-400" : ""}`}>
                         Danh mục
                     </Navbar.Link>
-                    <Navbar.Link as={Link} to="/collections" active={currentPath === "/collections"} className={`text-base md:active:text-green-400 md:hover:text-green-500 ${currentPath === "/collections" ? "md:text-green-400" : ""}`}>
+                    <Navbar.Link as={Link} to="/collections" className={`text-base active:!text-green-400 hover:!text-green-300 focus:!text-green-400 ${currentPath === "/collections" ? "text-green-400" : ""}`}>
                         Bộ sưu tập
                     </Navbar.Link>
-                    <Navbar.Link as={Link} to="/forum" active={currentPath === "/forum"} className={`text-base md:active:text-green-400 md:hover:text-green-500 ${currentPath === "/forum" ? "md:text-green-400" : ""}`}>
+                    <Navbar.Link as={Link} to="/forum" className={`text-base active:!text-green-400 hover:!text-green-300 focus:!text-green-400 ${currentPath === "/forum" ? "text-green-400" : ""}`}>
                         Diễn đàn
                     </Navbar.Link>
                 </Navbar.Collapse>

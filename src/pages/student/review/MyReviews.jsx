@@ -1,11 +1,23 @@
-import { Pagination, Toast } from "flowbite-react";
-import React, { useEffect, useState } from "react";
-import { HiOutlineCheck, HiX } from "react-icons/hi";
+import { getMyReviews } from "@api/main/reviewAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
+import PageHead from "@components/shared/head/PageHead";
+import ReviewCard from "@components/student/card/ReviewCard";
+import { Pagination } from "flowbite-react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getMyReviews } from "../../../api/main/reviewAPI";
-import usePrivateAxios from "../../../api/usePrivateAxios";
-import ReviewCard from "../../../components/student/card/ReviewCard";
-import PageHead from "components/shared/head/PageHead";
+import { Bounce, toast } from "react-toastify";
+
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const MyReviews = () => {
     usePrivateAxios();
@@ -16,14 +28,14 @@ const MyReviews = () => {
     const [verifiedStatus, setVerifiedStatus] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
-    const [message, setMessage] = useState("");
-    const [status, setStatus] = useState(0);
+    const [openEditSection, setOpenEditSection] = useState(false);
 
     const unselected = "border border-green-600 hover:bg-green-100";
     const selected = "text-white bg-green-600 hover:bg-green-700";
 
     useEffect(() => {
         getReviews();
+        onHideEditSection();
     }, [verifiedStatus, currentPage]);
 
     const onPageChange = (page) => {
@@ -35,12 +47,14 @@ const MyReviews = () => {
             const response = await getMyReviews({
                 params: {
                     status: verifiedStatus,
+                    page: currentPage - 1,
+                    size: 10,
                 },
             });
 
             if (response.status === 200) {
-                setReviewList(response.data);
-                //setTotalPages(response.data.totalPages);
+                setReviewList(response.data.content);
+                setTotalPages(response.data.totalPages);
             }
         } catch (error) {
             navigate("/error-500");
@@ -52,43 +66,36 @@ const MyReviews = () => {
     };
 
     const onEditReviewSuccess = () => {
-        setStatus(1);
-        setMessage("Đánh giá của bạn sẽ được duyệt lại!");
-        setTimeout(() => {
-            setStatus(0);
-        }, 4000);
+        toast.success(<p className="pr-2">Đánh giá của bạn sẽ được duyệt lại!</p>, toastOptions);
     };
 
     const onEditReviewFailure = () => {
-        setStatus(-1);
-        setMessage("Có lỗi xảy ra! Vui lòng thử lại!");
-        setTimeout(() => {
-            setStatus(0);
-        }, 4000);
+        toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
     };
 
     const onDeleteReviewSuccess = () => {
-        setStatus(1);
-        setMessage("Xoá đánh giá thành công!");
-        setTimeout(() => {
-            setStatus(0);
-        }, 4000);
+        toast.success(<p className="pr-2">Xoá đánh giá thành công!</p>, toastOptions);
+        setCurrentPage(1);
     };
 
     const onDeleteReviewFailure = () => {
-        setStatus(-1);
-        setMessage("Có lỗi xảy ra! Vui lòng thử lại!");
-        setTimeout(() => {
-            setStatus(0);
-        }, 4000);
+        toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
+    };
+
+    const onOpenEditSection = () => {
+        setOpenEditSection(true);
+    };
+
+    const onHideEditSection = () => {
+        setOpenEditSection(false);
     };
 
     return (
         <>
             <PageHead title="Đánh giá của tôi" description="Đánh giá của tôi - learniverse & shariverse" url={window.location.href} origin="lib" />
 
-            <div className="flex-1 p-4 bg-gray-50 h-full">
-                <div className="rounded-lg bg-white py-8 px-8 ">
+            <div className="flex-1 p-4 h-full">
+                <div className="w-5/6 rounded-lg bg-white py-8 px-8 m-auto">
                     <div className="mb-5 flex items-center justify-between">
                         <p className="text-2xl font-medium text-green-400">Danh sách đánh giá của bạn</p>
                     </div>
@@ -115,7 +122,18 @@ const MyReviews = () => {
 
                     <div className="space-y-5">
                         {reviewList.map((review, index) => (
-                            <ReviewCard review={review} key={index} refreshList={refreshList} onDeleteSuccess={onDeleteReviewSuccess} onDeleteFailure={onDeleteReviewFailure} onEditSuccess={onEditReviewSuccess} onEditFailure={onEditReviewFailure} />
+                            <ReviewCard
+                                review={review}
+                                key={index}
+                                refreshList={refreshList}
+                                onDeleteSuccess={onDeleteReviewSuccess}
+                                onDeleteFailure={onDeleteReviewFailure}
+                                onEditSuccess={onEditReviewSuccess}
+                                onEditFailure={onEditReviewFailure}
+                                onOpenEditSection={onOpenEditSection}
+                                onHideEditSection={onHideEditSection}
+                                openEditSection={openEditSection}
+                            />
                         ))}
                     </div>
 
@@ -126,20 +144,6 @@ const MyReviews = () => {
                     )}
                 </div>
             </div>
-
-            {status === -1 && (
-                <Toast className="top-1/4 right-5 w-100 fixed z-50">
-                    <HiX className="h-5 w-5 bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200" />
-                    <div className="pl-4 text-sm font-normal">{message}</div>
-                </Toast>
-            )}
-
-            {status === 1 && (
-                <Toast className="top-1/4 right-5 fixed w-100 z-50">
-                    <HiOutlineCheck className="h-5 w-5 bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200" />
-                    <div className="pl-4 text-sm font-normal">{message}</div>
-                </Toast>
-            )}
         </>
     );
 };

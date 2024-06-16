@@ -1,13 +1,24 @@
-import React, { useEffect, useRef, useState } from "react";
+import { getSavedDocuments, undoUnsaveDocument, unsaveDocument } from "@api/main/documentAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
+import PageHead from "@components/shared/head/PageHead";
+import DocumentCard from "@components/student/card/Card";
+import { Pagination } from "flowbite-react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Pagination, Toast } from "flowbite-react";
-import { HiOutlineCheck, HiX } from "react-icons/hi";
-import { getSavedDocuments, unsaveDocument, undoUnsaveDocument } from "../../../api/main/documentAPI";
-import usePrivateAxios from "../../../api/usePrivateAxios";
-import DocumentCard from "../../../components/student/card/Card";
 import { Bounce, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import PageHead from "components/shared/head/PageHead";
+
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 4000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const SavedDocument = () => {
     usePrivateAxios();
@@ -19,20 +30,8 @@ const SavedDocument = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [search, setSearch] = useState("");
 
-    const previousSave= useRef(null);
+    const previousSave = useRef(null);
     const myToast = useRef(null);
-
-    const toastOptions = {
-        position: "bottom-center",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-    };
 
     useEffect(() => {
         getSavedList(currentPage);
@@ -135,7 +134,7 @@ const SavedDocument = () => {
         <>
             <PageHead title="Danh sách đã lưu" description="Danh sách đã lưu - learniverse & shariverse" url={window.location.href} origin="lib" />
 
-            <div className="flex-1 p-4 bg-gray-50 h-full">
+            <div className="flex-1 p-4 h-full">
                 <div className="rounded-lg bg-white py-8 px-8 ">
                     <div className="mb-5 flex items-center">
                         <p className="text-2xl font-medium text-green-400">Danh sách đã lưu</p>

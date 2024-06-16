@@ -52,6 +52,7 @@ const EditPost = () => {
     const [isSubsectionValid, setIsSubsectionValid] = useState(true);
     const [isTitleValid, setIsTitleValid] = useState(true);
     const [isContentValid, setIsContentValid] = useState(true);
+    const [acceptable, setAcceptable] = useState("");
     const [notFound, setNotFound] = useState(false);
 
     const quill = useRef();
@@ -114,6 +115,13 @@ const EditPost = () => {
                     setContent(response.data.content);
                     setLabel(response.data.label && response.data.label.labelId);
                     setSubsection(response.data.subsection && response.data.subsection.subId);
+                    if (response.data.subsection && response.data.subsection.postAcceptable) {
+                        setAcceptable("0");
+                    } else if (response.data.subsection && response.data.subsection.replyAcceptable) {
+                        setAcceptable("1");
+                    } else {
+                        setAcceptable("");
+                    }
                 }
             } else {
                 setNotFound(true);
@@ -122,6 +130,15 @@ const EditPost = () => {
             navigate("/error-500");
         }
     };
+
+    const changeableSections = sectionList.filter((section) => {
+        if (acceptable === "0") {
+            return section.postAcceptable;
+        } else if (acceptable === "1") {
+            return section.replyAcceptable;
+        }
+        return true;
+    });
 
     const handleEditPost = async (e) => {
         setIsLoading(true);
@@ -143,7 +160,7 @@ const EditPost = () => {
 
                 if (response.status === 200) {
                     toast.success(<p className="pr-2">Chỉnh sửa bài thành công!</p>, toastOptions);
-                        navigate(-1);
+                    navigate(-1);
                 } else {
                     toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
                 }
@@ -164,45 +181,45 @@ const EditPost = () => {
         else return true;
     };
 
-const imageHandler = useCallback(() => {
-    const input = document.createElement("input");
-    input.setAttribute("type", "file");
-    input.setAttribute("accept", "image/*");
-    input.click();
+    const imageHandler = useCallback(() => {
+        const input = document.createElement("input");
+        input.setAttribute("type", "file");
+        input.setAttribute("accept", "image/*");
+        input.click();
 
-    input.onchange = async () => {
-        setIsLoadingImage(true);
+        input.onchange = async () => {
+            setIsLoadingImage(true);
 
-        const file = input.files[0];
+            const file = input.files[0];
 
-        const formData = new FormData();
-        formData.append("image", file);
+            const formData = new FormData();
+            formData.append("image", file);
 
-        const config = {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        };
+            const config = {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            };
 
-        const response = await uploadImageForReply(formData, config);
+            const response = await uploadImageForReply(formData, config);
 
-        setIsLoadingImage(false);
+            setIsLoadingImage(false);
 
-        if (response.status === 200) {
-            const imageUrl = response.message;
+            if (response.status === 200) {
+                const imageUrl = response.message;
 
-            const quillEditor = quill.current.getEditor();
+                const quillEditor = quill.current.getEditor();
 
-            if (quill) {
-                // Get the current selection range and insert the image at that index
-                const range = quillEditor.getSelection(true);
-                quillEditor.insertEmbed(range.index, "image", imageUrl, "user");
+                if (quill) {
+                    // Get the current selection range and insert the image at that index
+                    const range = quillEditor.getSelection(true);
+                    quillEditor.insertEmbed(range.index, "image", imageUrl, "user");
+                }
+            } else {
+                toast.error(<p className="pr-2">Đã xảy ra lỗi khi tải ảnh lên!</p>, toastOptions);
             }
-        } else {
-            toast.error(<p className="pr-2">Đã xảy ra lỗi khi tải ảnh lên!</p>, toastOptions);
-        }
-    };
-}, []);
+        };
+    }, []);
 
     const modules = useMemo(
         () => ({
@@ -258,7 +275,7 @@ const imageHandler = useCallback(() => {
                                 <p className="font-medium">* Chuyên mục</p>
                                 <SelectFilter
                                     className="w-full"
-                                    options={sectionList}
+                                    options={changeableSections}
                                     selectedValue={subsection}
                                     onChangeHandler={(e) => {
                                         setSubsection(e.target.value);
@@ -289,6 +306,10 @@ const imageHandler = useCallback(() => {
                                 />
                             </div>
                         </div>
+
+                        {acceptable === "0" && <p className="text-sm text-red-500 mt-2">Chuyên mục này cho phép người dùng đánh dấu hữu ích cho bài đăng. Bạn chỉ có thể thay đổi sang những chuyên mục tương ứng.</p>}
+
+                        {acceptable === "1" && <p className="text-sm text-red-500 mt-2">Chuyên mục này cho phép người dùng đánh dấu hữu ích cho bình luận trong bài đăng. Bạn chỉ có thể thay đổi sang những chuyên mục tương ứng.</p>}
 
                         {!isSubsectionValid && <p className="text-sm text-red-500">Vui lòng chọn phân mục</p>}
                     </div>

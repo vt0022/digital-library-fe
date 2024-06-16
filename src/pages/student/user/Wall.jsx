@@ -1,20 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
 import { Pagination } from "flowbite-react";
-
 import moment from "moment";
-
-import DocumentCard from "../../../components/student/card/Card";
-
-import { getUploadedDocumentsForGuest, getUploadedDocumentsForStudent } from "../../../api/main/documentAPI";
-import { getAUser } from "../../../api/main/userAPI";
-import usePrivateAxios from "../../../api/usePrivateAxios";
-import profileImage from "../../../assets/images/default_profile.jpg";
-import profileBackground from "../../../assets/images/profile_bg.webp";
-
+import DocumentCard from "@components/student/card/Card";
+import { getUploadedDocumentsForGuest, getUploadedDocumentsForStudent } from "@api/main/documentAPI";
+import { getAUser } from "@api/main/userAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
+import profileImage from "@assets/images/default_profile.jpg";
+import profileBackground from "@assets/images/profile_bg.webp";
 import "../document/document.css";
-import PageHead from "components/shared/head/PageHead";
+import PageHead from "@components/shared/head/PageHead";
 
 const UserWall = () => {
     const { userId } = useParams();
@@ -109,7 +104,7 @@ const UserWall = () => {
         <div>
             <PageHead title={user && user.lastName + " " + user && user.firstName} description={user && user.lastName + " " + user && user.firstName + " - learniverse & shariverse"} url={window.location.href} origin="both" />
 
-            <div className="bg-gray-50 p-4 min-h-screen h-full">
+            <div className="p-4 min-h-screen h-full">
                 <div className="flex w-full ">
                     <div className="p-0 h-min rounded-lg shadow-lg bg-white w-1/4 mr-5">
                         <img alt="Profile" src={profileBackground} className="rounded-t-lg w-full" />
@@ -181,7 +176,7 @@ const UserWall = () => {
                             ))}
                         </div>
 
-                        {documentList.length !== 0 && (
+                        {documentList.length > 0 && (
                             <div className="flex overflow-x-auto sm:justify-center mt-4">
                                 <Pagination previousLabel="" nextLabel="" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} showIcons />
                             </div>

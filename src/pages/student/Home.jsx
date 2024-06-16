@@ -1,10 +1,10 @@
-import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-
 import bg from "@assets/images/main-bg.png";
+import PageHead from "@components/shared/head/PageHead";
 import CustomFooter from "@components/student/footer/Footer";
 import SimpleNavbar from "@components/student/navbar/SimpleNavbar";
-import PageHead from "components/shared/head/PageHead";
+import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import "./home.css"
 
 const Home = () => {
     const navigate = useNavigate();
@@ -27,9 +27,9 @@ const Home = () => {
 
                 <div className="w-full h-screen bg-transparent">
                     <div className="grid place-items-center relative top-1/4">
-                        <div className="text-center">
-                            <h1 className="mb-4 text-3xl font-bold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
-                                Chào mừng đến với <mark className="px-2 text-white bg-green-400 rounded dark:bg-green-400">Wisdo</mark>
+                        <div className="text-center typewriter">
+                            <h1 className="mb-4 p-3 text-[2.5rem] font-bold leading-none tracking-tight text-gray-900 dark:text-white">
+                                Chào mừng đến với <mark className="px-2 text-white bg-green-400 rounded dark:bg-green-400">Wisiverse</mark>
                             </h1>
                             <p className=" mt-5 text-lg font-normal text-gray-700 lg:text-xl dark:text-gray-400">Khám phá những tài liệu hữu ích dành cho bạn</p>
                         </div>
@@ -50,7 +50,7 @@ const Home = () => {
 
                                 <div className="absolute inset-y-0 end-0 flex items-center pe-5 cursor-pointer" onClick={() => navigate(`/search/${searchQuery}`)}>
                                     <svg className="w-6 h-6 text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                     </svg>
                                 </div>
                             </div>

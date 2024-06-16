@@ -4,10 +4,10 @@ import DocumentCard from "@components/student/card/Card";
 import CollectionListModal from "@components/student/modal/CollectionListModal";
 import Review from "@components/student/review/Review";
 import { default as ReviewList } from "@components/student/review/ReviewList";
-import { verifyRecaptcha } from "api/main/recaptchaAPI";
-import PageHead from "components/shared/head/PageHead";
+import { verifyRecaptcha } from "@api/main/recaptchaAPI";
+import PageHead from "@components/shared/head/PageHead";
 import { Button, Modal } from "flowbite-react";
-import moment from "moment/moment";
+import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { FaUserCheck } from "react-icons/fa";
@@ -16,6 +16,11 @@ import { RiAddFill, RiRobot2Fill } from "react-icons/ri";
 import { pdfjs } from "react-pdf";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
+import { FaSquareShareNodes } from "react-icons/fa6";
+import { BiSolidCalendarCheck } from "react-icons/bi";
+import { IoEye } from "react-icons/io5";
+import { IoHeart } from "react-icons/io5";
+import { RiDownloadCloud2Line } from "react-icons/ri";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.js", import.meta.url).toString();
 
@@ -124,7 +129,6 @@ const DetailDocument = () => {
                 navigate("/error-404");
             }
         } catch (error) {
-            // alert("aaaa")
             navigate("/error-500");
         }
     };
@@ -133,7 +137,7 @@ const DetailDocument = () => {
         try {
             let response = null;
 
-            if (user && accessToken) response =  await getRelatedDocuments(slug);
+            if (user && accessToken) response = await getRelatedDocuments(slug);
             else response = await getRelatedDocumentsForGuest(slug);
 
             if (response.status === 200) {
@@ -224,7 +228,10 @@ const DetailDocument = () => {
                 toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
                 recaptchaRef.current.reset();
             }
-        } catch (error) {}
+        } catch (error) {
+            toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
+            recaptchaRef.current.reset();
+        }
     };
 
     const handleDownload = () => {
@@ -281,9 +288,9 @@ const DetailDocument = () => {
 
     return (
         <>
-            <PageHead title={doc && doc.docName} description={doc && doc.docIntroduction} imageUrl={doc && doc.thumbnail} url={window.location.href} origin="lib"/>
+            <PageHead title={doc && doc.docName} description={doc && doc.docIntroduction} imageUrl={doc && doc.thumbnail} url={window.location.href} origin="lib" />
 
-            <div className="flex-1 p-4 bg-gray-50">
+            <div className="flex-1 p-4">
                 <div className="flex gap-5 w-full">
                     <div className="bg-white rounded-lg shadow-md p-5 w-3/4">
                         <div>
@@ -296,26 +303,30 @@ const DetailDocument = () => {
 
                         <div className="flex">
                             <div className="w-4/5 flex gap-8 items-center">
-                                <div className="flex items-center font-bold cursor-pointer " onClick={() => navigate("/users/" + doc.userUploaded.userId)}>
-                                    <HiOutlinePaperAirplane className="w-5 h-5 mr-1 text-gray-500 dark:text-white" />
-                                    <span className="block text-base font-normal text-cyan-500 hover:text-cyan-700">
+                                <div className="w-fit px-3 py-2 rounded-lg flex space-x-1 items-center bg-sky-50 cursor-pointer" onClick={() => navigate("/users/" + doc.userUploaded.userId)}>
+                                    <FaSquareShareNodes className="text-xl text-sky-500" />
+
+                                    <p className="block text-base font-medium text-sky-500 hover:text-sky-400">
                                         {doc && doc.userUploaded && doc.userUploaded.lastName} {doc && doc.userUploaded && doc.userUploaded.firstName}
-                                    </span>
+                                    </p>
                                 </div>
 
-                                <div className="flex items-center font-bold">
-                                    <HiOutlineCalendar className="w-5 h-5 mr-1 text-gray-500 dark:text-white" />
-                                    <span className="block text-base font-normal text-red-500 dark:text-white">{doc && moment(doc.updatedAt).format("DD/MM/yyyy")}</span>
+                                <div className="w-fit px-3 py-2 rounded-lg flex space-x-1 items-center bg-orange-50">
+                                    <BiSolidCalendarCheck className="text-xl text-orange-500" />
+
+                                    <p className="block text-base font-medium text-orange-500">{doc && moment(doc.updatedAt).format("DD/MM/yyyy")}</p>
                                 </div>
 
-                                <div className="flex items-center font-bold">
-                                    <HiOutlineEye className="w-5 h-5 mr-1 text-gray-500 dark:text-white" />
-                                    <span className="block text-base font-normal text-red-500 dark:text-white">{doc && doc.totalView}</span>
+                                <div className="w-fit px-3 py-2 rounded-lg flex space-x-1 items-center bg-emerald-50">
+                                    <IoEye className="text-xl text-emerald-500" />
+
+                                    <p className="block text-base font-medium text-emerald-500">{doc && doc.totalView}</p>
                                 </div>
 
-                                <div className="flex items-center font-bold">
-                                    <HiOutlineHeart className="w-5 h-5 mr-1 text-gray-500 dark:text-white" />
-                                    <span className="block text-base font-normal text-red-500 dark:text-white">{doc && doc.totalFavorite}</span>
+                                <div className="w-fit px-3 py-2 rounded-lg flex space-x-1 items-center bg-red-50">
+                                    <IoHeart className="text-xl text-red-500" />
+
+                                    <p className="block text-base font-medium text-red-500">{doc && doc.totalFavorite}</p>
                                 </div>
                             </div>
 
@@ -400,7 +411,7 @@ const DetailDocument = () => {
                             </Button>
 
                             <Button pill className="bg-white text-gray-700 enabled:hover:bg-gray-50 enabled:active:bg-gray-100 focus:border focus:ring-0 focus:bg-white border border-solid shadow-lg" onClick={() => setIsOpenDownloadModal(true)}>
-                                <HiOutlineCloudDownload className="mr-2 h-7 w-7 text-indigo-500" />
+                                <RiDownloadCloud2Line className="mr-2 h-7 w-7 text-indigo-500" />
                                 <span className="text-base">Tải về</span>
                             </Button>
 

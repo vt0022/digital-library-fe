@@ -1,0 +1,42 @@
+[
+    {
+        "bg": "#fdba74",
+        "hover": "#fed7aa",
+        "active": "#f97316"
+    },
+    {
+        "bg": "#fca5a5",
+        "hover": "#fecaca",
+        "active": "#f87171"
+    },
+    {
+        "bg": "#86efac",
+        "hover": "#bbf7d0",
+        "active": "#22c55e"
+    },
+    {
+        "bg": "#5eead4",
+        "hover": "#99f6e4",
+        "active": "#14b8a6"
+    },
+    {
+        "bg": "#93c5fd",
+        "hover": "#bfdbfe",
+        "active": "#3b82f6"
+    },
+    {
+        "bg": "#c4b5fd",
+        "hover": "#ddd6fe",
+        "active": "#8b5cf6"
+    },
+    {
+        "bg": "#f9a8d4",
+        "hover": "#fbcfe8",
+        "active": "#ec4899"
+    },
+    {
+        "bg": "#fda4af",
+        "hover": "#fecdd3",
+        "active": "#f43f5e"
+    }
+]

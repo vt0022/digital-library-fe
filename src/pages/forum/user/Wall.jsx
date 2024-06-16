@@ -119,7 +119,7 @@ const Wall = () => {
             <div className="min-h-screen h-max p-5">
                 <div className="bg-white p-5 rounded-lg flex">
                     <div className="w-1/4 rounded-lg py-5 bg-gray-100 h-fit">
-                        <Avatar alt="User" img={user && user.image ? user.image : ""} rounded bordered size="xl" className="mb-4 mt-2" />
+                        <Avatar alt="User" img={user && user.image ? user.image : ""} rounded color="success" bordered size="xl" className="mb-4 mt-2" />
 
                         <div className="text-center font-semibold">
                             {user && user.lastName} {user && user.firstName}
@@ -127,7 +127,7 @@ const Wall = () => {
                         </div>
 
                         <div className="flex justify-center mt-2 mb-2">
-                            <Avatar alt={user && user.badge && user.badge.badgeName} img={user && user.badge && user.badge.image} rounded />
+                            <Avatar alt={user && user.badge && user.badge.badgeName} img={user && user.badge && user.badge.image} rounded color="success" />
                         </div>
 
                         <div className="m-auto text-center p-1 w-fit rounded-lg text-center font-medium text-white bg-gradient-to-r from-cyan-500 to-blue-500">{user && user.badge && user.badge.badgeName}</div>

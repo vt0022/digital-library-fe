@@ -1,7 +1,7 @@
 import { getRecentDocuments } from "@api/main/documentAPI";
 import usePrivateAxios from "@api/usePrivateAxios";
 import DocumentCard from "@components/student/card/Card";
-import PageHead from "components/shared/head/PageHead";
+import PageHead from "@components/shared/head/PageHead";
 import { Toast } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { HiOutlineCheck, HiX } from "react-icons/hi";
@@ -16,8 +16,6 @@ const RecentDocument = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [search, setSearch] = useState("");
-    const [message, setMessage] = useState("Đã xảy ra lỗi! Vui lòng thử lại!");
-    const [status, setStatus] = useState(0);
 
     useEffect(() => {
         getRecentList();
@@ -34,8 +32,6 @@ const RecentDocument = () => {
             if (response.status === 200) {
                 setDocumentList(response.data);
                 // setTotalPages(response.data.totalPages);
-            } else {
-                // navigate("/error-500");
             }
         } catch (error) {
             navigate("/error-500");
@@ -46,21 +42,7 @@ const RecentDocument = () => {
         <>
             <PageHead title="Tài liệu gần đây" description="Tài liệu gần đây - learniverse & shariverse" url={window.location.href} origin="lib" />
 
-            {status === -1 && (
-                <Toast className="top-1/4 right-5 w-100 fixed z-50">
-                    <HiX className="h-5 w-5 bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200" />
-                    <div className="pl-4 text-sm font-normal">{message}</div>
-                </Toast>
-            )}
-
-            {status === 1 && (
-                <Toast className="top-1/4 right-5 fixed w-100 z-50">
-                    <HiOutlineCheck className="h-5 w-5 bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200" />
-                    <div className="pl-4 text-sm font-normal">{message}</div>
-                </Toast>
-            )}
-
-            <div className="flex-1 p-4 bg-gray-50 h-full">
+            <div className="flex-1 p-4 h-full">
                 <div className="rounded-lg bg-white py-8 px-8 ">
                     <div className="mb-5 flex items-center">
                         <p className="text-2xl font-medium text-green-400">Tiếp tục đọc</p>

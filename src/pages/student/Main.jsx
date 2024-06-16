@@ -6,13 +6,13 @@ import CustomFooter from "@components/student/footer/Footer";
 
 const Main = () => {
     return (
-        <div className="relative">
-            <div className="sticky top-0 bg-white w-full z-40  border-b">
+        <div className="relative bg-emerald-50">
+            <div className="sticky top-0 bg-white w-full z-40 shadow-lg">
                 <CustomNavbar />
             </div>
 
             <div className="h-full flex">
-                <div className="w-[18%] bg-white border-r h-full">
+                <div className="w-[18%] h-full">
                     <CustomSidebar />
                 </div>
 

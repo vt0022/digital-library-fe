@@ -22,14 +22,14 @@
     box-shadow: 0 4px 6px -1px var(--hover-color), 0 2px 4px -2px var(--hover-color) !important;
 }
 
-.collection-name {
+/* .collection-name {
     color: var(--active-color) !important;
     margin-top: 20px !important;
 }
 
 .collection-name:hover {
     color: var(--hover-color) !important;
-}
+} */
 
 .title {
     position: absolute;
@@ -64,3 +64,9 @@ a:focus {
 a:active {
     color: inherit !important;
 }
+
+/* .doc-full-card {
+    background-color: white;
+    opacity: 0.8;
+    background-image: repeating-radial-gradient(circle at 0 0, transparent 0, #f3fdf9 20px), repeating-linear-gradient(#f2fdf8, #e6fcf1);
+} */
