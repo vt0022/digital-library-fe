@@ -1,23 +1,19 @@
+import { getAllCategories } from "@api/main/categoryAPI";
+import { deleteADocument, getAllDocuments, getLatestDocuments } from "@api/main/documentAPI";
+import { getAllFields } from "@api/main/fieldAPI";
+import { getAllOrganizations } from "@api/main/organizationAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
+import scopeList from "@assets/json-data/scopes.json";
+import verifiedStatusList from "@assets/json-data/verified_status_list.json";
+import ActionButton from "@components/management/action-button/ActionButton";
+import SelectFilter from "@components/management/select/SelectFilter";
+import Table from "@components/management/table/Table";
+import PageHead from "@components/shared/head/PageHead";
+import { Badge, Button, Modal, Pagination, Spinner } from "flowbite-react";
 import { useEffect, useState } from "react";
+import { HiCheck, HiDocumentRemove, HiOutlineDotsHorizontal, HiX } from "react-icons/hi";
 import { useMatch, useNavigate, useParams } from "react-router-dom";
-
-import ActionButton from "../../../components/management/action-button/ActionButton";
-import SelectFilter from "../../../components/management/select/SelectFilter";
-import Table from "../../../components/management/table/Table";
-
-import { Badge, Button, Modal, Pagination, Spinner, Toast } from "flowbite-react";
-import { HiCheck, HiDocumentRemove, HiOutlineCheck, HiOutlineDotsHorizontal, HiX } from "react-icons/hi";
-
-import { getAllCategories } from "../../../api/main/categoryAPI";
-import { deleteADocument, getAllDocuments, getLatestDocuments } from "../../../api/main/documentAPI";
-import { getAllFields } from "../../../api/main/fieldAPI";
-import { getAllOrganizations } from "../../../api/main/organizationAPI";
-import usePrivateAxios from "../../../api/usePrivateAxios";
-
-import PageHead from "components/shared/head/PageHead";
 import { Bounce, toast } from "react-toastify";
-import scopeList from "../../../assets/json-data/scopes.json";
-import verifiedStatusList from "../../../assets/json-data/verified_status_list.json";
 
 let selectedPage = 0;
 

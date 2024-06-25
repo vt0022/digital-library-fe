@@ -5,7 +5,7 @@
         "icon": "bx bx-bar-chart-square"
     },
     {
-        "display_name": "----------------",
+        "display_name": "------------",
         "route": "",
         "icon": ""
     },
@@ -40,7 +40,7 @@
         "icon": "bx bx-notification"
     },
     {
-        "display_name": "----------------",
+        "display_name": "------------",
         "route": "",
         "icon": ""
     },

@@ -1,18 +1,17 @@
 import { login, loginWithGoogle, sendEmail, signupWithGoogle } from "@api/main/authAPI";
 import { getAccessibleOrganizations } from "@api/main/organizationAPI";
 import bg from "@assets/images/background.jpg";
+import PageHead from "@components/shared/head/PageHead";
 import Spinner from "@components/shared/spinner/Spinner";
 import SimpleNavbar from "@components/student/navbar/SimpleNavbar";
 import { useGoogleLogin } from "@react-oauth/google";
+import loginAction from "@redux/actions/AuthenAction";
 import { emailRegrex } from "@utils/regrex";
-import PageHead from "components/shared/head/PageHead";
-import { Button, Modal, Select, Toast } from "flowbite-react";
+import { Button, Modal, Select } from "flowbite-react";
 import { useEffect, useState } from "react";
-import { HiX } from "react-icons/hi";
 import { useDispatch } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
-import loginAction from "redux/actions/AuthenAction";
 import "./login.css";
 
 const toastOptions = {
@@ -44,7 +43,6 @@ const Login = () => {
     const [emailMessage, setEmailMessage] = useState("");
     const [passwordMessage, setPasswordMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const [entryMessage, setEntryMessage] = useState("");
     const [orgList, setOrgList] = useState([]);
     const [org, setOrg] = useState("");
     const [accessToken, setAccessToken] = useState("");
@@ -54,13 +52,6 @@ const Login = () => {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         sessionStorage.removeItem("profile");
-
-        setEntryMessage(sessionStorage.getItem("entryMessage"));
-
-        setTimeout(() => {
-            setEntryMessage(null);
-            sessionStorage.removeItem("entryMessage");
-        }, 4000);
     }, []);
 
     const validate = () => {
@@ -353,16 +344,6 @@ const Login = () => {
                     </div>
 
                     <Spinner loading={isLoading} />
-
-                    {entryMessage !== "" && entryMessage !== null && (
-                        <Toast className="top-[14%]  right-5 fixed z-50">
-                            <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200">
-                                <HiX className="h-5 w-5" />
-                            </div>
-                            <div className="ml-3 text-sm font-normal">{entryMessage}</div>
-                            <Toast.Toggle />
-                        </Toast>
-                    )}
 
                     <Modal show={openModal} onClose={() => setOpenModal(false)}>
                         <Modal.Header>Xin chào, hãy chọn trường của bạn</Modal.Header>

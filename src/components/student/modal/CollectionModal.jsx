@@ -1,10 +1,21 @@
-import { Button, Label, Modal, TextInput, Toast, ToggleSwitch } from "flowbite-react";
-import React, { useEffect, useState } from "react";
-import { HiChevronLeft, HiChevronUp, HiOutlineCheck, HiX } from "react-icons/hi";
+import { addNewCollection, editCollection } from "@api/main/collectionAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
+import { Button, Label, Modal, TextInput, ToggleSwitch } from "flowbite-react";
+import { useEffect, useState } from "react";
+import { HiChevronLeft, HiChevronUp } from "react-icons/hi";
+import { Bounce, toast } from "react-toastify";
 
-import usePrivateAxios from "../../../api/usePrivateAxios";
-
-import { addNewCollection, editCollection} from "../../../api/main/collectionAPI";
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const CollectionModal = (props) => {
     usePrivateAxios();
@@ -15,8 +26,6 @@ const CollectionModal = (props) => {
     const [collectionName, setCollectionName] = useState(isCreatingNew ? "" : collection.collectionName);
     const [isPrivate, setIsPrivate] = useState(isCreatingNew ? false : collection.private);
     const [isLoading, setIsLoading] = useState(false);
-    const [status, setStatus] = useState(0);
-    const [mainMessage, setMainMessage] = useState("Đã xảy ra lỗi!");
     const [isCollectionNameValid, setIsCollectionNameValid] = useState(true);
 
     useEffect(() => {
@@ -49,57 +58,32 @@ const CollectionModal = (props) => {
                 };
 
                 let response = null;
-                if (isCreatingNew) response = await addNewCollection(data)
+                if (isCreatingNew) response = await addNewCollection(data);
                 else response = await editCollection(collection.collectionId, data);
 
                 setIsLoading(false);
 
                 if (response.status === 200) {
-                    setStatus(1);
-                    setMainMessage(isCreatingNew ? "Tạo bộ sưu tập thành công!" : "Chỉnh sửa bộ sưu tập thành công!");
+                    toast.success(<p className="pr-2">{isCreatingNew ? "Tạo bộ sưu tập thành công!" : "Chỉnh sửa bộ sưu tập thành công!"}</p>, toastOptions);
+
                     setOpenModal(false);
 
                     refreshList();
-
-                    setTimeout(() => {
-                        setStatus(0);
-                    }, 4000);
                 } else {
-                    setStatus(-1);
-
-                    if (response.message === "Collection not found") setMainMessage("Bộ sưu tập không tồn tại!");
-                    else setMainMessage("Đã xảy ra lỗi!");
-
-                    setTimeout(() => {
-                        setStatus(0);
-                    }, 4000);
+                    if (response.message === "Collection not found") {
+                        toast.error(<p className="pr-2">Bộ sưu tập không tồn tại!</p>, toastOptions);
+                    } else {
+                        toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
+                    }
                 }
             } catch (error) {
-                setStatus(-1);
-                setMainMessage("Đã xảy ra lỗi!");
-                setTimeout(() => {
-                    setStatus(0);
-                }, 2000);
+                toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
             }
         }
     };
 
     return (
         <>
-            {status === -1 && (
-                <Toast className="top-1/4 right-5 w-100 fixed z-50">
-                    <HiX className="h-5 w-5 bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200" />
-                    <div className="pl-4 text-sm font-normal">{mainMessage}</div>
-                </Toast>
-            )}
-
-            {status === 1 && (
-                <Toast className="top-1/4 right-5 fixed w-100 z-50">
-                    <HiOutlineCheck className="h-5 w-5 bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200" />
-                    <div className="pl-4 text-sm font-normal">{mainMessage}</div>
-                </Toast>
-            )}
-
             <Modal show={openModal} size="md" onClose={onCloseModal} popup className="z-40">
                 <Modal.Header />
                 <Modal.Body>
@@ -109,7 +93,7 @@ const CollectionModal = (props) => {
                             {!isCreatingNew && "Chỉnh sửa bộ sưu tập"}
                         </h3>
 
-                        <form onSubmit={handleSubmit} >
+                        <form onSubmit={handleSubmit}>
                             <div className="mb-6">
                                 <div className="mb-2 block">
                                     <Label htmlFor="collectionName" value="Tên bộ sưu tập" />

@@ -3,10 +3,10 @@ import usePrivateAxios from "@api/usePrivateAxios";
 import profileImage from "@assets/images/default_profile.jpg";
 import Select from "@components/management/select/Select";
 import PageHead from "@components/shared/head/PageHead";
-import { Button, Datepicker, FileInput, Label, TextInput, Toast } from "flowbite-react";
+import { Button, Datepicker, FileInput, Label, TextInput } from "flowbite-react";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { HiAdjustments, HiOutlineCheck, HiX } from "react-icons/hi";
+import { HiAdjustments } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
 
@@ -428,7 +428,7 @@ const StudentProfile = () => {
 
                             <div className="flex flex-col items-center m-auto profile-info h-full">
                                 <div className="items-center mb-2 font-bold bg-red-200 rounded-full w-1/2 py-1">
-                                    <a href="/me/uploads" className="text-center block text-base font-medium text-sky-500 dark:text-white">
+                                    <a href="/me/my-shared-documents" className="text-center block text-base font-medium text-sky-500 dark:text-white">
                                         {user && user.totalDocuments} tài liệu
                                     </a>
                                 </div>

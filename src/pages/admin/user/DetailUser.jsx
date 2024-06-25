@@ -1,15 +1,15 @@
 import { deleteADocument, getUploadedDocumentsByUser } from "@api/main/documentAPI";
+import { deleteAPost, getAllPostsOfUser } from "@api/main/postAPI";
 import { getAUser } from "@api/main/userAPI";
 import usePrivateAxios from "@api/usePrivateAxios";
 import profileImage from "@assets/images/default_profile.jpg";
 import ActionButton from "@components/management/action-button/ActionButton";
 import Table from "@components/management/table/Table";
 import PageHead from "@components/shared/head/PageHead";
-import { deleteAPost, getAllPostsOfUser } from "api/main/postAPI";
-import { Badge, Button, Modal, Pagination, Spinner, Toast } from "flowbite-react";
-import moment from "moment/moment";
+import { Badge, Button, Modal, Pagination, Spinner } from "flowbite-react";
+import moment from "moment";
 import { useEffect, useState } from "react";
-import { HiAtSymbol, HiCake, HiCheck, HiChevronLeft, HiCloudUpload, HiDocumentRemove, HiExclamation, HiOutlineCloudUpload, HiOutlineDotsHorizontal, HiUser, HiUserAdd, HiX } from "react-icons/hi";
+import { HiAtSymbol, HiCake, HiCheck, HiChevronLeft, HiCloudUpload, HiDocumentRemove, HiOutlineDotsHorizontal, HiUser, HiUserAdd, HiX } from "react-icons/hi";
 import { useNavigate, useParams } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
 

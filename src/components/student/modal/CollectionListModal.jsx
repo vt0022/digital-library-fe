@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { addDocumentToCollection, getMyCollections } from "@api/main/collectionAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
+import { useEffect, useState } from "react";
 import { GiPadlock } from "react-icons/gi";
-import { useNavigate } from "react-router-dom";
-import { addDocumentToCollection, getMyCollections } from "../../../api/main/collectionAPI";
-import usePrivateAxios from "../../../api/usePrivateAxios";
-import { Toast } from "flowbite-react";
-import {HiOutlineCheck, HiX} from "react-icons/hi";
+import { Link, useNavigate } from "react-router-dom";
+import { RiChatPrivateFill } from "react-icons/ri";
 
 const CollectionListModal = (props) => {
     const navigate = useNavigate();
@@ -42,7 +41,7 @@ const CollectionListModal = (props) => {
 
             if (response.status === 200) onSuccess();
             else onFailure();
-            
+
             onClose();
         } catch (error) {
             navigate("/error-500");
@@ -62,11 +61,19 @@ const CollectionListModal = (props) => {
 
                         <p className="font-medium text-base">{collection.collectionName}</p>
 
-                        {collection.private && <GiPadlock className="w-6 h-6" />}
+                        {collection.private && <RiChatPrivateFill className="w-6 h-6 text-amber-500" />}
 
-                        <div className="hidden group-hover:block absolute right-0 bg-red-600 rounded-full w-fit py-2 px-4 text-white text-base group-hover:bg-reg-600 group-hover:bg-reg-700">Lưu</div>
+                        <div className="hidden group-hover:block absolute right-0 bg-red-600 rounded-full w-fit py-2 px-4 text-white text-sm group-hover:bg-reg-600 group-hover:bg-reg-700">Lưu</div>
                     </div>
                 ))}
+
+                {collectionList.length === 0 && (
+                    <div className="flex w-fit m-auto text-sm mt-5 mb-3">
+                        <p className="text-gray-600 text-center">Bạn chưa có bộ sưu tập nào.</p>
+                        {" "}
+                        <Link to="/me/my-created-collections" className="text-green-500 hover:!text-green-400">Tạo ngay!</Link>
+                    </div>
+                )}
             </div>
         </div>
     );

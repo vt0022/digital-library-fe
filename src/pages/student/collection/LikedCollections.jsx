@@ -1,12 +1,12 @@
-import { getLikedDocuments, undoUnlikeDocument, unlikeDocument } from "@api/main/documentAPI";
+import { getLikedCollections, undoUnlikeCollection, unlikeCollection } from "@api/main/collectionAPI";
 import usePrivateAxios from "@api/usePrivateAxios";
 import PageHead from "@components/shared/head/PageHead";
-import DocumentCard from "@components/student/card/Card";
+import CollectionCard from "@components/student/card/CollectionCard";
 import { Pagination } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
-import "./document.css";
+import "react-toastify/dist/ReactToastify.css";
 
 const toastOptions = {
     position: "bottom-center",
@@ -20,12 +20,12 @@ const toastOptions = {
     transition: Bounce,
 };
 
-const LikedDocument = () => {
+const LikedCollection = () => {
     usePrivateAxios();
 
     const navigate = useNavigate();
 
-    const [documentList, setDocumentList] = useState([]);
+    const [collectionList, setCollectionList] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [search, setSearch] = useState("");
@@ -41,16 +41,16 @@ const LikedDocument = () => {
         setCurrentPage(page);
     };
 
-    const notifySuccess = (slug, docName) =>
+    const notifySuccess = (collectionId, collectionName) =>
         (myToast.current = toast.success(
             <div className="flex space-x-5 items-center">
                 <div className="pl-4 text-sm font-normal">
                     <p>
-                        Đã xoá <span className="font-semibold">{docName.substring(0, 25) + "..."}</span> khỏi danh sách yêu thích!
+                        Đã xoá <span className="font-semibold">{collectionName.substring(0, 25) + "..."}</span> khỏi danh sách đã thích!
                     </p>
                 </div>
 
-                <button className="rounded-lg p-1.5 text-sm font-medium text-cyan-600 hover:bg-cyan-100" onClick={() => handleUndo(slug)}>
+                <button className="rounded-lg p-1.5 text-sm font-medium text-cyan-600 hover:bg-cyan-100" onClick={() => handleUndo(collectionId)}>
                     Hoàn tác
                 </button>
             </div>,
@@ -69,7 +69,7 @@ const LikedDocument = () => {
 
     const getLikedList = async (page) => {
         try {
-            const response = await getLikedDocuments({
+            const response = await getLikedCollections({
                 params: {
                     page: page - 1,
                     size: 12,
@@ -78,7 +78,7 @@ const LikedDocument = () => {
             });
 
             if (response.status === 200) {
-                setDocumentList(response.data.content);
+                setCollectionList(response.data.content);
                 setTotalPages(response.data.totalPages);
             } else {
                 notifyFailure();
@@ -88,18 +88,18 @@ const LikedDocument = () => {
         }
     };
 
-    const handleUnlike = async (slug, docName) => {
+    const handleUnlike = async (collectionId, collectionName) => {
         dismissToast();
 
         try {
-            const response = await unlikeDocument(slug);
+            const response = await unlikeCollection(collectionId);
 
             if (response.status === 200) {
                 previousLike.current = response.data;
 
-                notifySuccess(slug, docName);
+                notifySuccess(collectionId, collectionName);
 
-                if (currentPage === totalPages && documentList.length === 1 && totalPages > 1) setCurrentPage(currentPage - 1);
+                if (currentPage === totalPages && collectionList.length === 1 && totalPages > 1) setCurrentPage(currentPage - 1);
                 else getLikedList(currentPage);
             } else {
                 notifyFailure();
@@ -109,12 +109,12 @@ const LikedDocument = () => {
         }
     };
 
-    const handleRelike = async (slug, previousLike) => {
+    const handleRelike = async (collectionId, previousLike) => {
         try {
-            const response = await undoUnlikeDocument(slug, previousLike.current);
+            const response = await undoUnlikeCollection(collectionId, previousLike.current);
 
             if (response.status === 200) {
-                if (currentPage === totalPages && documentList.length === 12 && totalPages) setCurrentPage(currentPage + 1);
+                if (currentPage === totalPages && collectionList.length === 12 && totalPages) setCurrentPage(currentPage + 1);
                 else getLikedList(currentPage);
             }
         } catch (error) {
@@ -122,22 +122,22 @@ const LikedDocument = () => {
         }
     };
 
-    const handleUndo = (slug) => {
+    const handleUndo = (collectionId) => {
         dismissToast();
 
         if (previousLike.current) {
-            handleRelike(slug, previousLike);
+            handleRelike(collectionId, previousLike);
         }
     };
 
     return (
         <>
-            <PageHead title="Danh sách yêu thích" description="Danh sách yêu thích - learniverse & shariverse" url={window.location.href} origin="lib" />
+            <PageHead title="Danh sách đã thích" description="Danh sách đã thích - learniverse & shariverse" url={window.location.href} origin="lib" />
 
             <div className="flex-1 p-4 h-full">
                 <div className="rounded-lg bg-white py-8 px-8 ">
                     <div className="mb-5 flex items-center">
-                        <p className="text-2xl font-medium text-green-400">Danh sách yêu thích</p>
+                        <p className="text-2xl font-medium text-green-400">Danh sách đã thích</p>
 
                         <div className="relative rounded-full ml-auto w-1/4">
                             <input
@@ -161,18 +161,18 @@ const LikedDocument = () => {
                         </div>
                     </div>
 
-                    {documentList.length === 0 && (
+                    {collectionList.length === 0 && (
                         <p className="text-lg font-medium ">
-                            Bạn chưa thích tài liệu nào! &nbsp;
-                            <span className="text-green-400 hover:text-green-500 cursor-pointer" onClick={() => navigate("/documents")}>
+                            Bạn chưa thích bộ sưu tập nào! &nbsp;
+                            <span className="text-green-400 hover:text-green-500 cursor-pointer" onClick={() => navigate("/collections")}>
                                 Khám phá ngay!
                             </span>
                         </p>
                     )}
 
                     <div className="grid grid-cols-4 gap-8">
-                        {documentList.map((document, index) => (
-                            <DocumentCard document={document} type="LIKE" action={() => handleUnlike(document.slug, document.docName)} key={index} />
+                        {collectionList.map((collection, index) => (
+                            <CollectionCard collection={collection} key={index} like="true" handleUnlike={handleUnlike}/>
                         ))}
                     </div>
 
@@ -187,4 +187,4 @@ const LikedDocument = () => {
     );
 };
 
-export default LikedDocument;
+export default LikedCollection;

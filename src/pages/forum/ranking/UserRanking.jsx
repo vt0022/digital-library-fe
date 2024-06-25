@@ -12,7 +12,6 @@ import { BsFillChatHeartFill, BsFillChatLeftHeartFill } from "react-icons/bs";
 import { HiX } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import "./user-ranking.css";
-import { BiSolidCalendar } from "react-icons/bi";
 
 registerLocale("vi", vi);
 
@@ -218,25 +217,33 @@ const UserRanking = () => {
                                     </div>
 
                                     <div className="flex flex-col items-center justify-center w-4/12">
-                                        <div className="flex">
+                                        <div className="flex space-x-2">
                                             <Tooltip content="Số lượt chấp nhận cho các bài đăng đã tạo" style="light">
-                                                <BiSolidMessageCheck className="text-green-500 text-sm mr-1" />
-                                                <p className="text-gray-600 font-medium text-2xl mr-2">{user.totalPostAcceptances}</p>
+                                                <div>
+                                                    <BiSolidMessageCheck className="text-green-500 text-sm mr-1" />
+                                                    <p className="text-gray-600 font-medium text-2xl mr-2">{user.totalPostAcceptances}</p>
+                                                </div>
                                             </Tooltip>
 
                                             <Tooltip content="Số lượt chấp nhận cho các phản hồi" style="light">
-                                                <BiSolidMessageRoundedCheck className="text-emerald-500 text-sm mr-1" />
-                                                <p className="text-gray-600 font-medium text-2xl mr-2">{user.totalReplyAcceptances}</p>
+                                                <div>
+                                                    <BiSolidMessageRoundedCheck className="text-emerald-500 text-sm mr-1" />
+                                                    <p className="text-gray-600 font-medium text-2xl mr-2">{user.totalReplyAcceptances}</p>
+                                                </div>
                                             </Tooltip>
 
                                             <Tooltip content="Số lượt thích nhận được từ các bài đăng đã tạo" style="light">
-                                                <BsFillChatHeartFill className="text-xs text-rose-500 mr-1" />
-                                                <p className="text-gray-600 font-medium text-2xl mr-2">{user.totalPostLikes}</p>
+                                                <div>
+                                                    <BsFillChatHeartFill className="text-xs text-rose-500 mr-1" />
+                                                    <p className="text-gray-600 font-medium text-2xl mr-2">{user.totalPostLikes}</p>
+                                                </div>
                                             </Tooltip>
 
                                             <Tooltip content="Số lượt thích nhận được từ các phản hồi" style="light">
-                                                <BsFillChatLeftHeartFill className="text-xs text-red-500 mr-1" />
-                                                <p className="text-gray-600 font-medium text-2xl mr-2">{user.totalReplyLikes}</p>
+                                                <div>
+                                                    <BsFillChatLeftHeartFill className="text-xs text-red-500 mr-1" />
+                                                    <p className="text-gray-600 font-medium text-2xl mr-2">{user.totalReplyLikes}</p>
+                                                </div>
                                             </Tooltip>
                                         </div>
 

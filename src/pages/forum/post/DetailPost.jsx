@@ -10,12 +10,14 @@ import ReportModal from "@components/forum/modal/ReportModal";
 import PageHead from "@components/shared/head/PageHead";
 import Spinner from "@components/shared/spinner/Spinner";
 import DOMPurify from "dompurify";
-import { Avatar, Breadcrumb, Button, Modal, Pagination, Tooltip } from "flowbite-react";
+import { Avatar, Breadcrumb, Button, Tooltip as FlowbiteTooltip, Modal, Pagination } from "flowbite-react";
 import moment from "moment";
 import numeral from "numeral";
 import * as Emoji from "quill-emoji";
 import "quill-emoji/dist/quill-emoji.css";
 import "quill/dist/quill.snow.css";
+import Tooltip from "rc-tooltip";
+import "rc-tooltip/assets/bootstrap_white.css";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { render } from "react-dom";
 import { FaHashtag, FaStar } from "react-icons/fa";
@@ -23,15 +25,13 @@ import { HiHome, HiOutlineX, HiPencil, HiTrash } from "react-icons/hi";
 import { IoChatbubble, IoChatbubblesOutline, IoEyeOff, IoEyeSharp, IoHeartCircle } from "react-icons/io5";
 import { LuEye } from "react-icons/lu";
 import { MdReport } from "react-icons/md";
-import { PiChatCircleTextFill, PiCheckFatFill } from "react-icons/pi";
+import { PiChatCircleTextFill, PiCheckFatFill, PiPaperPlaneTiltFill } from "react-icons/pi";
 import { RiChatHistoryFill, RiTimeFill } from "react-icons/ri";
-import { TbMessageForward } from "react-icons/tb";
+import { TiStarFullOutline } from "react-icons/ti";
 import ReactQuill, { Quill } from "react-quill";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
 import "./post.css";
-import { TiStarFullOutline } from "react-icons/ti";
-import { PiPaperPlaneTiltFill } from "react-icons/pi";
 
 Quill.register("modules/emoji", Emoji);
 
@@ -87,6 +87,21 @@ const DetailPost = () => {
     const user = JSON.parse(sessionStorage.getItem("profile"));
 
     const isLoggedIn = accessToken && user;
+
+    useEffect(() => {
+        window.addEventListener("error", (e) => {
+            if (e.message === "ResizeObserver loop completed with undelivered notifications.") {
+                const resizeObserverErrDiv = document.getElementById("webpack-dev-server-client-overlay-div");
+                const resizeObserverErr = document.getElementById("webpack-dev-server-client-overlay");
+                if (resizeObserverErr) {
+                    resizeObserverErr.setAttribute("style", "display: none");
+                }
+                if (resizeObserverErrDiv) {
+                    resizeObserverErrDiv.setAttribute("style", "display: none");
+                }
+            }
+        });
+    }, []);
 
     useEffect(() => {
         getPostDetail();
@@ -700,9 +715,9 @@ const DetailPost = () => {
 
                                 {post && post.userPosted && post.userPosted.badge && (
                                     <div className="flex justify-center mt-2">
-                                        <Tooltip content={post.userPosted.badge.badgeName} style="light" placement="bottom">
+                                        <FlowbiteTooltip content={post.userPosted.badge.badgeName} style="light" placement="bottom">
                                             <Avatar alt="Badge" img={post.userPosted.badge.image} rounded />
-                                        </Tooltip>
+                                        </FlowbiteTooltip>
                                     </div>
                                 )}
 
@@ -718,13 +733,13 @@ const DetailPost = () => {
                                         ) : (
                                             <>
                                                 {post.accepted ? (
-                                                    <Tooltip content="Bạn đã đánh dấu bài đăng này là hữu ích. Nhấn để bỏ đánh dấu" style="light">
+                                                    <Tooltip overlay={<p>Bạn đã đánh dấu bài đăng này là hữu ích. Nhấn để bỏ đánh dấu</p>} placement="bottom">
                                                         <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handlePostUndoAccept(postId)}>
                                                             <FaStar className="text-[3.75rem] text-amber-300 hover:text-amber-200 active:text-amber-100 cursor-pointer border-2 border-amber-300 hover:border-amber-200 active:border-amber-100 rounded-full p-1" />
                                                         </button>
                                                     </Tooltip>
                                                 ) : (
-                                                    <Tooltip content="Đánh dấu bài đăng này nếu nó giúp ích cho bạn" style="light">
+                                                    <Tooltip overlay={<p>Đánh dấu bài đăng này nếu nó giúp ích cho bạn</p>} placement="bottom">
                                                         <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handlePostAccept(postId)}>
                                                             <FaStar className="text-[3.75rem] text-gray-400 hover:text-amber-200 active:text-amber-100 cursor-pointer border-2 border-gray-400 hover:border-amber-200 active:border-amber-100 rounded-full p-1" />
                                                         </button>
@@ -734,9 +749,9 @@ const DetailPost = () => {
                                         )}
 
                                         {post && post.totalAcceptances > 0 && (
-                                            <Tooltip content="Tổng số lượt chấp nhận" style="light" placement="bottom">
+                                            <FlowbiteTooltip content="Tổng số lượt chấp nhận" style="light" placement="bottom">
                                                 <p className="text-2xl font-medium text-red-500 text-center">{post.totalAcceptances}</p>
-                                            </Tooltip>
+                                            </FlowbiteTooltip>
                                         )}
                                     </div>
                                 )}
@@ -749,7 +764,7 @@ const DetailPost = () => {
                                         {/* {post && post.updatedAt ? <p>{moment(post.updatedAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p> :  */}
                                         <div className="space-x-3 flex items-center">
                                             {post && post.updatedAt && (
-                                                <Tooltip content="Xem lịch sử chỉnh sửa" style="light">
+                                                <FlowbiteTooltip content="Xem lịch sử chỉnh sửa" style="light">
                                                     <button
                                                         onClick={() => {
                                                             getPostHistory();
@@ -758,24 +773,24 @@ const DetailPost = () => {
                                                         }}>
                                                         <RiChatHistoryFill className="text-base hover:text-teal-500 active:text-teal-400 cursor-pointer" />
                                                     </button>
-                                                </Tooltip>
+                                                </FlowbiteTooltip>
                                             )}
 
                                             <PostHistoryModal triggerPostModal={triggerPostModal} openPostHistoryModal={openPostHistoryModal} postHistory={postHistory} />
 
                                             {post && post.my && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled && (
                                                 <>
-                                                    <Tooltip content="Chỉnh sửa bài đăng" style="light">
+                                                    <FlowbiteTooltip content="Chỉnh sửa bài đăng" style="light">
                                                         <button className="bg-transparent" onClick={() => navigate(`/forum/posts/${post.postId}/edit`)}>
                                                             <HiPencil className="text-base hover:text-yellow-500 active:text-yellow-400 cursor-pointer" />
                                                         </button>
-                                                    </Tooltip>
+                                                    </FlowbiteTooltip>
 
-                                                    <Tooltip content="Xoá bài đăng" style="light">
+                                                    <FlowbiteTooltip content="Xoá bài đăng" style="light">
                                                         <button className="bg-transparent" onClick={() => setOpenPostModal(true)}>
                                                             <HiTrash className="text-base hover:text-red-500 active:text-red-400 cursor-pointer" />
                                                         </button>
-                                                    </Tooltip>
+                                                    </FlowbiteTooltip>
                                                 </>
                                             )}
                                         </div>
@@ -786,16 +801,16 @@ const DetailPost = () => {
 
                                 <div className="flex justify-between py-3 text-green-500 text-sm">
                                     <div className="flex items-center space-x-2">
-                                        {post && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled ? (
+                                        {post && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled && post.subsection && !post.subsection.postAcceptable ? (
                                             <>
                                                 {isLoggedIn && post && post.liked ? (
-                                                    <Tooltip content="Bạn đã thích bài đăng này. Nhấn để bỏ thích" style="light" placement="bottom">
-                                                        <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handlePostLike(postId)}>
+                                                    <Tooltip overlay={<p></p>} placement="bottom">
+                                                        <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handlePostLike(postId)} title="Bạn đã thích bài đăng này. Nhấn để bỏ thích">
                                                             <IoHeartCircle className="text-red-500 hover:text-red-300 text-4xl active:text-red-200 cursor-pointer" />
                                                         </button>
                                                     </Tooltip>
                                                 ) : (
-                                                    <Tooltip content="Thích bài đăng" style="light" placement="bottom">
+                                                    <Tooltip overlay={<p>Thích bài đăng</p>} placement="bottom">
                                                         <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handlePostLike(postId)}>
                                                             <IoHeartCircle className="text-red-500 hover:text-red-300 text-4xl active:text-red-200 cursor-pointer" />
                                                         </button>
@@ -804,13 +819,15 @@ const DetailPost = () => {
                                             </>
                                         ) : (
                                             <>
-                                                <button className="bg-transparent">
-                                                    <IoHeartCircle className="text-red-500 text-4xl" />
-                                                </button>
+                                                {post && post.subsection && !post.subsection.postAcceptable && (
+                                                    <button className="bg-transparent">
+                                                        <IoHeartCircle className="text-red-500 text-4xl" />
+                                                    </button>
+                                                )}
                                             </>
                                         )}
 
-                                        {post && post.totalLikes > 0 && <p className="text-lg font-medium">{post.totalLikes}</p>}
+                                        {post && post.totalLikes > 0 && post.subsection && !post.subsection.postAcceptable && <p className="text-lg font-medium">{post.totalLikes}</p>}
                                     </div>
 
                                     <div className="flex space-x-8">
@@ -836,7 +853,12 @@ const DetailPost = () => {
 
                 {post && post.bestReply && (
                     <div className="w-full flex justify-center -mt-10 z-0">
-                        <div className="w-11/12 flex pt-20 pb-5 px-5 shadow-xl shadow-amber-100 hover:shadow-amber-200 bg-white rounded-lg cursor-pointer" id={post && post.bestReply.replyId}>
+                        <div
+                            className="w-11/12 flex pt-20 pb-5 px-5 shadow-xl shadow-amber-100 hover:shadow-amber-200 bg-white rounded-lg cursor-pointer"
+                            onClick={() => {
+                                const element = document.getElementById(post && post.bestReply && post.bestReply.replyId);
+                                element.scrollIntoView({ behavior: "smooth" });
+                            }}>
                             <div className="w-1/5">
                                 <Avatar alt="User" img={post && post.bestReply && post.bestReply.user && post.bestReply.user.image} rounded size="md" bordered color="success" className="mb-4 main-avatar" />
 
@@ -846,23 +868,23 @@ const DetailPost = () => {
 
                                 {post && post.bestReply && post.bestReply.user && post.bestReply.user.badge && (
                                     <div className="flex justify-center mt-2">
-                                        <Tooltip content={post && post.bestReply && post.bestReply.user && post.bestReply.user.badge.badgeName} style="light" placement="bottom">
+                                        <FlowbiteTooltip content={post && post.bestReply && post.bestReply.user && post.bestReply.user.badge.badgeName} style="light" placement="bottom">
                                             <Avatar alt="Badge" img={post && post.bestReply && post.bestReply.user && post.bestReply.user.badge.image} rounded />
-                                        </Tooltip>
+                                        </FlowbiteTooltip>
                                     </div>
                                 )}
 
                                 <div className="flex justify-center text-green-500 mt-5">
-                                    <Tooltip content="Tác giả bài đăng đã đánh dấu phản hồi này là hữu ích" style="light" placement="bottom">
+                                    <FlowbiteTooltip content="Tác giả bài đăng đã đánh dấu phản hồi này là hữu ích" style="light" placement="bottom">
                                         <button>
                                             <PiCheckFatFill className="text-5xl" />
                                         </button>
-                                    </Tooltip>
+                                    </FlowbiteTooltip>
                                 </div>
                             </div>
 
-                            <div className={`w-4/5 ${reply.disabled && "bg-red-100"}`}>
-                                <div className={`border-2 border-dashed rounded-b-[50px] rounded-tr-[50px] p-5 ${reply.disabled && "bg-red-100"}`}>
+                            <div className={`w-4/5 ${post && post.bestReply && post.bestReply.disabled && "bg-red-100"}`}>
+                                <div className={`border-2 border-dashed rounded-b-[50px] rounded-tr-[50px] p-5 ${post && post.bestReply && post.bestReply.disabled && "bg-red-100"}`}>
                                     <div className="flex justify-between pb-2 border-b border-gray-200 text-gray-500 text-sm">
                                         {post && post.bestReply && post.bestReply.updatedAt ? (
                                             <p>{moment(post && post.bestReply && post.bestReply.updatedAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p>
@@ -872,7 +894,7 @@ const DetailPost = () => {
                                     </div>
 
                                     <div className="py-3">
-                                        <div className="content-format" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post && post.bestReply && post.bestReply.content) }} id={`edit-${post && post.bestReply && post.bestReply.replyId}`} />
+                                        <div className="content-format" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post && post.bestReply && post.bestReply.content) }} />
                                     </div>
                                 </div>
 
@@ -909,7 +931,7 @@ const DetailPost = () => {
                         replyList.map(
                             (reply, index) =>
                                 !reply.disabled && (
-                                    <div key={index} className="w-full flex space-x-2">
+                                    <div key={index} className="w-full flex space-x-2" id={reply.replyId}>
                                         <div className="w-[5%] h-full">
                                             <p className="flex items-center justify-center bg-white shadow-lg rounded-full h-fit aspect-square font-medium text-xl">#{(currentPage - 1) * 10 + index + 1}</p>
 
@@ -920,7 +942,7 @@ const DetailPost = () => {
                                             </div>
                                         </div>
 
-                                        <div className="w-[95%] flex p-5 shadow-lg shadow-gray-300 bg-white rounded-lg" key={index} id={reply.replyId}>
+                                        <div className="w-[95%] flex p-5 shadow-lg shadow-gray-300 bg-white rounded-lg" key={index}>
                                             <div className="w-1/5">
                                                 <Avatar alt="User" img={reply.user && reply.user.image} rounded size="md" bordered color="success" className="mb-4 main-avatar" />
 
@@ -930,9 +952,9 @@ const DetailPost = () => {
 
                                                 {reply.user && reply.user.badge && (
                                                     <div className="flex justify-center mt-2">
-                                                        <Tooltip content={reply.user.badge.badgeName} style="light" placement="bottom">
+                                                        <FlowbiteTooltip content={reply.user.badge.badgeName} style="light" placement="bottom">
                                                             <Avatar alt="Badge" img={reply.user.badge.image} rounded />
-                                                        </Tooltip>
+                                                        </FlowbiteTooltip>
                                                     </div>
                                                 )}
 
@@ -942,11 +964,11 @@ const DetailPost = () => {
                                                             {post && (post.disabled || post.labelDisabled || post.subsectionDisabled || post.sectionDisabled) ? (
                                                                 <>
                                                                     {reply && reply.accepted ? (
-                                                                        <Tooltip content="Tác giả bài đăng đã đánh dấu phản hồi này là hữu ích" style="light" placement="bottom">
+                                                                        <FlowbiteTooltip content="Tác giả bài đăng đã đánh dấu phản hồi này là hữu ích" style="light" placement="bottom">
                                                                             <button>
                                                                                 <PiCheckFatFill className="text-5xl" />
                                                                             </button>
-                                                                        </Tooltip>
+                                                                        </FlowbiteTooltip>
                                                                     ) : (
                                                                         <button className="bg-transparent">
                                                                             <PiCheckFatFill className="text-5xl text-gray-400" />
@@ -958,13 +980,13 @@ const DetailPost = () => {
                                                                     {post && post.my ? (
                                                                         <>
                                                                             {reply && reply.accepted ? (
-                                                                                <Tooltip content="Bạn đã đánh dấu phản hồi này là hữu ích. Nhấn để bỏ đánh dấu" style="light" placement="bottom">
+                                                                                <Tooltip overlay={<p>Bạn đã đánh dấu phản hồi này là hữu ích. Nhấn để bỏ đánh dấu</p>} placement="bottom">
                                                                                     <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handleReplyUndoAccept(reply)}>
                                                                                         <PiCheckFatFill className="text-5xl text-emerald-500 hover:text-emerald-300 active:text-emerald-200 cursor-pointer border-2 border-emerald-500 hover:border-emerald-200 active:border-emerald-100 rounded-full p-1" />
                                                                                     </button>
                                                                                 </Tooltip>
                                                                             ) : (
-                                                                                <Tooltip content="Đánh dấu phản hồi này nếu nó giải quyết vấn đề của bạn hoặc hữu ích nhất" style="light" placement="bottom">
+                                                                                <Tooltip overlay={<p>Đánh dấu phản hồi này nếu nó giải quyết vấn đề của bạn hoặc hữu ích nhất</p>} placement="bottom">
                                                                                     <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handleReplyAccept(reply)}>
                                                                                         <PiCheckFatFill className="text-5xl text-gray-400 hover:text-emerald-300 active:text-emerald-200 cursor-pointer border-2 border-gray-400 hover:border-emerald-200 active:border-emerald-100 rounded-full p-1" />
                                                                                     </button>
@@ -974,11 +996,11 @@ const DetailPost = () => {
                                                                     ) : (
                                                                         <>
                                                                             {reply && reply.accepted && (
-                                                                                <Tooltip content="Tác giả bài đăng đã đánh dấu phản hồi này là hữu ích" style="light" placement="bottom">
+                                                                                <FlowbiteTooltip content="Tác giả bài đăng đã đánh dấu phản hồi này là hữu ích" style="light" placement="bottom">
                                                                                     <button>
                                                                                         <PiCheckFatFill className="text-5xl" />
                                                                                     </button>
-                                                                                </Tooltip>
+                                                                                </FlowbiteTooltip>
                                                                             )}
                                                                         </>
                                                                     )}
@@ -1018,7 +1040,7 @@ const DetailPost = () => {
 
                                                         <div className="space-x-3 flex items-center">
                                                             {reply.updatedAt && (
-                                                                <Tooltip content="Xem lịch sử chỉnh sửa" style="light" placement="bottom">
+                                                                <FlowbiteTooltip content="Xem lịch sử chỉnh sửa" style="light" placement="bottom">
                                                                     <button
                                                                         onClick={() => {
                                                                             getReplyHistory(reply.replyId);
@@ -1028,18 +1050,18 @@ const DetailPost = () => {
                                                                         }}>
                                                                         <RiChatHistoryFill className="text-base hover:text-teal-500 active:text-teal-400 cursor-pointer" />
                                                                     </button>
-                                                                </Tooltip>
+                                                                </FlowbiteTooltip>
                                                             )}
 
                                                             {reply && reply.my && !reply.disabled && !reply.postDisabled && (
                                                                 <>
-                                                                    <Tooltip content="Chỉnh sửa phản hồi" style="light" placement="bottom">
+                                                                    <FlowbiteTooltip content="Chỉnh sửa phản hồi" style="light" placement="bottom">
                                                                         <button className="bg-transparent" onClick={() => handleEditReplySection(reply)}>
                                                                             <HiPencil className="text-lg hover:text-orange-500 active:text-orange-400 cursor-pointer" />
                                                                         </button>
-                                                                    </Tooltip>
+                                                                    </FlowbiteTooltip>
 
-                                                                    <Tooltip content="Xoá phản hồi" style="light" placement="bottom">
+                                                                    <FlowbiteTooltip content="Xoá phản hồi" style="light" placement="bottom">
                                                                         <button
                                                                             className="bg-transparent"
                                                                             onClick={() => {
@@ -1048,7 +1070,7 @@ const DetailPost = () => {
                                                                             }}>
                                                                             <HiTrash className="text-lg hover:text-red-500 active:text-red-400 cursor-pointer" />
                                                                         </button>
-                                                                    </Tooltip>
+                                                                    </FlowbiteTooltip>
                                                                 </>
                                                             )}
                                                         </div>
@@ -1064,13 +1086,13 @@ const DetailPost = () => {
                                                         {post && !post.disabled && !post.labelDisabled && !post.subsectionDisabled && !post.sectionDisabled ? (
                                                             <>
                                                                 {reply.liked ? (
-                                                                    <Tooltip content="Bạn đã thích phản hồi này. Nhấn để bỏ thích" style="light" placement="bottom">
+                                                                    <Tooltip overlay={<p>Bạn đã thích phản hồi này. Nhấn để bỏ thích</p>} placement="bottom">
                                                                         <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handleReplyLike(reply)}>
                                                                             <IoHeartCircle className="text-red-500 hover:text-red-300 text-4xl active:text-red-200 cursor-pointer" />
                                                                         </button>
                                                                     </Tooltip>
                                                                 ) : (
-                                                                    <Tooltip content="Thích phản hồi" style="light" placement="bottom">
+                                                                    <Tooltip overlay={<p>Thích phản hồi</p>} placement="bottom">
                                                                         <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handleReplyLike(reply)}>
                                                                             <IoHeartCircle className="text-4xl text-gray-400 hover:text-red-400 active:text-red-500 cursor-pointer" />
                                                                         </button>
@@ -1125,9 +1147,9 @@ const DetailPost = () => {
 
                                         {user && user.badge && (
                                             <div className="flex justify-center mt-2">
-                                                <Tooltip content={user.badge.badgeName} placement="bottom">
+                                                <FlowbiteTooltip content={user.badge.badgeName} placement="bottom">
                                                     <Avatar alt="Badge" img={user.badge.image} rounded />
-                                                </Tooltip>
+                                                </FlowbiteTooltip>
                                             </div>
                                         )}
                                     </>
@@ -1168,7 +1190,7 @@ const DetailPost = () => {
 
                 {postList.length > 0 && (
                     <div className="w-full bg-white mt-5 p-5 rounded-lg space-y-3 shadow-lg shadow-gray-300">
-                        <h2 className="text-2xl font-semibold">Có thể bạn quan tâm</h2>
+                        <h2 className="text-2xl font-medium">Có thể bạn quan tâm</h2>
 
                         <div className="flex space-x-4">
                             <div className="w-1/2 w-full space-y-5">

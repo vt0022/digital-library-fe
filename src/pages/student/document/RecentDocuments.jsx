@@ -1,10 +1,8 @@
 import { getRecentDocuments } from "@api/main/documentAPI";
 import usePrivateAxios from "@api/usePrivateAxios";
-import DocumentCard from "@components/student/card/Card";
 import PageHead from "@components/shared/head/PageHead";
-import { Toast } from "flowbite-react";
+import DocumentCard from "@components/student/card/Card";
 import { useEffect, useState } from "react";
-import { HiOutlineCheck, HiX } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 
 const RecentDocument = () => {
@@ -59,7 +57,7 @@ const RecentDocument = () => {
 
                     <div className="grid grid-cols-4 gap-8">
                         {documentList.map((document) => (
-                            <DocumentCard docName={document.docName} slug={document.slug} thumbnail={document.thumbnail} totalView={document.totalView} totalFavorite={document.totalFavorite} />
+                            <DocumentCard document={document} type="RECENT" />
                         ))}
                     </div>
                 </div>

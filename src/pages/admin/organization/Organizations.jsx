@@ -5,9 +5,9 @@ import OrganizationModal from "@components/management/admin/modal/organization/O
 import SelectFilter from "@components/management/select/SelectFilter";
 import Table from "@components/management/table/Table";
 import PageHead from "components/shared/head/PageHead";
-import { Badge, Button, Modal, Pagination, Spinner, Toast, Tooltip } from "flowbite-react";
+import { Badge, Button, Modal, Pagination, Spinner, Tooltip } from "flowbite-react";
 import { useEffect, useState } from "react";
-import { HiCheck, HiDocumentRemove, HiOutlineCheck, HiX } from "react-icons/hi";
+import { HiCheck, HiDocumentRemove, HiX } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
 
@@ -197,7 +197,7 @@ const Organizations = () => {
                 {
                     toast.success(<p className="pr-2">Kích hoạt trường thành công!</p>, toastOptions);
                 }
-                
+
                 getOrganizationList(1);
                 setCurrentPage(1);
                 selectedPage = 0;

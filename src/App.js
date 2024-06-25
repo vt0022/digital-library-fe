@@ -15,10 +15,8 @@ moment.updateLocale("vi", {
 function App() {
     return (
         <BrowserRouter>
-            {/* <div className="App"> */}
             <ScrollToTop />
             <RootRouters />
-            {/* </div> */}
         </BrowserRouter>
     );
 }

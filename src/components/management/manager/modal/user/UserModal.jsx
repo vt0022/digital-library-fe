@@ -2,10 +2,23 @@ import { createUser, getAUser, updateUser } from "@api/main/userAPI";
 import usePrivateAxios from "@api/usePrivateAxios";
 import profileImage from "@assets/images/default_profile.jpg";
 import Select from "@components/management/select/Select";
-import { Button, Datepicker, FileInput, Label, Modal, TextInput, Toast } from "flowbite-react";
+import { Button, Datepicker, FileInput, Label, Modal, TextInput } from "flowbite-react";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { HiChevronLeft, HiChevronUp, HiOutlineCheck, HiX } from "react-icons/hi";
+import { HiChevronLeft, HiChevronUp } from "react-icons/hi";
+import { Bounce, toast } from "react-toastify";
+
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const UserModal = (props) => {
     usePrivateAxios();
@@ -36,10 +49,7 @@ const UserModal = (props) => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [imageFile, setImageFile] = useState(null);
     const [image, setImage] = useState(null);
-
     const [isLoading, setIsLoading] = useState(false);
-    const [status, setStatus] = useState(0);
-
     const [isLastNameValid, setIsLastNameValid] = useState(true);
     const [isFirstNameValid, setIsFirstNameValid] = useState(true);
     const [isEmailValid, setIsEmailValid] = useState(true);
@@ -49,7 +59,6 @@ const UserModal = (props) => {
     const [isFileValid, setIsFileValid] = useState(true);
     const [fileMessage, setFileMessage] = useState("");
     const [confirmPasswordMessage, setConfirmPasswordMessage] = useState("");
-    const [mainMessage, setMainMessage] = useState("Đã xảy ra lỗi!");
 
     useEffect(() => {
         if (triggerModal !== 0) {
@@ -211,53 +220,31 @@ const UserModal = (props) => {
                     setConfirmPassword("");
                     setImage(profileImage);
                     setGender(0);
-                    setStatus(1);
 
                     setOpenModal(false);
-                    setTimeout(() => {
-                        setStatus(0);
-                    }, 4000);
+
+                    toast.success(<p className="pr-2">{isCreatingNew ? "Tạo người dùng" : "Cập nhật người dùng"} thành công!</p>, toastOptions);
 
                     refreshUserList();
                 } else {
-                    setStatus(-1);
-
-                    if (response.message === "Email already registered") setMainMessage("Email đã tồn tại!");
-                    else if (response.message === "User not found") setMainMessage("Người dùng không tồn tại!");
-                    else if (response.message === "Passwords not match") setMainMessage("Mật khẩu không trùng nhau!");
-                    else setMainMessage("Đã xảy ra lỗi!");
-
-                    setTimeout(() => {
-                        setStatus(0);
-                    }, 2000);
+                    if (response.message === "Email already registered") {
+                        toast.error(<p className="pr-2">Email đã tồn tại!</p>, toastOptions);
+                    } else if (response.message === "User not found") {
+                        toast.error(<p className="pr-2">Người dùng không tồn tại!</p>, toastOptions);
+                    } else if (response.message === "Passwords not match") {
+                        toast.error(<p className="pr-2">Mật khẩu không trùng nhau!</p>, toastOptions);
+                    } else {
+                        toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
+                    }
                 }
             } catch (error) {
-                setStatus(-1);
-                setTimeout(() => {
-                    setStatus(0);
-                }, 2000);
+                toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
             }
         }
     };
 
     return (
         <>
-            {status === -1 && (
-                <Toast className="top-1/4 right-5 w-100 fixed z-50">
-                    <HiX className="h-5 w-5 bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200" />
-                    <div className="pl-4 text-sm font-normal">{mainMessage}</div>
-                </Toast>
-            )}
-
-            {status === 1 && (
-                <Toast className="top-1/4 right-5 fixed w-100 z-50">
-                    <HiOutlineCheck className="h-5 w-5 bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200" />
-                    <div className="pl-4 text-sm font-normal">
-                        {!isCreatingNew && "Cập nhật người dùng"} {isCreatingNew && "Tạo người dùng"} thành công!
-                    </div>
-                </Toast>
-            )}
-
             <Modal show={openModal} size="md" onClose={onCloseModal} popup className="z-40">
                 <Modal.Header />
                 <Modal.Body>
@@ -338,7 +325,7 @@ const UserModal = (props) => {
                                 <label htmlFor="hs-select-label" className="block text-sm font-medium mb-2 dark:text-white">
                                     Vai trò
                                 </label>
-                                <select id="role" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" disabled>
+                                <select id="role" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" disabled>
                                     <option selected value="c0a801b9-8ac0-1a60-818a-c04a8f950035">
                                         Sinh viên
                                     </option>

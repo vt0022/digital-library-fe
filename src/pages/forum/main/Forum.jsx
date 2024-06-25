@@ -23,7 +23,7 @@ const Forum = () => {
 
     return (
         <div className="relative bg-emerald-50">
-            <div className="sticky top-0 shadow-lg z-10">
+            <div className="sticky top-0 shadow-lg z-20">
                 <TopBar />
             </div>
 

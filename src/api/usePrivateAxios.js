@@ -3,6 +3,7 @@ import { privateAxios } from "./axios";
 // import useRefreshToken from "./useRefreshToken";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
+import { jwtDecode } from "jwt-decode";
 
 const toastOptions = {
     toastId: "entry-toast",
@@ -40,6 +41,9 @@ const usePrivateAxios = () => {
 
                     toast.error(<p className="pr-2">Vui lòng đăng nhập trước!</p>, toastOptions);
                 } else {
+                    // const decodedToken = jwtDecode(accessToken);
+                    // console.log(decodedToken)
+
                     config.headers.Authorization = `Bearer ${accessToken}`;
                     sessionStorage.removeItem("entryMessage");
                 }

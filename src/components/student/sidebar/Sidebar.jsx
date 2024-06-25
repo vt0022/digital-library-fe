@@ -4,8 +4,13 @@ import { Avatar, Button, Sidebar } from "flowbite-react";
 import { HiBookmark, HiCollection, HiDuplicate, HiHeart } from "react-icons/hi";
 import { MdRateReview } from "react-icons/md";
 import { TbAppsFilled } from "react-icons/tb";
-
+import { PiListHeartFill } from "react-icons/pi";
+import { BsBookmarkStarFill } from "react-icons/bs";
+import { BsFillPostcardHeartFill } from "react-icons/bs";
 import "./sidebar.css";
+import { PiListPlusFill } from "react-icons/pi";
+import { RiBookmark3Fill } from "react-icons/ri";
+import { BiSolidBookHeart } from "react-icons/bi";
 
 const CustomSidebar = () => {
     const location = useLocation();
@@ -20,7 +25,7 @@ const CustomSidebar = () => {
 
     return (
         <Sidebar aria-label="Sidebar" className="side-bar w-full min-h-screen">
-            <Sidebar.Items className="bg-emerald-50 h-full p-4 py-12">
+            <Sidebar.Items className="bg-emerald-50 h-full p-4">
                 <Avatar alt="User settings" img={user && user.image ? user.image : ""} rounded bordered size="lg" className="mb-2 mt-2" />
                 <p className="mb-3 text-base font-medium text-center">
                     {user && user.lastName} {user && user.firstName}
@@ -32,60 +37,42 @@ const CustomSidebar = () => {
                         </Button>
 
                         <Sidebar.ItemGroup>
-                            <Sidebar.Item
-                                as={Link}
-                                to="/me/uploads"
-                                icon={HiCollection}
-                                className={`rounded-full gap-x-2 px-4 py-2 text-sm font-medium ${
-                                    currentPath === "/me/uploads" ? active : inactive
-                                }`}>
-                                Tài liệu của tôi
+                            <p className="px-4 font-medium">Tài liệu</p>
+
+                            <Sidebar.Item as={Link} to="/me/my-shared-documents" icon={HiCollection} className={`rounded-full gap-x-2 px-4 py-2 text-sm font-medium ${currentPath === "/me/my-shared-documents" ? active : inactive}`}>
+                                Đã chia sẻ
                             </Sidebar.Item>
 
-                            <Sidebar.Item
-                                as={Link}
-                                to="/me/likes"
-                                icon={HiHeart}
-                                className={`rounded-full gap-x-2 px-4 py-2 text-sm font-medium ${currentPath === "/me/likes" ? active : inactive}`}>
+                            <Sidebar.Item as={Link} to="/me/my-liked-documents" icon={BiSolidBookHeart} className={`rounded-full gap-x-2 px-4 py-2 text-sm font-medium ${currentPath === "/me/my-liked-documents" ? active : inactive}`}>
                                 Yêu thích
                             </Sidebar.Item>
 
-                            <Sidebar.Item
-                                as={Link}
-                                to="/me/saves"
-                                icon={HiBookmark}
-                                className={`rounded-full gap-x-2 px-4 py-2 text-sm font-medium ${currentPath === "/me/saves" ? active : inactive}`}>
+                            <Sidebar.Item as={Link} to="/me/my-saved-documents" icon={RiBookmark3Fill} className={`rounded-full gap-x-2 px-4 py-2 text-sm font-medium ${currentPath === "/me/my-saved-documents" ? active : inactive}`}>
                                 Đã lưu
                             </Sidebar.Item>
 
-                            <Sidebar.Item
-                                as={Link}
-                                to="/me/recents"
-                                icon={HiDuplicate}
-                                className={`rounded-full gap-x-2 px-4 py-2 text-sm font-medium ${
-                                    currentPath === "/me/recents" ? active : inactive
-                                }`}>
+                            <Sidebar.Item as={Link} to="/me/my-reading" icon={HiDuplicate} className={`rounded-full gap-x-2 px-4 py-2 text-sm font-medium ${currentPath === "/me/my-reading" ? active : inactive}`}>
                                 Gần đây
                             </Sidebar.Item>
+                        </Sidebar.ItemGroup>
 
-                            <Sidebar.Item
-                                as={Link}
-                                to="/me/collections"
-                                icon={TbAppsFilled}
-                                className={`rounded-full gap-x-2 px-4 py-2 text-sm font-medium ${
-                                    currentPath === "/me/collections" ? active : inactive
-                                }`}>
-                                Bộ sưu tập
+                        <Sidebar.ItemGroup>
+                            <p className="px-4 font-medium">Bộ sưu tập</p>
+
+                            <Sidebar.Item as={Link} to="/me/my-created-collections" icon={PiListPlusFill} className={`rounded-full gap-x-2 px-4 py-2 text-sm font-medium ${currentPath === "/me/my-created-collections" ? active : inactive}`}>
+                                Đã tạo
                             </Sidebar.Item>
 
-                            <Sidebar.Item
-                                as={Link}
-                                to="/me/reviews"
-                                icon={MdRateReview}
-                                className={`rounded-full gap-x-2 px-4 py-2 text-sm font-medium ${
-                                    currentPath === "/me/reviews" ? active : inactive
-                                }`}>
-                                Đánh giá của tôi
+                            <Sidebar.Item as={Link} to="/me/my-liked-collections" icon={PiListHeartFill} className={`rounded-full gap-x-2 px-4 py-2 text-sm font-medium ${currentPath === "/me/my-liked-collections" ? active : inactive}`}>
+                                Yêu thích
+                            </Sidebar.Item>
+                        </Sidebar.ItemGroup>
+
+                        <Sidebar.ItemGroup>
+                            <p className="px-4 font-medium">Đánh giá</p>
+
+                            <Sidebar.Item as={Link} to="/me/my-reviews" icon={MdRateReview} className={`rounded-full gap-x-2 px-4 py-2 text-sm font-medium ${currentPath === "/me/my-reviews" ? active : inactive}`}>
+                                Đã gửi
                             </Sidebar.Item>
                         </Sidebar.ItemGroup>
                     </>

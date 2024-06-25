@@ -304,7 +304,7 @@ const UploadedDocument = () => {
 
                                 <div className="grid grid-cols-4 gap-8 mt-10 w-full">
                                     {documentList.map((document) => (
-                                        <DocumentCard docName={document.docName} slug={document.slug} thumbnail={document.thumbnail} totalView={document.totalView} totalFavorite={document.totalFavorite} reason={document.note} type="RUD" action={() => handleDelete(document.docId)} />
+                                        <DocumentCard document={document} type="RUD" action={() => handleDelete(document.docId)} />
                                     ))}
                                 </div>
 
@@ -350,7 +350,7 @@ const UploadedDocument = () => {
 
                                 <div className="grid grid-cols-4 gap-8 mt-10 w-full">
                                     {documentList.map((document) => (
-                                        <DocumentCard docName={document.docName} slug={document.slug} thumbnail={document.thumbnail} totalView={document.totalView} totalFavorite={document.totalFavorite} reason={document.note} type="RUD" action={() => handleDelete(document.docId)} />
+                                        <DocumentCard document={document} type="RUD" action={() => handleDelete(document.docId)} />
                                     ))}
                                 </div>
                             </div>
@@ -390,7 +390,7 @@ const UploadedDocument = () => {
 
                                 <div className="grid grid-cols-4 gap-8 mt-10 w-full">
                                     {documentList.map((document) => (
-                                        <DocumentCard docName={document.docName} slug={document.slug} thumbnail={document.thumbnail} totalView={document.totalView} totalFavorite={document.totalFavorite} reason={document.note} type="VRUD" action={() => handleDelete(document.docId)} />
+                                        <DocumentCard document={document} type="VRUD" action={() => handleDelete(document.docId)} />
                                     ))}
                                 </div>
                             </div>

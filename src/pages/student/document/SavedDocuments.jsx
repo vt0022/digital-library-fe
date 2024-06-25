@@ -172,7 +172,7 @@ const SavedDocument = () => {
 
                     <div className="grid grid-cols-4 gap-8">
                         {documentList.map((document, index) => (
-                            <DocumentCard docName={document.docName} slug={document.slug} thumbnail={document.thumbnail} totalView={document.totalView} totalFavorite={document.totalFavorite} type="SAVE" action={() => handleUnsave(document.slug, document.docName)} key={index} />
+                            <DocumentCard document={document} type="SAVE" action={() => handleUnsave(document.slug, document.docName)} key={index} />
                         ))}
                     </div>
 

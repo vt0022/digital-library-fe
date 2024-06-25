@@ -1,28 +1,26 @@
+import { getAccessibleCategories } from "@api/main/categoryAPI";
+import { uploadNewDocument } from "@api/main/documentAPI";
+import { getAccessibleFields } from "@api/main/fieldAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
+import Select from "@components/management/select/Select";
+import PageHead from "@components/shared/head/PageHead";
+import { Button } from "flowbite-react";
 import { useEffect, useState } from "react";
+import { HiChevronLeft, HiChevronUp } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
-import Select from "../../../components/management/select/Select";
-
-import { getAccessibleCategories } from "../../../api/main/categoryAPI";
-import { uploadNewDocument } from "../../../api/main/documentAPI";
-import { getAccessibleFields } from "../../../api/main/fieldAPI";
-import usePrivateAxios from "../../../api/usePrivateAxios";
-
-import { Button, Toast } from "flowbite-react";
-import { HiChevronLeft, HiChevronUp, HiExclamation, HiOutlineCloudUpload } from "react-icons/hi";
-import PageHead from "components/shared/head/PageHead";
 import { Bounce, toast } from "react-toastify";
 
-    const toastOptions = {
-        position: "bottom-center",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-    };
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const ManagerNewDocument = () => {
     usePrivateAxios();
@@ -183,7 +181,7 @@ const ManagerNewDocument = () => {
 
                 if (response.status === 200) {
                     toast.success(<p className="pr-2">Tải tài liệu lên thành công!</p>, toastOptions);
-                        navigate(-1);
+                    navigate(-1);
                 } else {
                     toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
                 }

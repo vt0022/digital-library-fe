@@ -139,12 +139,12 @@ const NotificationItem = (props) => {
                 break;
             case "ACCEPT_DOCUMENT":
             case "REJECT_DOCUMENT":
-                navigate("/me/uploads");
+                navigate("/me/my-shared-documents");
                 if (!notification.read) read();
                 break;
             case "ACCEPT_REVIEW":
             case "REJECT_REVIEW":
-                navigate("/me/reviews");
+                navigate("/me/my-reviews");
                 if (!notification.read) read();
                 break;
             default:
@@ -183,8 +183,8 @@ const NotificationItem = (props) => {
                     <div className="relative flex items-center justify-center w-5 h-5 ms-8 -mt-5 bg-sky-600 border border-white rounded-full">
                         <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                             <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
+                                fillRule="evenodd"
+                                clipRule="evenodd"
                                 d="M6.39113 10.5439C6.39051 9.44976 6.7016 8.37924 7.28617 7.46394C7.86503 6.55596 8.69417 5.84514 9.6681 5.42194C10.9668 4.85935 12.4322 4.85935 13.7309 5.42194C14.7052 5.84498 15.5347 6.55581 16.1138 7.46394C17.3021 9.32579 17.309 11.731 16.1314 13.5999L18.525 17.9719L16.0037 17.4719L15.1973 19.9999L12.9753 15.9249C12.1382 16.1414 11.2618 16.1414 10.4247 15.9249L8.20267 19.9999L7.39635 17.4709L4.875 17.9719L7.26863 13.5999C6.69465 12.6895 6.38988 11.6281 6.39113 10.5439V10.5439Z"
                                 stroke="#ffffff"
                                 strokeWidth="1.5"
@@ -192,8 +192,8 @@ const NotificationItem = (props) => {
                                 strokeLinejoin="round"
                             />
                             <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
+                                fillRule="evenodd"
+                                clipRule="evenodd"
                                 d="M11.4504 8.32691C11.4973 8.22925 11.5943 8.16742 11.7005 8.16742C11.8066 8.16742 11.9036 8.22925 11.9506 8.32691L12.4683 9.37291C12.5069 9.45209 12.5788 9.50881 12.6633 9.52691L13.7475 9.74991C13.8468 9.77396 13.9266 9.84932 13.9583 9.94877C13.99 10.0482 13.9688 10.1574 13.9025 10.2369L13.1284 11.1369C13.0738 11.2009 13.0483 11.2856 13.0582 11.3699L13.2015 12.5879C13.216 12.6944 13.1719 12.8004 13.0868 12.8633C13.0018 12.9262 12.8898 12.9357 12.7959 12.8879L11.8209 12.3799C11.7419 12.3384 11.6483 12.3384 11.5693 12.3799L10.5943 12.8879C10.5004 12.9357 10.3884 12.9262 10.3034 12.8633C10.2183 12.8004 10.1742 12.6944 10.1887 12.5879L10.3321 11.3729C10.3419 11.2886 10.3164 11.2039 10.2619 11.1399L9.4877 10.2399C9.41982 10.159 9.39893 10.0473 9.43286 9.94637C9.46679 9.84548 9.55041 9.77067 9.65248 9.74991L10.7367 9.52591C10.8212 9.50781 10.893 9.45109 10.9317 9.37191L11.4504 8.32691Z"
                                 stroke="#ffffff"
                                 strokeWidth="1.5"
@@ -250,7 +250,7 @@ const NotificationItem = (props) => {
             case "REJECT_REVIEW":
                 return (
                     <div className="relative flex items-center justify-center w-5 h-5 ms-8 -mt-5 bg-red-600 border border-white rounded-full">
-                        <svg fill="#ffffff" viewBox="-6.5 -3 25 25" xmlns="http://www.w3.org/2000/svg" class="cf-icon-svg">
+                        <svg fill="#ffffff" viewBox="-6.5 -3 25 25" xmlns="http://www.w3.org/2000/svg" className="cf-icon-svg">
                             <path d="M11.383 13.644A1.03 1.03 0 0 1 9.928 15.1L6 11.172 2.072 15.1a1.03 1.03 0 1 1-1.455-1.456l3.928-3.928L.617 5.79a1.03 1.03 0 1 1 1.455-1.456L6 8.261l3.928-3.928a1.03 1.03 0 0 1 1.455 1.456L7.455 9.716z" />
                         </svg>
                     </div>
@@ -260,8 +260,8 @@ const NotificationItem = (props) => {
                     <div className="relative flex items-center justify-center w-5 h-5 ms-8 -mt-5 bg-white border border-white rounded-full">
                         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
+                                fillRule="evenodd"
+                                clipRule="evenodd"
                                 d="M1 12C1 5.92487 5.92487 1 12 1C18.0751 1 23 5.92487 23 12C23 18.0751 18.0751 23 12 23C5.92487 23 1 18.0751 1 12ZM10.25 11C10.25 10.4477 10.6977 10 11.25 10H12.75C13.3023 10 13.75 10.4477 13.75 11V18C13.75 18.5523 13.3023 19 12.75 19H11.25C10.6977 19 10.25 18.5523 10.25 18V11ZM14 7C14 5.89543 13.1046 5 12 5C10.8954 5 10 5.89543 10 7C10 8.10457 10.8954 9 12 9C13.1046 9 14 8.10457 14 7Z"
                                 fill="#22d3ee"
                             />

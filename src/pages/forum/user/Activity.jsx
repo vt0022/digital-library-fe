@@ -297,7 +297,7 @@ const Activity = () => {
                                                                 <h3 className="font-semibold text-gray-900">Bài đăng này đã bị ẩn vì (những) lý do sau</h3>
                                                             </div>
                                                             <div className="px-3 py-2">
-                                                                <ul class="list-disc pl-5">
+                                                                <ul className="list-disc pl-5">
                                                                     {post.disabled && <li>Bài đăng đã bị gỡ</li>}
                                                                     {post.labelDisabled && <li>Nhãn đã bị vô hiệu, bạn có thể chuyển sang nhãn khác</li>}
                                                                     {post.subsectionDisabled && <li>Mục chính chứa chuyên mục đã bị vô hiệu</li>}
@@ -368,7 +368,7 @@ const Activity = () => {
                                                                 <h3 className="font-semibold text-gray-900">Bình luận này đã bị ẩn vì (những) lý do sau</h3>
                                                             </div>
                                                             <div className="px-3 py-2">
-                                                                <ul class="list-disc pl-5">
+                                                                <ul className="list-disc pl-5">
                                                                     {reply.disabled && <li>Bình luận đã bị gỡ</li>}
                                                                     {reply.postDisabled && <li>Bài đăng đã bị ẩn</li>}
                                                                 </ul>

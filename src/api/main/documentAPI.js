@@ -337,3 +337,48 @@ export const getRecentDocuments = async (config) => {
         throw error;
     }
 };
+
+export const saveCurrentPage = async (slug, config) => {
+    try {
+        const response = await privateAxios.put(`/documents/${slug}/current`, "", config);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const saveNote = async (slug, data) => {
+    try {
+        const response = await privateAxios.post(`/documents/${slug}/note`, data);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getNote = async (slug, config) => {
+    try {
+        const response = await privateAxios.get(`/documents/${slug}/note`, config);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getAllNotesOfDocument = async (slug) => {
+    try {
+        const response = await privateAxios.get(`/documents/${slug}/note/all`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const deleteNote = async (slug, config) => {
+    try {
+        const response = await privateAxios.delete(`/documents/${slug}/note`, config);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

@@ -24,6 +24,7 @@ const SubsectionModal = (props) => {
 
     const [openModal, setOpenModal] = useState(openSubsectionModal);
     const [subsectionName, setSubsectionName] = useState("");
+    const [totalPosts, setTotalPosts] = useState(0);
     const [editable, setEditable] = useState(true);
     const [acceptable, setAcceptable] = useState("");
     const [sectionId, setSectionId] = useState("");
@@ -85,6 +86,7 @@ const SubsectionModal = (props) => {
                 setSubsectionName(subsection.subName);
                 setSectionId(subsection.section && subsection.section.sectionId);
                 setEditable(subsection.editable);
+                setTotalPosts(subsection.totalPosts);
                 if (subsection.postAcceptable) setAcceptable("0");
                 else if (subsection.replyAcceptable) setAcceptable("1");
                 else setAcceptable("");
@@ -183,7 +185,7 @@ const SubsectionModal = (props) => {
                         </div>
 
                         <div className="mb-10">
-                            {isCreatingNew ? (
+                            {(isCreatingNew || totalPosts === 0) ? (
                                 <>
                                     <Select
                                         selectName="* Cho phép sử dụng tính năng đánh dấu hữu ích"
@@ -197,7 +199,7 @@ const SubsectionModal = (props) => {
                                         field="value"
                                     />
                                     <p className="text-xs text-red-500 text-justify">- Tính năng này cho phép người dùng đánh dấu một bài đăng hoặc phản hồi là hữu ích nếu nó giúp họ giải quyết vấn đề</p>
-                                    <p className="text-xs text-red-500 text-justify">- Lưu ý: không thể chỉnh sửa lại tính năng này</p>
+                                    <p className="text-xs text-red-500 text-justify">- Lưu ý: không thể chỉnh sửa lại tính năng này nếu đã đăng bài trong chuyên mục</p>
                                 </>
                             ) : (
                                 <>

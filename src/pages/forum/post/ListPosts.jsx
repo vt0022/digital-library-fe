@@ -4,6 +4,8 @@ import PageHead from "@components/shared/head/PageHead";
 import SelectFilter from "@components/student/select/SelectFilter";
 import Post from "components/forum/card/Post";
 import { Button, Pagination, Spinner } from "flowbite-react";
+import Tooltip from "rc-tooltip";
+import "rc-tooltip/assets/bootstrap_white.css";
 import { useEffect, useState } from "react";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
@@ -174,7 +176,7 @@ const ListPosts = () => {
 
                     {postList.length === 0 && !isFetching && <p className="text-center font-medium mb-3">Không tìm thấy bài đăng nào!!!</p>}
 
-                    <div className="flex flex-col space-y-8">{postList && postList.map((post, index) => <Post post={post} key={index}/>)}</div>
+                    <div className="flex flex-col space-y-8">{postList && postList.map((post, index) => <Post post={post} key={index} />)}</div>
                 </div>
 
                 {totalPages > 1 && (

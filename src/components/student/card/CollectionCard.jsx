@@ -1,18 +1,31 @@
 import { deleteCollection } from "@api/main/collectionAPI";
-import heights from "@assets/json-data/heights.json";
 import colors from "@assets/json-data/light_colors.json";
-import { Button, Modal, Toast, Tooltip } from "flowbite-react";
+import CollectionModal from "@components/student/modal/CollectionModal";
+import { Button, Modal, Tooltip } from "flowbite-react";
 import { useState } from "react";
 import { BiSolidLock } from "react-icons/bi";
 import { CgExtensionRemove } from "react-icons/cg";
-import { HiOutlineCheck, HiOutlinePencilAlt, HiOutlineTrash, HiX } from "react-icons/hi";
+import { HiHeart, HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
 import { HiClipboardDocumentList } from "react-icons/hi2";
 import { IoHeart } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import CollectionModal from "@components/student/modal/CollectionModal";
+import { Bounce, toast } from "react-toastify";
+import { RiChatPrivateFill } from "react-icons/ri";
+
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const CollectionCard = (props) => {
-    const { collection, isMine, refreshList } = props;
+    const { collection, isMine, refreshList, like, handleUnlike } = props;
 
     const navigate = useNavigate();
 
@@ -20,12 +33,8 @@ const CollectionCard = (props) => {
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const [triggerModal, setTriggerModal] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
-    const [status, setStatus] = useState(0);
-    const [message, setMessage] = useState("");
 
     const getRandomColor = colors[Math.floor(Math.random() * colors.length)];
-
-    const getRandomHeight = heights[Math.floor(Math.random() * heights.length)];
 
     const handleEdit = () => {
         setOpenCollectionModal(true);
@@ -43,29 +52,14 @@ const CollectionCard = (props) => {
             setIsLoading(false);
             setOpenDeleteModal(false);
             if (response.status === 200) {
-                setStatus(1);
-                setMessage("Xoá bộ sưu tập thành công!");
-
-                setTimeout(() => {
-                    setStatus(0);
-                }, 4000);
+                toast.success(<p className="pr-2">Xoá bộ sưu tập thành công!</p>, toastOptions);
 
                 refreshList();
             } else {
-                setStatus(-1);
-                setMessage("Đã xảy ra lỗi! Xin vui lòng thử lại!");
-
-                setTimeout(() => {
-                    setStatus(0);
-                }, 4000);
+                toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
             }
         } catch (error) {
-            setStatus(-1);
-            setMessage("Đã xảy ra lỗi! Xin vui lòng thử lại!");
-
-            setTimeout(() => {
-                setStatus(0);
-            }, 4000);
+            toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
         }
     };
 
@@ -80,7 +74,7 @@ const CollectionCard = (props) => {
 
             {isMine && collection.private && (
                 <div className="absolute top-1 right-1 rounded-full bg-white z-20 p-1 bg-amber-50" title="Bộ sưu tập riêng tư">
-                    <BiSolidLock className="text-2xl text-amber-500" />
+                    <RiChatPrivateFill className="text-2xl text-amber-500" />
                 </div>
             )}
 
@@ -146,6 +140,19 @@ const CollectionCard = (props) => {
                         </Tooltip>
                     </div>
                 )}
+
+                {like && (
+                    <Tooltip content="Bỏ thích" style="light">
+                        <HiHeart
+                            className="w-8 h-8 text-red-500 hover:text-red-300 active:text-red-200"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                handleUnlike(collection.collectionId, collection.collectionName);
+                            }}
+                        />
+                    </Tooltip>
+                )}
             </div>
 
             <Modal show={openDeleteModal} size="md" onClose={() => setOpenDeleteModal(false)} popup className="z-40">
@@ -167,20 +174,6 @@ const CollectionCard = (props) => {
             </Modal>
 
             <CollectionModal openCollectionModal={openCollectionModal} collection={collection} isCreatingNew={false} triggerModal={triggerModal} refreshList={refreshList} />
-
-            {status === -1 && (
-                <Toast className="top-1/4 right-5 w-fit fixed z-50">
-                    <HiX className="h-5 w-5 bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200" />
-                    <div className="pl-4 text-sm font-normal">{message}</div>
-                </Toast>
-            )}
-
-            {status === 1 && (
-                <Toast className="top-1/4 right-5 fixed w-auto z-50">
-                    <HiOutlineCheck className="h-5 w-5 bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200" />
-                    <div className="pl-4 text-sm font-normal">{message}</div>
-                </Toast>
-            )}
         </div>
     );
 };

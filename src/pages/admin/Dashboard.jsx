@@ -384,9 +384,9 @@ const Dashboard = () => {
                 <div className="row">
                     <h2 className="page-header px-[15px]">Tổng quan</h2>
 
-                    <div class="flex items-center w-full px-[15px] mb-2">
-                        <span class="whitespace-nowrap text-2xl font-medium">Sơ lược theo giai đoạn</span>
-                        <span class="flex-grow border-t border-black"></span>
+                    <div className="flex items-center w-full px-[15px] mb-2">
+                        <span className="whitespace-nowrap text-2xl font-medium">Sơ lược theo giai đoạn</span>
+                        <span className="flex-grow border-t border-black"></span>
                     </div>
 
                     <div className="col-12">
@@ -447,14 +447,14 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    <div class="flex items-center w-full px-[15px] my-2">
-                        <span class="whitespace-nowrap text-xl font-medium">Số lượng tổng quát</span>
-                        <span class="flex-grow border-t border-black"></span>
+                    <div className="flex items-center w-full px-[15px] my-2">
+                        <span className="whitespace-nowrap text-xl font-medium">Số lượng tổng quát</span>
+                        <span className="flex-grow border-t border-black"></span>
                     </div>
 
-                    <div class="flex items-center w-full px-[15px] my-2">
-                        <span class="whitespace-nowrap text-base font-medium">Thư viện</span>
-                        <span class="flex-grow border-t border-black"></span>
+                    <div className="flex items-center w-full px-[15px] my-2">
+                        <span className="whitespace-nowrap text-base font-medium">Thư viện</span>
+                        <span className="flex-grow border-t border-black"></span>
                     </div>
 
                     <div className="flex w-full grid grid-cols-5 gap-y-5 mb-7">
@@ -465,9 +465,9 @@ const Dashboard = () => {
                         ))}
                     </div>
 
-                    <div class="flex items-center w-full px-[15px] my-2">
-                        <span class="whitespace-nowrap text-base font-medium">Diễn đàn</span>
-                        <span class="flex-grow border-t border-black"></span>
+                    <div className="flex items-center w-full px-[15px] my-2">
+                        <span className="whitespace-nowrap text-base font-medium">Diễn đàn</span>
+                        <span className="flex-grow border-t border-black"></span>
                     </div>
 
                     <div className="flex w-full grid grid-cols-5 gap-y-5 mb-7">
@@ -478,14 +478,14 @@ const Dashboard = () => {
                         ))}
                     </div>
 
-                    <div class="flex items-center w-full px-[15px] my-2">
-                        <span class="whitespace-nowrap text-xl font-medium">Biểu đồ tổng quan</span>
-                        <span class="flex-grow border-t border-black"></span>
+                    <div className="flex items-center w-full px-[15px] my-2">
+                        <span className="whitespace-nowrap text-xl font-medium">Biểu đồ tổng quan</span>
+                        <span className="flex-grow border-t border-black"></span>
                     </div>
 
-                    <div class="flex items-center w-full px-[15px] my-2">
-                        <span class="whitespace-nowrap text-base font-medium">Thư viện</span>
-                        <span class="flex-grow border-t border-black"></span>
+                    <div className="flex items-center w-full px-[15px] my-2">
+                        <span className="whitespace-nowrap text-base font-medium">Thư viện</span>
+                        <span className="flex-grow border-t border-black"></span>
                     </div>
 
                     <div className="flex w-full">
@@ -636,9 +636,9 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    <div class="flex items-center w-full px-[15px] my-2">
-                        <span class="whitespace-nowrap text-base font-medium">Diễn đàn</span>
-                        <span class="flex-grow border-t border-black"></span>
+                    <div className="flex items-center w-full px-[15px] my-2">
+                        <span className="whitespace-nowrap text-base font-medium">Diễn đàn</span>
+                        <span className="flex-grow border-t border-black"></span>
                     </div>
 
                     <div className="flex w-full">
@@ -937,9 +937,9 @@ const Dashboard = () => {
                 </div>
 
                 <div className="row">
-                    <div class="flex items-center w-full px-[15px] mb-2">
-                        <span class="whitespace-nowrap text-2xl font-medium">Biểu đồ tổng quan theo từng năm</span>
-                        <span class="flex-grow border-t border-black"></span>
+                    <div className="flex items-center w-full px-[15px] mb-2">
+                        <span className="whitespace-nowrap text-2xl font-medium">Biểu đồ tổng quan theo từng năm</span>
+                        <span className="flex-grow border-t border-black"></span>
                     </div>
 
                     <div className="col-12">
@@ -1005,9 +1005,9 @@ const Dashboard = () => {
                 </div>
 
                 <div className="row">
-                    <div class="flex items-center w-full px-[15px] mb-2">
-                        <span class="whitespace-nowrap text-2xl font-medium">Dữ liệu mới nhất trong tháng</span>
-                        <span class="flex-grow border-t border-black"></span>
+                    <div className="flex items-center w-full px-[15px] mb-2">
+                        <span className="whitespace-nowrap text-2xl font-medium">Dữ liệu mới nhất trong tháng</span>
+                        <span className="flex-grow border-t border-black"></span>
                     </div>
 
                     <div className="flex w-full">

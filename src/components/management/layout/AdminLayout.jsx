@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 
-import "../../../assets/boxicons-2.0.7/css/boxicons.min.css";
-import "../../../assets/css/grid.css";
-import "../../../assets/css/index.css";
-import "../../../assets/css/theme.css";
+import "@assets/boxicons-2.0.7/css/boxicons.min.css";
+import "@assets/css/grid.css";
+import "@assets/css/index.css";
+import "@assets/css/theme.css";
 
 import "./layout.css";
 
@@ -12,8 +12,8 @@ import TopNav from "../topnav/TopNav";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import ThemeAction from "./../../../redux/actions/ThemeAction";
-import AdminRoutes from "./../../../routers/AdminRouters";
+import ThemeAction from "@redux/actions/ThemeAction";
+import AdminRoutes from "@routers/AdminRouters";
 
 const AdminLayout = () => {
     const themeReducer = useSelector((state) => state.ThemeReducer);

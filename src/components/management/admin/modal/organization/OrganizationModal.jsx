@@ -1,10 +1,21 @@
-import { Button, Label, Modal, TextInput, Toast } from "flowbite-react";
-import React, { useEffect, useState } from "react";
-import { HiChevronLeft, HiChevronUp, HiOutlineCheck, HiX } from "react-icons/hi";
+import { createOrganization, getAnOrganization, updateOrganization } from "@api/main/organizationAPI";
+import usePrivateAxios from "@api/usePrivateAxios";
+import { Button, Label, Modal, TextInput } from "flowbite-react";
+import { useEffect, useState } from "react";
+import { HiChevronLeft, HiChevronUp } from "react-icons/hi";
+import { Bounce, toast } from "react-toastify";
 
-import usePrivateAxios from "../../../../../api/usePrivateAxios";
-
-import { createOrganization, getAnOrganization, updateOrganization } from "../../../../../api/main/organizationAPI";
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const OrganizationModal = (props) => {
     usePrivateAxios();
@@ -14,8 +25,6 @@ const OrganizationModal = (props) => {
     const [openModal, setOpenModal] = useState(openOrganizationModal);
     const [organizationName, setOrganizationName] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const [status, setStatus] = useState(0);
-    const [mainMessage, setMainMessage] = useState("Đã xảy ra lỗi!");
     const [isOrganizationNameValid, setIsOrganizationNameValid] = useState(true);
 
     useEffect(() => {
@@ -39,7 +48,6 @@ const OrganizationModal = (props) => {
             if (response.status === 200) {
                 const organization = response.data;
                 setOrganizationName(organization.orgName);
-            } else {
             }
         } catch (error) {
             console.log(error);
@@ -71,54 +79,30 @@ const OrganizationModal = (props) => {
                 setIsLoading(false);
 
                 if (response.status === 200) {
-                    setStatus(1);
-                    setMainMessage(isCreatingNew ? "Tạo trường học thành công!" : "Cập nhật trường học thành công!");
+                    toast.success(<p className="pr-2">{isCreatingNew ? "Tạo trường học thành công!" : "Cập nhật trường học thành công!"}</p>, toastOptions);
+
                     setOpenModal(false);
 
                     refreshOrganizationList();
 
                     setOrganizationName("");
-
-                    setTimeout(() => {
-                        setStatus(0);
-                    }, 4000);
                 } else {
-                    setStatus(-1);
-
-                    if (response.message === "Organization already exists") setMainMessage("Trường học đã tồn tại!");
-                    else if (response.message === "Organization not found") setMainMessage("Trường học không tồn tại!");
-                    else setMainMessage("Đã xảy ra lỗi!");
-
-                    setTimeout(() => {
-                        setStatus(0);
-                    }, 4000);
+                    if (response.message === "Organization already exists") {
+                        toast.error(<p className="pr-2">Trường học đã tồn tại!</p>, toastOptions);
+                    } else if (response.message === "Organization not found") {
+                        toast.error(<p className="pr-2">Trường học không tồn tại!</p>, toastOptions);
+                    } else {
+                        toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
+                    }
                 }
             } catch (error) {
-                setStatus(-1);
-                setMainMessage("Đã xảy ra lỗi!");
-                setTimeout(() => {
-                    setStatus(0);
-                }, 2000);
+                toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
             }
         }
     };
 
     return (
         <>
-            {status === -1 && (
-                <Toast className="top-1/4 right-5 w-100 fixed z-50">
-                    <HiX className="h-5 w-5 bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200" />
-                    <div className="pl-4 text-sm font-normal">{mainMessage}</div>
-                </Toast>
-            )}
-
-            {status === 1 && (
-                <Toast className="top-1/4 right-5 fixed w-100 z-50">
-                    <HiOutlineCheck className="h-5 w-5 bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200" />
-                    <div className="pl-4 text-sm font-normal">{mainMessage}</div>
-                </Toast>
-            )}
-
             <Modal show={openModal} size="md" onClose={onCloseModal} popup className="z-40">
                 <Modal.Header />
                 <Modal.Body>

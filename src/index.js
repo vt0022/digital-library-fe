@@ -39,6 +39,8 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import "flowbite";
 import { Bounce, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Worker } from "@react-pdf-viewer/core";
+import ErrorBoundary from "./ErrorBoundary";
 
 const store = createStore(rootReducer);
 
@@ -49,11 +51,15 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
     <Provider store={store}>
         <GoogleOAuthProvider clientId="355480575905-okvgom422abg0ecf8u9mfi4p35sp867n.apps.googleusercontent.com">
-            <React.StrictMode>
-                <App />
+            <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+                <React.StrictMode>
+                    <ErrorBoundary>
+                        <App />
 
-                <ToastContainer position="bottom-center" autoClose={4000} hideProgressBar={false} newestOnTop={false} closeOnClick={false} rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover={false} theme="light" transition={Bounce} />
-            </React.StrictMode>
+                        <ToastContainer position="bottom-center" autoClose={2000} hideProgressBar={false} newestOnTop={false} closeOnClick={false} rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover={false} theme="light" transition={Bounce} />
+                    </ErrorBoundary>
+                </React.StrictMode>
+            </Worker>
         </GoogleOAuthProvider>
     </Provider>,
 );

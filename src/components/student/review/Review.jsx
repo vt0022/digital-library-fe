@@ -80,9 +80,11 @@ const Review = (props) => {
                 {isEditted && <div className="mb-4 text-xs text-red-500 italic">* Mỗi người có thể chỉnh sửa đánh giá nhiều lần. Nếu đánh giá của bạn đã được duyệt 2 lần thì bạn không thể chỉnh sửa nữa.</div>}
 
                 <div className="flex justify-between">
-                    <Button pill className="bg-green-400 text-white enabled:hover:bg-green-300 enabled:active:bg-green-350 focus:border focus:ring-0 focus:bg-green-350 border border-solid px-3" onClick={handleReview} disabled={isLoading || !user || !accessToken} isProcessing={isLoading}>
-                        <span className="text-base">Gửi</span>
-                    </Button>
+                    {user && accessToken && (
+                        <Button pill className="bg-green-400 text-white enabled:hover:bg-green-300 enabled:active:bg-green-350 focus:border focus:ring-0 focus:bg-green-350 border border-solid px-3" onClick={handleReview} disabled={isLoading} isProcessing={isLoading}>
+                            <span className="text-base">Gửi</span>
+                        </Button>
+                    )}
 
                     {isEditted && (
                         <Button pill className="bg-red-500 text-white enabled:hover:bg-red-400 enabled:active:bg-red-450 focus:border focus:ring-0 focus:bg-red-450 border border-solid px-3" onClick={cancel} disabled={isLoading} isProcessing={isLoading}>

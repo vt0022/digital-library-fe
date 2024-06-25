@@ -4,10 +4,10 @@ import ActionButton from "@components/management/action-button/ActionButton";
 import CategoryModal from "@components/management/admin/modal/category/CategoryModal";
 import SelectFilter from "@components/management/select/SelectFilter";
 import Table from "@components/management/table/Table";
-import PageHead from "components/shared/head/PageHead";
-import { Badge, Button, Modal, Pagination, Spinner, Toast, Tooltip } from "flowbite-react";
+import PageHead from "@components/shared/head/PageHead";
+import { Badge, Button, Modal, Pagination, Spinner, Tooltip } from "flowbite-react";
 import { useEffect, useState } from "react";
-import { HiCheck, HiDocumentRemove, HiOutlineCheck, HiX } from "react-icons/hi";
+import { HiCheck, HiDocumentRemove, HiX } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
 
@@ -164,7 +164,7 @@ const Categories = () => {
                 navigate("/admin/login");
             }
         } catch (error) {
-            navigate("/error-500")
+            navigate("/error-500");
         }
     };
 

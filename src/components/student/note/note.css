@@ -1,0 +1,18 @@
+/* 
+.yoopta-editor {
+    height: fit-content;
+    max-height: 250px;
+    overflow-y: auto;
+    background-color: white;
+    z-index: 20;
+} */
+
+#editorjs {
+    background-color: white;
+    border-radius: 8px;
+    padding: 32px;
+    max-height: 250px;
+    overflow-y: auto;
+    width: 400px;
+    max-width: 400px;
+}

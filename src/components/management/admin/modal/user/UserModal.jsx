@@ -1,12 +1,25 @@
-import { Button, Datepicker, FileInput, Label, Modal, TextInput, Toast } from "flowbite-react";
-import React, { useEffect, useState } from "react";
-import { HiChevronLeft, HiChevronUp, HiOutlineCheck, HiX } from "react-icons/hi";
-import Select from "@components/management/select/Select";
 import { getAccessibleOrganizations } from "@api/main/organizationAPI";
 import { createUser, getAUser, updateUser } from "@api/main/userAPI";
 import usePrivateAxios from "@api/usePrivateAxios";
-import moment from "moment/moment";
 import profileImage from "@assets/images/default_profile.jpg";
+import Select from "@components/management/select/Select";
+import { Button, Datepicker, FileInput, Label, Modal, TextInput } from "flowbite-react";
+import moment from "moment/moment";
+import { useEffect, useState } from "react";
+import { HiChevronLeft, HiChevronUp } from "react-icons/hi";
+import { Bounce, toast } from "react-toastify";
+
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const UserModal = (props) => {
     usePrivateAxios();
@@ -30,7 +43,6 @@ const UserModal = (props) => {
     const [gender, setGender] = useState(0);
     const [dateOfBirth, setDateOfBirth] = useState(new Date());
     const [email, setEmail] = useState("");
-    const [phone, setPhone] = useState("");
     const [orgId, setOrgId] = useState("");
     const [roleId, setRoleId] = useState("");
     const [password, setPassword] = useState("");
@@ -38,10 +50,7 @@ const UserModal = (props) => {
     const [imageFile, setImageFile] = useState(null);
     const [image, setImage] = useState(null);
     const [organizationList, setOrganizationList] = useState([{}]);
-
     const [isLoading, setIsLoading] = useState(false);
-    const [status, setStatus] = useState(0);
-
     const [isLastNameValid, setIsLastNameValid] = useState(true);
     const [isFirstNameValid, setIsFirstNameValid] = useState(true);
     const [isEmailValid, setIsEmailValid] = useState(true);
@@ -53,7 +62,6 @@ const UserModal = (props) => {
     const [isFileValid, setIsFileValid] = useState(true);
     const [fileMessage, setFileMessage] = useState("");
     const [confirmPasswordMessage, setConfirmPasswordMessage] = useState("");
-    const [mainMessage, setMainMessage] = useState("Đã xảy ra lỗi!");
 
     useEffect(() => {
         if (triggerModal !== 0) {
@@ -249,53 +257,30 @@ const UserModal = (props) => {
                     setOrgId("");
                     setGender(0);
 
-                    setStatus(1);
-
                     setOpenModal(false);
-                    setTimeout(() => {
-                        setStatus(0);
-                    }, 4000);
+
+                    toast.success(<p className="pr-2">{isCreatingNew ? "Tạo người dùng" : "Cập nhật người dùng"} thành công!</p>, toastOptions);
 
                     refreshUserList();
                 } else {
-                    setStatus(-1);
-
-                    if (response.message === "Email already registered") setMainMessage("Email đã tồn tại!");
-                    else if (response.message === "User not found") setMainMessage("Người dùng không tồn tại!");
-                    else if (response.message === "Passwords not match") setMainMessage("Mật khẩu không trùng nhau!");
-                    else setMainMessage("Đã xảy ra lỗi!");
-
-                    setTimeout(() => {
-                        setStatus(0);
-                    }, 2000);
+                    if (response.message === "Email already registered") {
+                        toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
+                    } else if (response.message === "User not found") {
+                        toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
+                    } else if (response.message === "Passwords not match") {
+                        toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
+                    } else {
+                        toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
+                    }
                 }
             } catch (error) {
-                setStatus(-1);
-                setTimeout(() => {
-                    setStatus(0);
-                }, 2000);
+                toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
             }
         }
     };
 
     return (
         <>
-            {status === -1 && (
-                <Toast className="top-1/4 right-5 w-100 fixed z-50">
-                    <HiX className="h-5 w-5 bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200" />
-                    <div className="pl-4 text-sm font-normal">{mainMessage}</div>
-                </Toast>
-            )}
-
-            {status === 1 && (
-                <Toast className="top-1/4 right-5 fixed w-100 z-50">
-                    <HiOutlineCheck className="h-5 w-5 bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200" />
-                    <div className="pl-4 text-sm font-normal">
-                        {!isCreatingNew && "Cập nhật người dùng"} {isCreatingNew && "Tạo người dùng"} thành công!
-                    </div>
-                </Toast>
-            )}
-
             <Modal show={openModal} size="md" onClose={onCloseModal} popup className="z-40">
                 <Modal.Header />
                 <Modal.Body>

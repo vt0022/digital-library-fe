@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 const Post = ({ post }) => {
     const navigate = useNavigate();
     return (
-        <div className="relative flex space-x-3 rounded-lg shadow-lg p-5 bg-white">
+        <div className="relative flex space-x-3 rounded-lg shadow-lg p-5 bg-white hover:shadow-emerald-200">
             {post.label && (
                 <span
                     className="absolute h-8 bg-white border right-5 -top-4 text-white rounded-lg text-xs px-3 py-2 font-medium"
@@ -32,7 +32,7 @@ const Post = ({ post }) => {
                     {post.userPosted.lastName} {post.userPosted.firstName}
                 </p>
 
-                <p className="text-slate-400 text-sm">{moment(post.createdAt).calendar()}</p>
+                <p className="text-slate-400 text-xs">{moment(post.createdAt).calendar()}</p>
             </div>
 
             <div className="flex items-center space-x-4">

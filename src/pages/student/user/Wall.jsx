@@ -172,7 +172,7 @@ const UserWall = () => {
 
                         <div className="grid grid-cols-3 gap-8 card-small w-full">
                             {documentList.map((document) => (
-                                <DocumentCard docName={document.docName} slug={document.slug} thumbnail={document.thumbnail} totalView={document.totalView} totalFavorite={document.totalFavorite} />
+                                <DocumentCard document={document} />
                             ))}
                         </div>
 

@@ -1,13 +1,13 @@
 .tab-bar .tab-verified .text-blue-600 {
-    color: #22c55e
+    color: #22c55e;
 }
 
 .tab-bar .tab-pending .text-blue-600 {
-    color: #eab308
+    color: #eab308;
 }
 
 .tab-bar .tab-rejected .text-blue-600 {
-    color: #ef4444
+    color: #ef4444;
 }
 
 /* .card-small .w-fit {
@@ -22,4 +22,25 @@
     max-width: 40rem !important;
     width: fit-content !important;
     left: calc(59% - 20rem) !important;
+}
+
+.rpv-default-layout__container {
+    border-radius: 8px;
+}
+
+.rpv-default-layout__body {
+    border-radius: 8px;
+}
+
+.rpv-default-layout__toolbar {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.rpv-default-layout__sidebar-headers {
+    border-bottom-left-radius: 8px;
+}
+
+.rpv-core__doc-error {
+    border-radius: 8px !important;
 }

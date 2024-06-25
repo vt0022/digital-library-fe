@@ -582,7 +582,7 @@ const DetailPost = () => {
                             </div>
 
                             <div className="px-3 py-2">
-                                <ul class="list-disc pl-5">
+                                <ul className="list-disc pl-5">
                                     {post.disabled && <li>Bài đăng đã bị gỡ</li>}
                                     {post.labelDisabled && <li>Nhãn đã bị vô hiệu, bạn có thể chuyển sang nhãn khác</li>}
                                     {post.sectionDisabled && <li>Mục chính chứa chuyên mục đã bị vô hiệu</li>}

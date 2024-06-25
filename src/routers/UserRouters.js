@@ -1,28 +1,25 @@
-import { React } from "react";
-import { Route, Routes } from "react-router-dom";
-
-import ListCategories from "../pages/student/category/ListCategories";
-import DetailDocument from "../pages/student/document/DetailDocument";
-import StudentEditDocument from "../pages/student/document/EditDocument";
-import LikedDocument from "../pages/student/document/LikedDocuments";
-import ListDocument from "../pages/student/document/ListDocuments";
-import SavedDocument from "../pages/student/document/SavedDocuments";
-import StudentNewDocument from "../pages/student/document/UploadDocument";
-import UploadedDocument from "../pages/student/document/UploadedDocuments";
-import ListFields from "../pages/student/field/ListFields";
-import ListOrganizations from "../pages/student/organization/ListOrganizations";
-import StudentProfile from "../pages/student/user/Profile";
-import UserWall from "../pages/student/user/Wall";
-
-import { useNavigate } from "react-router-dom";
-import RecentDocument from "../pages/student/document/RecentDocuments";
-import ListCollections from "../pages/student/collection/ListCollections";
-import DetailCollection from "../pages/student/collection/DetailCollection";
-import MyCollections from "../pages/student/collection/MyCollections";
-import MyReviews from "../pages/student/review/MyReviews";
-// import Search from "../search/search";
-// import UserHome from "../user/home";
-// import UserProfile from "../user/profile";
+import ListCategories from "@pages/student/category/ListCategories";
+import DetailCollection from "@pages/student/collection/DetailCollection";
+import ListCollections from "@pages/student/collection/ListCollections";
+import MyCollections from "@pages/student/collection/MyCollections";
+import DetailDocument from "@pages/student/document/DetailDocument";
+import StudentEditDocument from "@pages/student/document/EditDocument";
+import LikedDocument from "@pages/student/document/LikedDocuments";
+import ListDocument from "@pages/student/document/ListDocuments";
+import RecentDocument from "@pages/student/document/RecentDocuments";
+import SavedDocument from "@pages/student/document/SavedDocuments";
+import StudentNewDocument from "@pages/student/document/UploadDocument";
+import UploadedDocument from "@pages/student/document/UploadedDocuments";
+import ListFields from "@pages/student/field/ListFields";
+import ListOrganizations from "@pages/student/organization/ListOrganizations";
+import MyReviews from "@pages/student/review/MyReviews";
+import StudentProfile from "@pages/student/user/Profile";
+import UserWall from "@pages/student/user/Wall";
+import LikedCollection from "pages/student/collection/LikedCollections";
+import { Route, Routes, useNavigate } from "react-router-dom";
+// import Search from "@search/search";
+// import UserHome from "@user/home";
+// import UserProfile from "@user/profile";
 
 const UserRoute = () => {
     const navigate = useNavigate();
@@ -34,12 +31,13 @@ const UserRoute = () => {
             <Route path="/documents/:slug" element={<DetailDocument />} />
             <Route path="/documents" element={<ListDocument />} />
 
-            <Route path="/me/likes" element={<LikedDocument />} />
-            <Route path="/me/saves" element={<SavedDocument />} />
-            <Route path="/me/uploads" element={<UploadedDocument />} />
-            <Route path="/me/recents" element={<RecentDocument />} />
-            <Route path="/me/collections" element={<MyCollections />} />
-            <Route path="/me/reviews" element={<MyReviews />} />
+            <Route path="/me/my-liked-documents" element={<LikedDocument />} />
+            <Route path="/me/my-saved-documents" element={<SavedDocument />} />
+            <Route path="/me/my-shared-documents" element={<UploadedDocument />} />
+            <Route path="/me/my-reading" element={<RecentDocument />} />
+            <Route path="/me/my-liked-collections" element={<LikedCollection />} />
+            <Route path="/me/my-created-collections" element={<MyCollections />} />
+            <Route path="/me/my-reviews" element={<MyReviews />} />
             <Route path="/me" element={<StudentProfile />} />
 
             <Route path="/search/:searchQuery" element={<ListDocument />} />
@@ -70,11 +68,11 @@ export default UserRoute;
 // import { React } from "react";
 // import { Route, Routes } from "react-router-dom";
 
-// // import ReadDocument from "../document/document";
-// import Search from "../search/search";
-// import UserHome from "../user/home";
-// import UserProfile from "../user/profile";
-// import DocumentDetail from "../document/documentDetail";
+// // import ReadDocument from "@document/document";
+// import Search from "@search/search";
+// import UserHome from "@user/home";
+// import UserProfile from "@user/profile";
+// import DocumentDetail from "@document/documentDetail";
 
 // const UserRoute = () => {
 //     return (

@@ -18,10 +18,11 @@ const MyCollections = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [openCollectionModal, setOpenCollectionModal] = useState(false);
     const [triggerModal, setTriggerModal] = useState(0);
+    const [search, setSearch] = useState("");
 
     useEffect(() => {
         getCollections(currentPage);
-    }, [currentPage]);
+    }, [currentPage, search]);
 
     const handleAdd = () => {
         setOpenCollectionModal(true);
@@ -38,6 +39,7 @@ const MyCollections = () => {
                 params: {
                     page: page - 1,
                     size: 8,
+                    s: search
                 },
             });
 
@@ -63,6 +65,27 @@ const MyCollections = () => {
                 <div className="rounded-lg bg-white py-8 px-8 ">
                     <div className="mb-5 flex items-center justify-between">
                         <p className="text-2xl font-medium text-green-400">Danh sách bộ sưu tập của bạn</p>
+
+                        <div className="relative rounded-full ml-auto w-1/4">
+                            <input
+                                type="text"
+                                id="list-search"
+                                className="text-sm text-black block w-full p-3 ps-5 border border-gray-300 bg-white focus:ring-0 focus:border-green-400 rounded-full"
+                                placeholder="Tìm kiếm"
+                                onChange={(e) => {
+                                    setSearch(e.target.value);
+                                    setCurrentPage(1);
+                                }}
+                                value={search}
+                                required
+                            />
+
+                            <div className="absolute inset-y-0 end-0 flex items-center pe-5 cursor-pointer rounded-full">
+                                <svg className="w-4 h-4 text-green-400 hover:text-green-200 focus:text-green-200 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                </svg>
+                            </div>
+                        </div>
 
                         <div className="bg-white rounded-full cursor-pointer hover:bg-gray-100 p-2 transition ease-in-out transform active:scale-110" onClick={handleAdd}>
                             <RiAddFill className="h-10 w-10 text-gray-800" />
