@@ -5,7 +5,7 @@ import usePrivateAxios from "@api/usePrivateAxios";
 import ActionButton from "@components/management/action-button/ActionButton";
 import SelectFilter from "@components/management/select/SelectFilter";
 import Table from "@components/management/table/Table";
-import PageHead from "components/shared/head/PageHead";
+import PageHead from "@components/shared/head/PageHead";
 import { Button, Modal, Pagination, Spinner } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { HiDocumentRemove } from "react-icons/hi";
@@ -35,7 +35,7 @@ const Posts = () => {
 
     const renderBody = (item, index) => (
         <tr key={index} className="cursor-pointer" onClick={() => navigate(`/admin/posts/${item.postId}`)}>
-            <td className="w-1/12 text-center font-bold">{(currentPage - 1) * 2 + index + 1}</td>
+            <td className="w-1/12 text-center font-bold">{(currentPage - 1) * 10 + index + 1}</td>
             <td className="w-4/12 text-justify">{item.title}</td>
             <td className="w-2/12 text-center">{item.subsection && item.subsection.subName}</td>
             <td className="w-2/12 text-center">
@@ -235,7 +235,7 @@ const Posts = () => {
 
     return (
         <>
-            <PageHead title="Quản lý bài đăng - Admin" description="Quản lý bài đăng - learniverse & shariverse" url={window.location.href} origin="forum" />
+            <PageHead title="Quản lý bài đăng - Admin - miniverse" description="Quản lý bài đăng - Admin - miniverse" url={window.location.href} />
 
             <div className="m-auto">
                 <div className="row">
@@ -252,7 +252,7 @@ const Posts = () => {
                             <div className="card__body flex items-end justify-between">
                                 <div className="flex space-x-5">
                                     <SelectFilter
-                                        selectName="Chuyên bài đăng"
+                                        selectName="Chuyên mục"
                                         options={subsectionList}
                                         selectedValue={subsection}
                                         onChangeHandler={(e) => {

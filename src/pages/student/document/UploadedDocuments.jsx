@@ -191,7 +191,7 @@ const UploadedDocument = () => {
 
     return (
         <>
-            <PageHead title="Tài liệu của tôi" description="Tài liệu của tôi - learniverse & shariverse" url={window.location.href} origin="lib" />
+            <PageHead title="Tài liệu của tôi - miniverse" description="Tài liệu của tôi - miniverse" url={window.location.href} />
 
             <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>
                 <Modal.Header />

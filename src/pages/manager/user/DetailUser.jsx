@@ -170,7 +170,7 @@ const ManagerDetailUser = () => {
 
     return (
         <div>
-            <PageHead title={`Người dùng ${user && user.lastName} ${user && user.firstName} - Quản lý`} description={`Người dùng ${user && user.lastName} ${user && user.firstName} - learniverse & shariverse`} url={window.location.href} origin="both" />
+            <PageHead title={`Người dùng ${user && user.lastName} ${user && user.firstName} - Quản lý - miniverse`} description={`Người dùng ${user && user.lastName} ${user && user.firstName} - Quản lý - miniverse`} url={window.location.href} />
 
             <div className="flex flex-wrap gap-2 mb-3">
                 <Button onClick={() => navigate(-1)}>

@@ -1,6 +1,6 @@
 import { getADocument } from "@api/main/documentAPI";
 import usePrivateAxios from "@api/usePrivateAxios";
-import PageHead from "components/shared/head/PageHead";
+import PageHead from "@components/shared/head/PageHead";
 import { Button, Rating } from "flowbite-react";
 import moment from "moment/moment";
 import { useEffect, useState } from "react";
@@ -35,7 +35,7 @@ const DetailDocument = () => {
 
     return (
         <div>
-            <PageHead title={`${document && document.docName} - Admin`} description={`${document && document.docIntroduction} - learniverse & shariverse`} imageUrl={document && document.thumbnail} url={window.location.href} origin="lib" />
+            <PageHead title={`${document && document.docName} - Admin - miniverse`} description={`${document && document.docIntroduction} - Admin - miniverse`} imageUrl={document && document.thumbnail} url={window.location.href} />
 
             <div className="flex flex-wrap gap-2 mb-3">
                 <Button onClick={() => navigate(-1)}>

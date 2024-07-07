@@ -181,7 +181,7 @@ const ManagerPendingDocuments = () => {
 
     return (
         <div>
-            <PageHead title="Duyệt tài liệu - Quản lý" description="Duyệt tài liệu - learniverse & shariverse" url={window.location.href} origin="lib" />
+            <PageHead title="Duyệt tài liệu - Quản lý - miniverse" description="Duyệt tài liệu - Quản lý - miniverse" url={window.location.href} />
 
             <div className="row">
                 <div className="px-[15px]">

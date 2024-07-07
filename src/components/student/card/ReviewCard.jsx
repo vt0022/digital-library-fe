@@ -8,16 +8,26 @@ import { PiWarningCircleBold } from "react-icons/pi";
 import { Link } from "react-router-dom";
 import StarRating from "../rating/StarRating";
 import Review from "../review/Review";
+import { Bounce, toast } from "react-toastify";
+
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const ReviewCard = (props) => {
-    const { review, refreshList, onEditSuccess, onEditFailure, onDeleteSuccess, onDeleteFailure, onOpenEditSection, onHideEditSection, openEditSection } = props;
+    const { review, refreshList } = props;
 
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-
-    const cancel = () => {
-        onHideEditSection();
-    };
+    const [openReviewSection, setOpenReviewSection] = useState(false);
 
     const deleteReview = async () => {
         setIsLoading(true);
@@ -26,26 +36,22 @@ const ReviewCard = (props) => {
             setIsLoading(false);
             setOpenDeleteModal(false);
             if (response.status === 200) {
-                onDeleteSuccess();
+                    toast.success(<p className="pr-2">Xoá đánh giá thành công!</p>, toastOptions);
                 refreshList();
             } else {
-                onDeleteFailure();
+                    toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
             }
         } catch (error) {
             console.log(error);
         }
     };
 
-    const onEditReviewSuccess = () => {
-        onEditSuccess();
-    };
-
-    const onEditReviewFailure = () => {
-        onEditFailure();
-    };
+    const cancelEdit = () => {
+        setOpenReviewSection(false);
+    }
 
     return (
-        <div className="flex p-5 rounded-lg shadow-lg border">
+        <div className="flex p-5 rounded-lg shadow-lg border hover:shadow-lg hover:shadow-emerald-200">
             <div className="w-2/12 h-fit rounded-lg shadow-lg border mr-5">
                 <img src={review && review.document && review.document.thumbnail} className="aspect-square w-full object-cover m-auto rounded-lg" alt={review.document && review.document.docName} />
             </div>
@@ -65,7 +71,7 @@ const ReviewCard = (props) => {
                     {review && !review.updatedAt && <p className="text-xs text-gray-600">{moment(review && review.createdAt).format("DD-MM-yyyy HH:mm")}</p>}
                 </div>
 
-                {openEditSection && <Review reviewId={review && review.reviewId} oldStar={review && review.star} oldContent={review && review.content} isEditted={true} refreshList={refreshList} cancel={cancel} onSuccess={onEditReviewSuccess} onFailure={onEditReviewFailure} />}
+                {openReviewSection && <Review reviewId={review && review.reviewId} oldStar={review && review.star} oldContent={review && review.content} isEditted={true} refreshList={refreshList} cancelEdit={cancelEdit} />}
 
                 {review.timesLeft === 0 && <p className="text-xs text-red-500 mt-3">Bạn đã hết lượt chỉnh sửa đánh giá này!</p>}
             </div>
@@ -76,8 +82,8 @@ const ReviewCard = (props) => {
                         <HiOutlinePencilAlt
                             className="w-7 h-7 text-yellow-500 hover:text-yellow-300 active:text-yellow-200 cursor-pointer"
                             onClick={() => {
-                                if (openEditSection) onHideEditSection();
-                                else onOpenEditSection();
+                                if (openReviewSection) setOpenReviewSection(false);
+                                else setOpenReviewSection(true);
                             }}
                         />
                     </Tooltip>

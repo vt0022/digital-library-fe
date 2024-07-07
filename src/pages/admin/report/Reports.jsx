@@ -5,8 +5,8 @@ import ActionButton from "@components/management/action-button/ActionButton";
 import ReportModal from "@components/management/admin/modal/report/ReportModal";
 import SelectFilter from "@components/management/select/SelectFilter";
 import Table from "@components/management/table/Table";
+import PageHead from "@components/shared/head/PageHead";
 import DetailReportModal from "components/management/admin/modal/report/DetailReportModal";
-import PageHead from "components/shared/head/PageHead";
 import { Button, Modal, Pagination, Spinner } from "flowbite-react";
 import moment from "moment";
 import { useEffect, useState } from "react";
@@ -296,7 +296,7 @@ const Reports = () => {
 
     return (
         <>
-            <PageHead title="Quản lý báo cáo - Admin" description="Quản lý báo cáo - learniverse & shariverse" url={window.location.href} origin="forum" />
+            <PageHead title="Quản lý báo cáo - Admin - miniverse" description="Quản lý báo cáo - Admin - miniverse" url={window.location.href} />
 
             <div className="w-full m-auto">
                 <div className="row">

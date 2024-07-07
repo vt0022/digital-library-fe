@@ -4,24 +4,24 @@ import ActionButton from "@components/management/action-button/ActionButton";
 import SubsectionModal from "@components/management/admin/modal/subsection/SubsectionModal";
 import SelectFilter from "@components/management/select/SelectFilter";
 import Table from "@components/management/table/Table";
-import PageHead from "components/shared/head/PageHead";
+import PageHead from "@components/shared/head/PageHead";
 import { Badge, Button, Modal, Pagination, Spinner, Tooltip } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { HiCheck, HiDocumentRemove, HiX } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
 
-    const toastOptions = {
-        position: "bottom-center",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-    };
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const Subsections = () => {
     const disabledStatus = [
@@ -248,7 +248,7 @@ const Subsections = () => {
 
     return (
         <>
-            <PageHead title="Quản lý chuyên mục - Admin" description="Quản lý chuyên mục - learniverse & shariverse" url={window.location.href} origin="forum" />
+            <PageHead title="Quản lý chuyên mục - Admin - miniverse" description="Quản lý chuyên mục - Admin - miniverse" url={window.location.href} />
 
             <div className="w-full m-auto">
                 <div className="row">

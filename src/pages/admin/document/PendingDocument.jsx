@@ -4,7 +4,7 @@ import usePrivateAxios from "@api/usePrivateAxios";
 import ActionButton from "@components/management/action-button/ActionButton";
 import SelectFilter from "@components/management/select/SelectFilter";
 import Table from "@components/management/table/Table";
-import PageHead from "components/shared/head/PageHead";
+import PageHead from "@components/shared/head/PageHead";
 import { Badge, Button, Label, Modal, Pagination, Spinner, TextInput } from "flowbite-react";
 import moment from "moment";
 import { useEffect, useState } from "react";
@@ -209,7 +209,7 @@ const PendingDocuments = () => {
 
     return (
         <div>
-            <PageHead title="Duyệt tài liệu - Admin" description="Duyệt tài liệu - learniverse & shariverse" url={window.location.href} origin="lib" />
+            <PageHead title="Duyệt tài liệu - Admin - miniverse" description="Duyệt tài liệu - Admin - miniverse" url={window.location.href} />
 
             <div className="row">
                 <div className="px-[15px]">

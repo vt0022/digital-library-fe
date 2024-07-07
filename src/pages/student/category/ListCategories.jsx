@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import KeyCard from "@components/student/card/KeyCard";
-import categoryImage from "@assets/images/category.webp";
 import { getAccessibleCategories } from "@api/main/categoryAPI";
-import PageHead from "components/shared/head/PageHead";
+import categoryImage from "@assets/images/category.webp";
+import PageHead from "@components/shared/head/PageHead";
+import KeyCard from "@components/student/card/KeyCard";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ListCategories = () => {
-
     const navigate = useNavigate();
-    
+
     const [categoryList, setCategoryList] = useState([]);
 
     useEffect(() => {
@@ -33,7 +32,7 @@ const ListCategories = () => {
 
     return (
         <>
-            <PageHead title="Danh mục" description="Danh mục - learniverse & shariverse" url={window.location.href} origin="lib" />
+            <PageHead title="Danh mục - miniverse" description="Danh mục - miniverse" url={window.location.href} />
 
             <div className="h-full w-full overflow-auto">
                 <div className="px-[10%]">

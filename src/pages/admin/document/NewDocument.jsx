@@ -8,7 +8,7 @@ import { getAccessibleFields } from "../../../api/main/fieldAPI";
 import { getAccessibleOrganizations } from "../../../api/main/organizationAPI";
 import usePrivateAxios from "../../../api/usePrivateAxios";
 
-import PageHead from "components/shared/head/PageHead";
+import PageHead from "@components/shared/head/PageHead";
 import { Button } from "flowbite-react";
 import { HiChevronLeft, HiChevronUp } from "react-icons/hi";
 import { Bounce, toast } from "react-toastify";
@@ -220,7 +220,7 @@ const NewDocument = () => {
 
     return (
         <>
-            <PageHead title="Tải tài liệu mới - Admin" description="Tải tài liệu mới - learniverse & shariverse" url={window.location.href} origin="lib" />
+            <PageHead title="Tải tài liệu mới - Admin - miniverse" description="Tải tài liệu mới - Admin - miniverse" url={window.location.href} />
 
             <div className="grid place-items-center">
                 <h1 className="mb-10 text-3xl font-bold dark:text-white ">Tài liệu mới</h1>

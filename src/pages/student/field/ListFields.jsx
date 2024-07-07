@@ -32,7 +32,7 @@ const ListFields = () => {
 
     return (
         <>
-            <PageHead title="Lĩnh vực" description="Lĩnh vực - learniverse & shariverse" url={window.location.href} origin="lib" />
+            <PageHead title="Lĩnh vực - miniverse" description="Lĩnh vực - miniverse" url={window.location.href} />
 
             <div className="h-full w-full overflow-auto">
                 <div className="px-[10%]">

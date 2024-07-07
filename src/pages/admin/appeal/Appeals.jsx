@@ -5,8 +5,8 @@ import reportReasons from "@assets/json-data/report_reasons.json";
 import ActionButton from "@components/management/action-button/ActionButton";
 import SelectFilter from "@components/management/select/SelectFilter";
 import Table from "@components/management/table/Table";
+import PageHead from "@components/shared/head/PageHead";
 import DetailAppealModal from "components/management/admin/modal/report/DetailAppealModal";
-import PageHead from "components/shared/head/PageHead";
 import { Button, Modal, Pagination, Spinner } from "flowbite-react";
 import moment from "moment";
 import { useEffect, useState } from "react";
@@ -295,7 +295,7 @@ const Appeals = () => {
 
     return (
         <>
-            <PageHead title="Quản lý khiếu nại - Admin" description="Quản lý khiếu nại - learniverse & shariverse" url={window.location.href} origin="forum" />
+            <PageHead title="Quản lý khiếu nại - Admin - miniverse" description="Quản lý khiếu nại - Admin - miniverse" url={window.location.href} />
 
             <div className="w-full m-auto">
                 <div className="row">

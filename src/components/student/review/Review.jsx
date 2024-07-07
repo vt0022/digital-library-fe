@@ -1,11 +1,24 @@
+import { editAReview, postAReview } from "@api/main/reviewAPI";
+import ClickableStarRating from "@components/student/rating/ClickableStarRating";
 import { Button, Label, Textarea } from "flowbite-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { editAReview, postAReview } from "../../../api/main/reviewAPI";
-import ClickableStarRating from "./../rating/ClickableStarRating";
+import { Bounce, toast } from "react-toastify";
+
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const Review = (props) => {
-    const { docId, reviewId, action, oldStar, oldContent, isEditted, refreshList, cancel, onSuccess, onFailure } = props;
+    const { docId, reviewId, refreshDoc, oldStar, oldContent, isEditted, refreshList, cancelEdit } = props;
     const navigate = useNavigate();
 
     const [star, setStar] = useState(oldStar ? oldStar : 0);
@@ -32,19 +45,18 @@ const Review = (props) => {
                 setIsLoading(false);
 
                 if (response.status === 200) {
-                    onSuccess();
-
-                    setStar(0);
-                    setContent("");
-
                     if (isEditted) {
-                        cancel();
+                        toast.success(<p className="pr-2">Đánh giá của bạn sẽ được duyệt lại!</p>, toastOptions);
+                        cancelEdit();
                         refreshList();
                     } else {
-                        action();
+                        toast.success(<p className="pr-2">Đánh giá của bạn sẽ được duyệt trước khi hiển thị!</p>, toastOptions);
+                        setStar(0);
+                        setContent("");
+                        refreshDoc();
                     }
                 } else {
-                    onFailure();
+                    toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
                 }
             } catch (error) {
                 navigate("/error-500");
@@ -87,7 +99,7 @@ const Review = (props) => {
                     )}
 
                     {isEditted && (
-                        <Button pill className="bg-red-500 text-white enabled:hover:bg-red-400 enabled:active:bg-red-450 focus:border focus:ring-0 focus:bg-red-450 border border-solid px-3" onClick={cancel} disabled={isLoading} isProcessing={isLoading}>
+                        <Button pill className="bg-red-500 text-white enabled:hover:bg-red-400 enabled:active:bg-red-450 focus:border focus:ring-0 focus:bg-red-450 border border-solid px-3" onClick={cancelEdit} disabled={isLoading} isProcessing={isLoading}>
                             <span className="text-base">Huỷ bỏ</span>
                         </Button>
                     )}

@@ -193,7 +193,7 @@ const ManagerNewDocument = () => {
 
     return (
         <>
-            <PageHead title="Tải tài liệu mới - Quản lý" description="Tải tài liệu mới - learniverse & shariverse" url={window.location.href} origin="lib" />
+            <PageHead title="Tải tài liệu mới - Quản lý - miniverse" description="Tải tài liệu mới - Quản lý - miniverse" url={window.location.href} />
 
             <div className="grid place-items-center">
                 <h1 className="mb-10 text-3xl font-bold dark:text-white ">Tài liệu mới</h1>

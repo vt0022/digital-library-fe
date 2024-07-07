@@ -131,7 +131,7 @@ const DetailCollection = () => {
 
     return (
         <>
-            <PageHead title={"Bộ sưu tập " + (collection && collection.collectionName)} description={"Bộ sưu tập " + (collection && collection.collectionName) + " - learniverse & shariverse"} url={window.location.href} origin="lib" />
+            <PageHead title={"Bộ sưu tập " + (collection && collection.collectionName) + " - miniverse"} description={"Bộ sưu tập " + (collection && collection.collectionName) + " - miniverse"} url={window.location.href} />
 
             <div className="p-10 flex flex-col items-center">
                 <h1 className="text-5xl font-medium text-center">{collection && collection.collectionName}</h1>

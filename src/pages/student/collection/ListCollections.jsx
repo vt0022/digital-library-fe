@@ -108,7 +108,7 @@ const ListCollections = () => {
 
     return (
         <>
-            <PageHead title="Bộ sưu tập" description="Bộ sưu tập - learniverse & shariverse" url={window.location.href} origin="lib" />
+            <PageHead title="Bộ sưu tập - miniverse" description="Bộ sưu tập - miniverse" url={window.location.href} />
 
             <div className="px-10 pt-5 pb-10">
                 <img src={collectionImage} alt="Ảnh" width="40%" height="40%" className="m-auto" />

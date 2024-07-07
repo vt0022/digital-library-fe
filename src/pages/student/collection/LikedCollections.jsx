@@ -132,7 +132,7 @@ const LikedCollection = () => {
 
     return (
         <>
-            <PageHead title="Danh sách đã thích" description="Danh sách đã thích - learniverse & shariverse" url={window.location.href} origin="lib" />
+            <PageHead title="Danh sách đã thích - miniverse" description="Danh sách đã thích - miniverse" url={window.location.href} />
 
             <div className="flex-1 p-4 h-full">
                 <div className="rounded-lg bg-white py-8 px-8 ">
@@ -172,7 +172,7 @@ const LikedCollection = () => {
 
                     <div className="grid grid-cols-4 gap-8">
                         {collectionList.map((collection, index) => (
-                            <CollectionCard collection={collection} key={index} like="true" handleUnlike={handleUnlike}/>
+                            <CollectionCard collection={collection} key={index} like="true" handleUnlike={handleUnlike} />
                         ))}
                     </div>
 

@@ -102,7 +102,7 @@ const UserWall = () => {
 
     return (
         <div>
-            <PageHead title={user && user.lastName + " " + user && user.firstName} description={user && user.lastName + " " + user && user.firstName + " - learniverse & shariverse"} url={window.location.href} origin="both" />
+            <PageHead title={user && user.lastName + " " + user && user.firstName + " - miniverse"} description={user && user.lastName + " " + user && user.firstName + " - miniverse"} url={window.location.href} />
 
             <div className="p-4 min-h-screen h-full">
                 <div className="flex w-full ">

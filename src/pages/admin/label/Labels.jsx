@@ -4,7 +4,7 @@ import ActionButton from "@components/management/action-button/ActionButton";
 import LabelModal from "@components/management/admin/modal/label/LabelModal";
 import SelectFilter from "@components/management/select/SelectFilter";
 import Table from "@components/management/table/Table";
-import PageHead from "components/shared/head/PageHead";
+import PageHead from "@components/shared/head/PageHead";
 import { Badge, Button, Modal, Pagination, Spinner, Tooltip } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { HiCheck, HiDocumentRemove, HiX } from "react-icons/hi";
@@ -210,7 +210,7 @@ const Labels = () => {
 
     return (
         <>
-            <PageHead title="Quản lý nhãn - Admin" description="Quản lý nhãn - learniverse & shariverse" url={window.location.href} origin="forum" />
+            <PageHead title="Quản lý nhãn - Admin - miniverse" description="Quản lý nhãn - Admin - miniverse" url={window.location.href} />
 
             <div className="w-4/5 m-auto">
                 <div className="row">

@@ -4,7 +4,7 @@ import ActionButton from "@components/management/action-button/ActionButton";
 import OrganizationModal from "@components/management/admin/modal/organization/OrganizationModal";
 import SelectFilter from "@components/management/select/SelectFilter";
 import Table from "@components/management/table/Table";
-import PageHead from "components/shared/head/PageHead";
+import PageHead from "@components/shared/head/PageHead";
 import { Badge, Button, Modal, Pagination, Spinner, Tooltip } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { HiCheck, HiDocumentRemove, HiX } from "react-icons/hi";
@@ -217,7 +217,7 @@ const Organizations = () => {
 
     return (
         <>
-            <PageHead title="Quản lý trường - Admin" description="Quản lý trường - learniverse & shariverse" url={window.location.href} origin="lib" />
+            <PageHead title="Quản lý trường - Admin - miniverse" description="Quản lý trường - Admin - miniverse" url={window.location.href} />
 
             <div className="w-4/5 m-auto">
                 <div className="row">

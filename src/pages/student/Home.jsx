@@ -22,7 +22,7 @@ const Home = () => {
 
     return (
         <>
-            <PageHead title="Trang chủ" description="Trang chủ - learniverse & shariverse" url={window.location.href} origin="lib" />
+            <PageHead title="Trang chủ - miniverse" description="Trang chủ - miniverse" url={window.location.href} />
 
             <div style={{ backgroundImage: `url(${bg})` }} className="flex flex-col bg-cover bg-center">
                 <div className="sticky top-0 bg-transparent w-full z-40">
@@ -37,7 +37,7 @@ const Home = () => {
                             </h1>
                         </div>
 
-                        <div className="text-center typewriter w-fit">
+                        <div className="text-center w-fit">
                             <p className="mt-5 text-lg font-normal text-white">Nơi bạn có thể bắt đầu hành trình tìm kiếm kiến thức</p>
                         </div>
 
@@ -95,74 +95,3 @@ const Home = () => {
 
 export default Home;
 
-{
-    /* <div className="mt-10 text-center">
-                    <p className="text-base font-bold dark:text-gray-400">
-                        Hoặc <br /> duyệt tìm theo
-                    </p>
-                </div> */
-}
-
-{
-    /* <div className="grid place-items-center w-3/4 mt-5">
-                    <div className="mb-4 border-b border-gray-200 dark:border-gray-700 ">
-                        <ul className="flex flex-wrap -mb-px text-xl font-medium text-center" id="default-tab" data-tabs-toggle="#default-tab-content" role="tablist">
-                            <li className="me-2" role="presentation">
-                                <button className="inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg gap-2" id="organization-tab" data-tabs-target="#organization" type="button" role="tab" aria-controls="organization" aria-selected="false">
-                                    <HiCollection />
-                                    Danh mục
-                                </button>
-                            </li>
-
-                            <li className="me-2" role="presentation">
-                                <button
-                                    className="inline-flex items-center justify-center p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 gap-2"
-                                    id="category-tab"
-                                    data-tabs-target="#category"
-                                    type="button"
-                                    role="tab"
-                                    aria-controls="category"
-                                    aria-selected="false">
-                                    <HiAcademicCap />
-                                    Trường học
-                                </button>
-                            </li>
-
-                            <li className="me-2" role="presentation">
-                                <button
-                                    className="inline-flex items-center justify-center p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 gap-2"
-                                    id="field-tab"
-                                    data-tabs-target="#field"
-                                    type="button"
-                                    role="tab"
-                                    aria-controls="field"
-                                    aria-selected="false">
-                                    <HiColorSwatch />
-                                    Lĩnh vực
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div id="default-tab-content">
-                        <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="organization" role="tabpanel" aria-labelledby="organization-tab">
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
-                                This is some placeholder content the <strong className="font-medium text-gray-800 dark:text-white">Profile tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the
-                                content visibility and styling.
-                            </p>
-                        </div>
-                        <div className="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="category" role="tabpanel" aria-labelledby="category-tab">
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
-                                This is some placeholder content the <strong className="font-medium text-gray-800 dark:text-white">Dashboard tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the
-                                content visibility and styling.
-                            </p>
-                        </div>
-                        <div className="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="field" role="tabpanel" aria-labelledby="field-tab">
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
-                                This is some placeholder content the <strong className="font-medium text-gray-800 dark:text-white">Settings tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the
-                                content visibility and styling.
-                            </p>
-                        </div>
-                    </div>
-                </div> */
-}

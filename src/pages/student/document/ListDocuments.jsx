@@ -179,7 +179,7 @@ const ListDocument = () => {
 
     return (
         <>
-            <PageHead title="Tài liệu" description="Tài liệu - learniverse & shariverse" url={window.location.href} origin="lib" />
+            <PageHead title="Tài liệu - miniverse" description="Tài liệu - miniverse" url={window.location.href} />
 
             <div className="flex-1 p-4 h-full">
                 <div className="rounded-lg bg-white py-5 px-10 w-full">

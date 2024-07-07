@@ -1,9 +1,21 @@
 import { addDocumentToCollection, getMyCollections } from "@api/main/collectionAPI";
 import usePrivateAxios from "@api/usePrivateAxios";
 import { useEffect, useState } from "react";
-import { GiPadlock } from "react-icons/gi";
-import { Link, useNavigate } from "react-router-dom";
 import { RiChatPrivateFill } from "react-icons/ri";
+import { Link, useNavigate } from "react-router-dom";
+import { Bounce, toast } from "react-toastify";
+
+const toastOptions = {
+    position: "bottom-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+};
 
 const CollectionListModal = (props) => {
     const navigate = useNavigate();
@@ -39,8 +51,11 @@ const CollectionListModal = (props) => {
         try {
             const response = await addDocumentToCollection(collectionId, docId);
 
-            if (response.status === 200) onSuccess();
-            else onFailure();
+            if (response.status === 200) {
+                toast.success(<p className="pr-2">Thêm vào bộ sưu tập thành công!</p>, toastOptions);
+            } else {
+                toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
+            }
 
             onClose();
         } catch (error) {
@@ -69,9 +84,10 @@ const CollectionListModal = (props) => {
 
                 {collectionList.length === 0 && (
                     <div className="flex w-fit m-auto text-sm mt-5 mb-3">
-                        <p className="text-gray-600 text-center">Bạn chưa có bộ sưu tập nào.</p>
-                        {" "}
-                        <Link to="/me/my-created-collections" className="text-green-500 hover:!text-green-400">Tạo ngay!</Link>
+                        <p className="text-gray-600 text-center">Bạn chưa có bộ sưu tập nào.</p>{" "}
+                        <Link to="/me/my-created-collections" className="text-green-500 hover:!text-green-400">
+                            Tạo ngay!
+                        </Link>
                     </div>
                 )}
             </div>

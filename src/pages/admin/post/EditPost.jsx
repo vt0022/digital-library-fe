@@ -242,7 +242,7 @@ const EditPost = () => {
 
     return (
         <>
-            <PageHead title={`Chỉnh sửa bài đăng - ${title} - Admin`} description={`${content.replace(/(<([^>]+)>)/gi, "")} - learniverse & shariverse`} url={window.location.href} origin="forum" />
+            <PageHead title={`Chỉnh sửa bài đăng - ${title} - Admin - miniverse`} description={`${content.replace(/(<([^>]+)>)/gi, "")} - Admin - miniverse`} url={window.location.href} />
 
             <div className="w-5/6 m-auto min-h-screen h-max mt-5 p-5">
                 <div className="items-center mb-5 w-full border-b border-black py-2">

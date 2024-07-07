@@ -214,7 +214,7 @@ const Fields = () => {
 
     return (
         <>
-            <PageHead title="Quản lý lĩnh vực - Admin" description="Quản lý lĩnh vực - learniverse & shariverse" url={window.location.href} origin="lib" />
+            <PageHead title="Quản lý lĩnh vực - Admin - miniverse" description="Quản lý lĩnh vực - Admin - miniverse" url={window.location.href}/>
 
             <div className="w-4/5 m-auto">
                 <div className="row">

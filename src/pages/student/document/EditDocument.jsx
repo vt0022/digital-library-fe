@@ -231,7 +231,7 @@ const StudentEditDocument = () => {
 
     return (
         <>
-            <PageHead title={"Chỉnh sửa tài liệu - " + document && document.docName} description={"Chỉnh sửa tài liệu - " + document && document.docIntroduction} imageUrl={document && document.thumbnail} url={window.location.href} origin="lib" />
+            <PageHead title={"Chỉnh sửa tài liệu - " + document && document.docName + " - miniverse"} description={"Chỉnh sửa tài liệu - " + document && document.docIntroduction + " - miniverse"} imageUrl={document && document.thumbnail} url={window.location.href} />
 
             <div className="p-4 overflow-auto">
                 <div className="w-full grid place-items-center ">

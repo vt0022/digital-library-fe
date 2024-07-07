@@ -2,6 +2,7 @@ import { getBadgesOfUser } from "@api/main/badgeAPI";
 import { getPostsOfUser } from "@api/main/postAPI";
 import { getViewableRepliesOfUser } from "@api/main/replyAPI";
 import { getAUser } from "@api/main/userAPI";
+import PageHead from "@components/shared/head/PageHead";
 import { initFlowbite } from "flowbite";
 import { Avatar, Button } from "flowbite-react";
 import moment from "moment";
@@ -14,7 +15,6 @@ import { LuBadgeCheck } from "react-icons/lu";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "react-tabs/style/react-tabs.css";
 import "./user.css";
-import PageHead from "components/shared/head/PageHead";
 
 const Wall = () => {
     initFlowbite();
@@ -114,7 +114,7 @@ const Wall = () => {
 
     return (
         <>
-            <PageHead title={user && user.lastName + " " + user && user.firstName} description={user && user.lastName + " " + user && user.firstName + " - learniverse & shariverse"} url={window.location.href} origin="forum" />
+            <PageHead title={user && user.lastName + " " + user && user.firstName + " - miniverse"} description={user && user.lastName + " " + user && user.firstName + " - miniverse"} url={window.location.href} />
 
             <div className="min-h-screen h-max p-5">
                 <div className="bg-white p-5 rounded-lg flex">

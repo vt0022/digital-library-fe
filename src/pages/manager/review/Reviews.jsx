@@ -2,7 +2,7 @@ import { approveAReview, deleteAReview, getReviewsOfOrganization } from "@api/ma
 import usePrivateAxios from "@api/usePrivateAxios";
 import ActionButton from "@components/management/action-button/ActionButton";
 import Table from "@components/management/table/Table";
-import PageHead from "components/shared/head/PageHead";
+import PageHead from "@components/shared/head/PageHead";
 import { Button, Label, Modal, Pagination, Spinner, TextInput } from "flowbite-react";
 import moment from "moment";
 import { useEffect, useState } from "react";
@@ -193,7 +193,7 @@ const Reviews = () => {
 
     return (
         <div>
-            <PageHead title="Quản lý đánh giá - Quản lý" description="Quản lý đánh giá - learniverse & shariverse" url={window.location.href} origin="lib" />
+            <PageHead title="Quản lý đánh giá - Quản lý - miniverse" description="Quản lý đánh giá - lQuản lsy - miniverse" url={window.location.href} />
 
             <div className="row">
                 <div className="px-[15px]">
@@ -202,19 +202,19 @@ const Reviews = () => {
 
                 <div className="col-12">
                     <div className="rounded-[15px] p-3 bg-white mb-5 flex space-x-5 text-base font-medium text-center">
-                        <div className={`w-28 h-fit p-2 rounded-lg cursor-pointer ${verifiedStatus === 10 ? selected : unselected}`} onClick={() => setVerifiedStatus(10)}>
+                        <div className={`h-fit p-2 rounded-lg cursor-pointer ${verifiedStatus === 10 ? selected : unselected}`} onClick={() => setVerifiedStatus(10)}>
                             Tất cả
                         </div>
 
-                        <div className={`w-28 h-fit p-2 rounded-lg cursor-pointer ${verifiedStatus === 1 ? selected : unselected}`} onClick={() => setVerifiedStatus(1)}>
+                        <div className={`h-fit p-2 rounded-lg cursor-pointer ${verifiedStatus === 1 ? selected : unselected}`} onClick={() => setVerifiedStatus(1)}>
                             Đã duyệt
                         </div>
 
-                        <div className={`w-28 h-fit p-2 rounded-lg cursor-pointer ${verifiedStatus === 0 ? selected : unselected}`} onClick={() => setVerifiedStatus(0)}>
+                        <div className={`h-fit p-2 rounded-lg cursor-pointer ${verifiedStatus === 0 ? selected : unselected}`} onClick={() => setVerifiedStatus(0)}>
                             Chưa duyệt
                         </div>
 
-                        <div className={`w-28 h-fit p-2 rounded-lg cursor-pointer ${verifiedStatus === -1 ? selected : unselected}`} onClick={() => setVerifiedStatus(-1)}>
+                        <div className={`h-fit p-2 rounded-lg cursor-pointer ${verifiedStatus === -1 ? selected : unselected}`} onClick={() => setVerifiedStatus(-1)}>
                             Từ chối
                         </div>
                     </div>

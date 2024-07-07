@@ -132,7 +132,7 @@ const LikedDocument = () => {
 
     return (
         <>
-            <PageHead title="Danh sách yêu thích" description="Danh sách yêu thích - learniverse & shariverse" url={window.location.href} origin="lib" />
+            <PageHead title="Danh sách yêu thích - miniverse" description="Danh sách yêu thích - miniverse" url={window.location.href} />
 
             <div className="flex-1 p-4 h-full">
                 <div className="rounded-lg bg-white py-8 px-8 ">

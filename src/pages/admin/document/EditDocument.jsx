@@ -8,7 +8,7 @@ import { getAccessibleFields } from "../../../api/main/fieldAPI";
 import { getAccessibleOrganizations } from "../../../api/main/organizationAPI";
 import usePrivateAxios from "../../../api/usePrivateAxios";
 
-import PageHead from "components/shared/head/PageHead";
+import PageHead from "@components/shared/head/PageHead";
 import { Button } from "flowbite-react";
 import { HiAnnotation, HiChevronLeft, HiChevronUp, HiOutlineCloudUpload } from "react-icons/hi";
 import { Bounce, toast } from "react-toastify";
@@ -245,7 +245,7 @@ const EditDocument = () => {
 
     return (
         <>
-            <PageHead title={`Chỉnh sửa tài liệu - ${document && document.docName} - Admin`} description={`${document && document.docIntroduction} - learniverse & shariverse`} imageUrl={document && document.thumbnail} url={window.location.href} origin="lib" />
+            <PageHead title={`Chỉnh sửa tài liệu - ${document && document.docName} - Admin - miniverse`} description={`${document && document.docIntroduction} - Admin - miniverse`} imageUrl={document && document.thumbnail} url={window.location.href} />
 
             <div className="grid place-items-center">
                 <h1 className="mb-10 text-3xl font-bold dark:text-white ">Chỉnh sửa tài liệu</h1>

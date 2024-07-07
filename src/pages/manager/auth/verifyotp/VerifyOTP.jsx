@@ -1,7 +1,7 @@
 import { sendEmail, verify } from "@api/main/authAPI";
 import bg from "@assets/images/background.jpg";
+import PageHead from "@components/shared/head/PageHead";
 import Spinner from "@components/shared/spinner/Spinner";
-import PageHead from "components/shared/head/PageHead";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -169,7 +169,7 @@ const VerifyOTP = () => {
 
     return (
         <>
-            <PageHead title="Xác nhận OTP - Quản lý" description="Xác nhận OTP - learniverse & shariverse" url={window.location.href} origin="both" />
+            <PageHead title="Xác nhận OTP - Quản lý - miniverse" description="Xác nhận OTP - Quản lý - miniverse" url={window.location.href} />
 
             <div style={{ backgroundImage: `url(${bg})` }} className="flex flex-col h-screen bg-cover bg-center">
                 <div className="bg-transparent text-gray-900 flex justify-center items-center">

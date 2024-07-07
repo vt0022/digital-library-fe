@@ -1,14 +1,7 @@
 import { Helmet } from "react-helmet";
 import { HelmetProvider } from "react-helmet-async";
 
-const PageHead = ({ title, description, imageUrl, url, origin }) => {
-    if (origin === "forum") {
-        title = title + " - shariverse";
-    } else if (origin === "lib") {
-        title = title + " - learniverse";
-    } else {
-        title = title + " - learniverse & shariverse";
-    }
+const PageHead = ({ title, description, imageUrl, url}) => {
 
     return (
         <HelmetProvider>

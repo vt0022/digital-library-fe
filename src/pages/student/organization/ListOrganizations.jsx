@@ -34,7 +34,7 @@ const ListOrganizations = () => {
 
     return (
         <>
-            <PageHead title="Trường" description="Trường - learniverse & shariverse" url={window.location.href} origin="lib" />
+            <PageHead title="Trường - miniverse" description="Trường - miniverse" url={window.location.href} />
 
             <div className="h-full w-full overflow-auto">
                 <div className="px-[5%]">

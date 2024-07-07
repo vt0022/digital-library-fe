@@ -38,7 +38,7 @@ const RecentDocument = () => {
 
     return (
         <>
-            <PageHead title="Tài liệu gần đây" description="Tài liệu gần đây - learniverse & shariverse" url={window.location.href} origin="lib" />
+            <PageHead title="Tài liệu gần đây - miniverse" description="Tài liệu gần đây - miniverse" url={window.location.href} />
 
             <div className="flex-1 p-4 h-full">
                 <div className="rounded-lg bg-white py-8 px-8 ">

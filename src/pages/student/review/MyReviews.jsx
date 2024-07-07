@@ -28,26 +28,24 @@ const MyReviews = () => {
     const [verifiedStatus, setVerifiedStatus] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
-    const [openEditSection, setOpenEditSection] = useState(false);
 
-    const unselected = "border border-green-600 hover:bg-green-100";
-    const selected = "text-white bg-green-600 hover:bg-green-700";
+    const unselected = "border border-emerald-500 hover:bg-emerald-100";
+    const selected = "text-white bg-emerald-500 shadow-md shadow-emerald-500 hover:bg-emerald-400";
 
     useEffect(() => {
-        getReviews();
-        onHideEditSection();
+        getReviews(currentPage);
     }, [verifiedStatus, currentPage]);
 
     const onPageChange = (page) => {
         setCurrentPage(page);
     };
 
-    const getReviews = async () => {
+    const getReviews = async (page) => {
         try {
             const response = await getMyReviews({
                 params: {
                     status: verifiedStatus,
-                    page: currentPage - 1,
+                    page: page - 1,
                     size: 10,
                 },
             });
@@ -62,37 +60,13 @@ const MyReviews = () => {
     };
 
     const refreshList = () => {
-        getReviews();
-    };
-
-    const onEditReviewSuccess = () => {
-        toast.success(<p className="pr-2">Đánh giá của bạn sẽ được duyệt lại!</p>, toastOptions);
-    };
-
-    const onEditReviewFailure = () => {
-        toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
-    };
-
-    const onDeleteReviewSuccess = () => {
-        toast.success(<p className="pr-2">Xoá đánh giá thành công!</p>, toastOptions);
         setCurrentPage(1);
-    };
-
-    const onDeleteReviewFailure = () => {
-        toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
-    };
-
-    const onOpenEditSection = () => {
-        setOpenEditSection(true);
-    };
-
-    const onHideEditSection = () => {
-        setOpenEditSection(false);
+        getReviews(1);
     };
 
     return (
         <>
-            <PageHead title="Đánh giá của tôi" description="Đánh giá của tôi - learniverse & shariverse" url={window.location.href} origin="lib" />
+            <PageHead title="Đánh giá của tôi - miniverse" description="Đánh giá của tôi - miniverse" url={window.location.href} />
 
             <div className="flex-1 p-4 h-full">
                 <div className="w-5/6 rounded-lg bg-white py-8 px-8 m-auto">
@@ -101,19 +75,19 @@ const MyReviews = () => {
                     </div>
 
                     <div className="rounded-[15px] bg-white mb-5 flex space-x-5 text-sm font-medium text-center">
-                        <div className={`w-32 h-fit p-2 rounded-lg cursor-pointer ${verifiedStatus === 10 ? selected : unselected}`} onClick={() => setVerifiedStatus(10)}>
+                        <div className={`w-fit h-fit p-2 rounded-lg cursor-pointer ${verifiedStatus === 10 ? selected : unselected}`} onClick={() => setVerifiedStatus(10)}>
                             Tất cả {verifiedStatus === 10 && `(${reviewList.length})`}
                         </div>
 
-                        <div className={`w-32 h-fit p-2 rounded-lg cursor-pointer ${verifiedStatus === 1 ? selected : unselected}`} onClick={() => setVerifiedStatus(1)}>
+                        <div className={`w-fit h-fit p-2 rounded-lg cursor-pointer ${verifiedStatus === 1 ? selected : unselected}`} onClick={() => setVerifiedStatus(1)}>
                             Đã duyệt {verifiedStatus === 1 && `(${reviewList.length})`}
                         </div>
 
-                        <div className={`w-32 h-fit p-2 rounded-lg cursor-pointer ${verifiedStatus === 0 ? selected : unselected}`} onClick={() => setVerifiedStatus(0)}>
+                        <div className={`w-fit h-fit p-2 rounded-lg cursor-pointer ${verifiedStatus === 0 ? selected : unselected}`} onClick={() => setVerifiedStatus(0)}>
                             Chưa duyệt {verifiedStatus === 0 && `(${reviewList.length})`}
                         </div>
 
-                        <div className={`w-32 h-fit p-2 rounded-lg cursor-pointer ${verifiedStatus === -1 ? selected : unselected}`} onClick={() => setVerifiedStatus(-1)}>
+                        <div className={`w-fit h-fit p-2 rounded-lg cursor-pointer ${verifiedStatus === -1 ? selected : unselected}`} onClick={() => setVerifiedStatus(-1)}>
                             Từ chối {verifiedStatus === -1 && `(${reviewList.length})`}
                         </div>
                     </div>
@@ -122,18 +96,7 @@ const MyReviews = () => {
 
                     <div className="space-y-5">
                         {reviewList.map((review, index) => (
-                            <ReviewCard
-                                review={review}
-                                key={index}
-                                refreshList={refreshList}
-                                onDeleteSuccess={onDeleteReviewSuccess}
-                                onDeleteFailure={onDeleteReviewFailure}
-                                onEditSuccess={onEditReviewSuccess}
-                                onEditFailure={onEditReviewFailure}
-                                onOpenEditSection={onOpenEditSection}
-                                onHideEditSection={onHideEditSection}
-                                openEditSection={openEditSection}
-                            />
+                            <ReviewCard review={review} key={index} refreshList={refreshList} />
                         ))}
                     </div>
 

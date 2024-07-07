@@ -7,7 +7,7 @@ import verifiedStatusList from "@assets/json-data/verified_status_list.json";
 import ActionButton from "@components/management/action-button/ActionButton";
 import SelectFilter from "@components/management/select/SelectFilter";
 import Table from "@components/management/table/Table";
-import PageHead from "components/shared/head/PageHead";
+import PageHead from "@components/shared/head/PageHead";
 import { Badge, Button, Modal, Pagination, Spinner } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { HiCheck, HiDocumentRemove, HiOutlineDotsHorizontal, HiX } from "react-icons/hi";
@@ -263,7 +263,7 @@ const ManagerDocuments = () => {
 
     return (
         <div>
-            <PageHead title="Quản lý tài liệu - Quản lý" description="Quản lý tài liệu - learniverse & shariverse" url={window.location.href} origin="lib" />
+            <PageHead title="Quản lý tài liệu - Quản lý - miniverse" description="Quản lý tài liệu - Quản lý - miniverse" url={window.location.href} />
 
             <div className="row">
                 <div className="px-[15px]">

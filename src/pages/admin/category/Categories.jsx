@@ -216,7 +216,7 @@ const Categories = () => {
 
     return (
         <>
-            <PageHead title="Quản lý danh mục - Admin" description="Quản lý danh mục - learniverse & shariverse" url={window.location.href} origin="lib" />
+            <PageHead title="Quản lý danh mục - Admin - miniverse" description="Quản lý danh mục - Admin - miniverse" url={window.location.href} />
 
             <div className="w-4/5 m-auto">
                 <div className="row">

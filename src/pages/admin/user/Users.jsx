@@ -5,7 +5,7 @@ import ActionButton from "@components/management/action-button/ActionButton";
 import UserModal from "@components/management/admin/modal/user/UserModal";
 import SelectFilter from "@components/management/select/SelectFilter";
 import Table from "@components/management/table/Table";
-import PageHead from "components/shared/head/PageHead";
+import PageHead from "@components/shared/head/PageHead";
 import { Avatar, Badge, Button, Modal, Pagination, Spinner, Tooltip } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { HiCheck, HiOutlineBadgeCheck, HiX } from "react-icons/hi";
@@ -199,7 +199,7 @@ const Users = () => {
     const getOrganizationList = async () => {
         try {
             setIsFetching(true);
-            
+
             const response = await getAllOrganizations({
                 params: {
                     page: 0,
@@ -332,7 +332,7 @@ const Users = () => {
 
     return (
         <div>
-            <PageHead title="Quản lý người dùng - Admin" description="Quản lý người dùng - learniverse & shariverse" url={window.location.href} origin="both" />
+            <PageHead title="Quản lý người dùng - Admin - miniverse" description="Quản lý người dùng - Admin - miniverse" url={window.location.href} />
 
             <div className="row">
                 <div className="px-[15px]">

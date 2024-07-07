@@ -644,7 +644,7 @@ const DetailPost = () => {
 
     return (
         <>
-            <PageHead title={post && post.title} description={`${post && post.content.replace(/(<([^>]+)>)/gi, "")} - learniverse & shariverse`} url={window.location.href} origin="forum" />
+            <PageHead title={`${post && post.title} - miniverse`} description={`${post && post.content.replace(/(<([^>]+)>)/gi, "")} - miniverse`} url={window.location.href} />
 
             <div className="w-[95%] m-auto min-h-screen h-max p-5 main-section">
                 <Breadcrumb aria-label="Post breadcrumb" className="breadcrumb cursor-pointer">
@@ -1196,7 +1196,7 @@ const DetailPost = () => {
                             <div className="w-1/2 w-full space-y-5">
                                 {postList.slice(0, 5).map((post, index) => (
                                     <div key={index} className="flex space-x-2 items-center" title={post.title}>
-                                        <div className="flex rounded bg-green-500 text-white p-2 items-center space-x-2 font-medium min-w-16 w-16">
+                                        <div className="flex rounded bg-green-500 text-white p-2 items-center space-x-2 font-medium min-w-[4.5rem] w-[4.5rem]">
                                             <LuEye />
                                             <p className="text-sm">{numeral(post.totalViews).format("0.a")}</p>
                                         </div>
@@ -1216,7 +1216,7 @@ const DetailPost = () => {
                             <div className="w-1/2 w-full space-y-5">
                                 {postList.slice(-5).map((post, index) => (
                                     <div key={index} className="flex space-x-2 items-center" title={post.title}>
-                                        <div className="flex rounded bg-green-500 text-white p-2 items-center space-x-2 font-medium min-w-16 w-16">
+                                        <div className="flex rounded bg-green-500 text-white p-2 items-center space-x-2 font-medium min-w-[4.5rem] w-[4.5rem]">
                                             <LuEye />
                                             <p className="text-sm">{numeral(post.totalViews).format("0.a")}</p>
                                         </div>

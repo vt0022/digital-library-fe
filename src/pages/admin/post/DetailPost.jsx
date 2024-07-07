@@ -6,8 +6,8 @@ import PostHistoryModal from "@components/forum/modal/PostHistoryModal";
 import ReplyHistoryModal from "@components/forum/modal/ReplyHistoryModal";
 import ReportModal from "@components/forum/modal/ReportModal";
 import Error404 from "@components/management/error/404Error";
-import PageHead from "components/shared/head/PageHead";
-import Spinner from "components/shared/spinner/Spinner";
+import PageHead from "@components/shared/head/PageHead";
+import Spinner from "@components/shared/spinner/Spinner";
 import DOMPurify from "dompurify";
 import { Avatar, Breadcrumb, Button, Modal, Pagination, Tooltip } from "flowbite-react";
 import moment from "moment";
@@ -504,20 +504,9 @@ const DetailPost = () => {
 
     return (
         <>
-            <PageHead title={`${post && post.title} - Admin`} description={`${post && post.content.replace(/(<([^>]+)>)/gi, "")} - learniverse & shariverse`} url={window.location.href} origin="forum" />
+            <PageHead title={`${post && post.title} - Admin - miniverse`} description={`${post && post.content.replace(/(<([^>]+)>)/gi, "")} - Admin - miniverse`} url={window.location.href} />
 
-            <div className="w-[95%] m-auto min-h-screen h-max p-5 main-section">
-                <Breadcrumb aria-label="Post breadcrumb" className="breadcrumb cursor-pointer">
-                    <Breadcrumb.Item onClick={() => navigate("/forum")} icon={HiHome}>
-                        Trang chủ
-                    </Breadcrumb.Item>
-                    <Breadcrumb.Item onClick={() => navigate(`/forum/sections/${post && post.subsection && post.subsection.slug}`)}>{post && post.subsection && post.subsection.subName}</Breadcrumb.Item>
-                    <Breadcrumb.Item>
-                        {post && post.title.substring(0, 60)}
-                        {post && post.title.length > 60 ? "..." : ""}
-                    </Breadcrumb.Item>
-                </Breadcrumb>
-
+            <div className="w-full m-auto min-h-screen h-max p-5 main-section">
                 <div className="items-center mb-5 mt-5 w-full border-b border-black py-2">
                     <p className="text-3xl font-normal">{post && post.title}</p>
 
@@ -528,7 +517,7 @@ const DetailPost = () => {
                                     <HiOutlineUser />
                                 </div>
 
-                                <p className="hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/users/${post.userPosted.userId}`)}>
+                                <p className="hover:text-green-400 cursor-pointer" onClick={() => navigate(`/admin/users/${post.userPosted.userId}`)}>
                                     {post && post.userPosted && post.userPosted.lastName} {post && post.userPosted && post.userPosted.firstName}
                                 </p>
                             </div>
@@ -569,7 +558,7 @@ const DetailPost = () => {
                     </div>
                 </div>
                 {totalPages > 1 && (
-                    <div className="bg-white rounded-lg w-fit flex justify-end ml-auto items-center shadow-lg shadow-gray-300">
+                    <div className="bg-white rounded-lg w-fit pb-2 flex justify-end ml-auto items-center shadow-lg shadow-gray-300">
                         <Pagination layout="pagination" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} previousLabel="Trước" nextLabel="Tiếp" showIcons className="text-sm" />
                     </div>
                 )}
@@ -641,8 +630,6 @@ const DetailPost = () => {
                                             <HiTrash className="text-base hover:text-red-500 active:text-red-400 cursor-pointer" />
                                         </button>
                                     </Tooltip>
-
-                                    <p>#1</p>
                                 </div>
                             </div>
 
@@ -733,7 +720,7 @@ const DetailPost = () => {
                                                     </button>
                                                 </Tooltip>
 
-                                                <p>#{(currentPage - 1) * 10 + index + 2}</p>
+                                                <p>#{(currentPage - 1) * 10 + index + 1}</p>
                                             </div>
                                         </div>
 
@@ -825,7 +812,7 @@ const DetailPost = () => {
                     </div>
                 </div>
                 {totalPages > 1 && (
-                    <div className="bg-white rounded-lg w-fit flex justify-end ml-auto items-cente mt-2 shadow-lg shadow-gray-300">
+                    <div className="bg-white rounded-lg w-fit flex justify-end ml-auto items-cente mt-2 pb-2 shadow-lg shadow-gray-300">
                         <Pagination layout="pagination" currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} previousLabel="Trước" nextLabel="Tiếp" showIcons className="text-sm" />
                     </div>
                 )}

@@ -6,7 +6,7 @@ import profileImage from "@assets/images/default_profile.jpg";
 import ActionButton from "@components/management/action-button/ActionButton";
 import Select from "@components/management/select/Select";
 import Table from "@components/management/table/Table";
-import PageHead from "components/shared/head/PageHead";
+import PageHead from "@components/shared/head/PageHead";
 import { Button, Datepicker, FileInput, Label, Modal, Pagination, Spinner, TextInput } from "flowbite-react";
 import moment from "moment/moment";
 import { useEffect, useState } from "react";
@@ -65,9 +65,9 @@ const Profile = () => {
             </td>
             <td className="text-center">
                 <div className="flex space-x-0">
-                    <ActionButton onClick={() => handleDetail(item.slug)} icon="bx bxs-calendar" color="green" content="Xem chi tiết tài liệu" />
-                    <ActionButton onClick={() => handleEdit(item.slug)} icon="bx bxs-calendar-edit" color="yellow" content="Chỉnh sửa tài liệu" />
-                    <ActionButton onClick={() => handleDelete(item.docId)} icon="bx bxs-calendar-x" color="red" content="Xoá tài liệu" />
+                    <ActionButton onClick={() => handleDetail(item.slug)} icon="bx bx-show-alt" color="green" content="Xem chi tiết tài liệu" />
+                    <ActionButton onClick={() => handleEdit(item.slug)} icon="bx bx-pencil" color="amber" content="Chỉnh sửa tài liệu" />
+                    <ActionButton onClick={() => handleDelete(item.docId)} icon="bx bx-trash" color="red" content="Xoá tài liệu" />
                 </div>
             </td>
         </tr>
@@ -400,7 +400,7 @@ const Profile = () => {
 
     return (
         <div>
-            <PageHead title={`${user && user.lastName} ${user && user.firstName} - Trang cá nhân - Admin`} description={`Trang cá nhân ${user && user.lastName} ${user && user.firstName} - learniverse & shariverse`} url={window.location.href} origin="both" />
+            <PageHead title={`${user && user.lastName} ${user && user.firstName} - Trang cá nhân - Admin - miniverse`} description={`${user && user.lastName} ${user && user.firstName} - Trang cá nhân - Admin - miniverse`} url={window.location.href} />
 
             <div className="row">
                 <div className="col-12 flex">

@@ -1,5 +1,6 @@
 import { sendEmail, verify } from "@api/main/authAPI";
 import bg from "@assets/images/background.jpg";
+import PageHead from "@components/shared/head/PageHead";
 import Spinner from "@components/shared/spinner/Spinner";
 import SimpleNavbar from "@components/student/navbar/SimpleNavbar";
 import { useEffect, useRef, useState } from "react";
@@ -8,7 +9,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
 import loginAction from "redux/actions/AuthenAction";
 import "./verify.css";
-import PageHead from "components/shared/head/PageHead";
 
 const toastOptions = {
     position: "bottom-center",
@@ -42,13 +42,19 @@ const VerifyOTP = () => {
     const inputRefs = useRef([]);
 
     useEffect(() => {
-        if (countdown > 0) {
-            const timerId = setInterval(() => {
-                setCountdown((prevCountdown) => prevCountdown - 1);
-            }, 1000);
-            return () => clearInterval(timerId);
-        }
-    }, [countdown]);
+        const countdownInterval = setInterval(() => {
+            setCountdown((prevCountdown) => {
+                if (prevCountdown > 0) {
+                    return prevCountdown - 1;
+                } else {
+                    clearInterval(countdownInterval);
+                    return 0;
+                }
+            });
+        }, 1000);
+
+        return () => clearInterval(countdownInterval);
+    }, []);
 
     const handleChange = (e, index) => {
         const { value } = e.target;
@@ -170,7 +176,7 @@ const VerifyOTP = () => {
 
     return (
         <>
-            <PageHead title="Xác nhận OTP" description="Xác nhận OTP - learniverse & shariverse" url={window.location.href} origin="both" />
+            <PageHead title="Xác nhận OTP - miniverse" description="Xác nhận OTP - miniverse" url={window.location.href} />
 
             <div style={{ backgroundImage: `url(${bg})` }} className="flex flex-col h-screen bg-cover bg-center">
                 <div className="sticky top-0 bg-transparent w-full z-40">

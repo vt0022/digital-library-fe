@@ -2,8 +2,8 @@ import { getBadgesOfUser } from "@api/main/badgeAPI";
 import { getAllPostsOfUser, getPostLikes } from "@api/main/postAPI";
 import { getAllRepliesOfUser, getReplyLikes } from "@api/main/replyAPI";
 import { getAUser } from "@api/main/userAPI";
+import PageHead from "@components/shared/head/PageHead";
 import usePrivateAxios from "api/usePrivateAxios";
-import PageHead from "components/shared/head/PageHead";
 import { initFlowbite } from "flowbite";
 import { Avatar, Pagination, Popover } from "flowbite-react";
 import moment from "moment";
@@ -220,7 +220,7 @@ const Activity = () => {
 
     return (
         <>
-            <PageHead title="Hoạt động của tôi" description="Hoạt động của tôi - learniverse & shariverse" url={window.location.href} origin="forum" />
+            <PageHead title="Hoạt động của tôi - miniverse" description="Hoạt động của tôi - miniverse" url={window.location.href} />
 
             <div className="m-5 min-h-screen h-max px-[10%] py-5 bg-white rounded-lg space-y-5">
                 <div className="flex items-center justify-center space-x-5 rounded-lg py-5">

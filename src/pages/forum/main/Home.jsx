@@ -30,7 +30,7 @@ const Home = ({ onPinSection }) => {
 
     return (
         <>
-            <PageHead title="Trang chủ" description="Trang chủ - learniverse & shariverse" url={window.location.href} origin="forum" />
+            <PageHead title="Trang chủ - Diễn đàn - miniverse" description="Trang chủ - Diễn đàn - miniverse" url={window.location.href} />
 
             <div className="p-5">
                 <div className="space-y-5">

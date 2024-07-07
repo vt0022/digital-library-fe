@@ -12,8 +12,8 @@ const SimpleNavbar = () => {
         <Navbar fluid rounded className="w-full bg-transparent">
             <div className="ml-10">
                 <Navbar.Brand as={Link} to="/home" className="hover:text-black">
-                    <img src={logo} className="mr-3 h-20 sm:h-20" alt="Flowbite React Logo" />
-                    <span className="self-center text-white whitespace-nowrap text-3xl font-semibold dark:text-white">THƯ VIỆN SỐ</span>
+                    <img src={logo} className="mr-3 h-20 rounded-full" alt="Flowbite React Logo" />
+                    <span className="self-center text-white whitespace-nowrap text-3xl font-semibold dark:text-white">MINIVERSE</span>
                 </Navbar.Brand>
             </div>
 
@@ -50,6 +50,9 @@ const SimpleNavbar = () => {
                     </Navbar.Link>
                     <Navbar.Link as={Link} to="/documents" className="text-base text-white hover:text-gray-100">
                         Thư viện
+                    </Navbar.Link>
+                    <Navbar.Link as={Link} to="/forum" className="text-base text-white hover:text-gray-100">
+                        Diễn đàn
                     </Navbar.Link>
                 </Navbar.Collapse>
             </div>

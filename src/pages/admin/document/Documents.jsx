@@ -43,10 +43,10 @@ const Documents = () => {
             <td className="text-center font-bold" onClick={() => handleDetail(item.slug)}>
                 {selectedPage * 15 + index + 1}
             </td>
-            <td className="max-w-xs text-justify" onClick={() => handleDetail(item.slug)}>
+            <td className="max-w-xs text-sm text-justify font-medium" onClick={() => handleDetail(item.slug)}>
                 {item.docName}
             </td>
-            <td className="max-w-xl text-justify" onClick={() => handleDetail(item.slug)}>
+            <td className="max-w-xl text-sm text-justify" onClick={() => handleDetail(item.slug)}>
                 <p className="truncate whitespace-normal leading-6 line-clamp-3">{item.docIntroduction}</p>
             </td>
 
@@ -65,7 +65,7 @@ const Documents = () => {
                     {item.verifiedStatus === 1 && <Badge icon={HiCheck}>Đã duyệt</Badge>}
                 </div>
             </td>
-            <td className="max-w-xs text-center" onClick={() => handleDetail(item.slug)}>
+            <td className="max-w-xs text-center text-sm font-semibold" onClick={() => handleDetail(item.slug)}>
                 {item.totalView}
             </td>
             <td className="text-center">
@@ -279,7 +279,7 @@ const Documents = () => {
 
     return (
         <div>
-            <PageHead title="Quản lý tài liệu - Admin" description="Quản lý tài liệu - learniverse & shariverse" url={window.location.href} origin="lib" />
+            <PageHead title="Quản lý tài liệu - Admin - miniverse" description="Quản lý tài liệu - Admin - miniverse" url={window.location.href} />
 
             <div className="row">
                 <div className="px-[15px]">

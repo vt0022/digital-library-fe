@@ -1,7 +1,8 @@
 import { resetPassword } from "@api/main/userAPI";
 import bg from "@assets/images/background.jpg";
+import logo from "@assets/images/logo.png";
+import PageHead from "@components/shared/head/PageHead";
 import Spinner from "@components/shared/spinner/Spinner";
-import PageHead from "components/shared/head/PageHead";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
@@ -94,14 +95,14 @@ const NewPassword = () => {
 
     return (
         <>
-            <PageHead title="Mật khẩu mới - Quản lý" description="Mật khẩu mới - learniverse & shariverse" url={window.location.href} origin="both" />
+            <PageHead title="Mật khẩu mới - Quản lý - miniverse" description="Mật khẩu mới - Quản lý - miniverse" url={window.location.href} />
 
             <div style={{ backgroundImage: `url(${bg})` }} className="h-screen flex flex-col bg-cover bg-center">
                 <div className="text-gray-900 flex justify-center">
                     <div className="max-w-lg m-0 h-fit bg-white shadow-lg rounded-lg flex justify-center flex-1">
                         <div className="w-full p-10">
                             <div className="">
-                                <img src="https://drive.google.com/thumbnail?id=1MFiKAExRFF0-2YNpAZzIu1Sh52J8r16v" className="w-mx-auto m-auto" />
+                                <img src={logo} className="mx-auto h-36" />
                             </div>
                             <div className="mt-6 flex flex-col items-center">
                                 <h1 className="text-2xl font-semibold text-center mb-10">Nhập mật khẩu mới</h1>

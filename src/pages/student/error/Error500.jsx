@@ -2,15 +2,15 @@ import { useNavigate } from "react-router-dom";
 
 import CustomNavbar from "../../../components/student/navbar/Navbar";
 
+import PageHead from "@components/shared/head/PageHead";
 import icon500 from "../../../assets/images/500.svg";
-import PageHead from "components/shared/head/PageHead";
 
 const Error500 = () => {
     const navigate = useNavigate();
 
     return (
         <>
-            <PageHead title="Lỗi hệ thống" description="Lỗi hệ thống - learniverse & shariverse" url={window.location.href} origin="lib" />
+            <PageHead title="Lỗi hệ thống - miniverse" description="Lỗi hệ thống - miniverse" url={window.location.href} />
 
             <div className="relative flex flex-col h-screen">
                 <div className="sticky top-0 bg-white w-full z-40  border-b">

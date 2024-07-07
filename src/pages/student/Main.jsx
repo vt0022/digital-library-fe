@@ -12,7 +12,7 @@ const Main = () => {
             </div>
 
             <div className="h-full flex">
-                <div className="w-[18%] h-full">
+                <div className="w-[16%] h-full">
                     <CustomSidebar />
                 </div>
 

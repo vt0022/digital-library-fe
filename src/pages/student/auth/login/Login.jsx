@@ -1,6 +1,8 @@
 import { login, loginWithGoogle, sendEmail, signupWithGoogle } from "@api/main/authAPI";
 import { getAccessibleOrganizations } from "@api/main/organizationAPI";
+import authVector from "@assets/images/authentication.png";
 import bg from "@assets/images/background.jpg";
+import logo from "@assets/images/logo.png";
 import PageHead from "@components/shared/head/PageHead";
 import Spinner from "@components/shared/spinner/Spinner";
 import SimpleNavbar from "@components/student/navbar/SimpleNavbar";
@@ -234,7 +236,7 @@ const Login = () => {
 
     return (
         <>
-            <PageHead title="Đăng nhập" description="Đăng nhập - learniverse & shariverse" url={window.location.href} origin="both" />
+            <PageHead title="Đăng nhập - miniverse" description="Đăng nhập - miniverse" url={window.location.href} />
 
             <div style={{ backgroundImage: `url(${bg})` }} className=" flex flex-col bg-cover bg-center">
                 <div className="sticky top-0 bg-transparent w-full z-40">
@@ -245,9 +247,9 @@ const Login = () => {
                     <div className="max-w-screen-lg m-0 sm:m-10 bg-white shadow-lg rounded-lg sm:rounded-lg flex justify-center flex-1">
                         <div className="w-1/2 p-6 sm:p-12">
                             <div>
-                                <img src="https://drive.google.com/thumbnail?id=1MFiKAExRFF0-2YNpAZzIu1Sh52J8r16v" className="mx-auto" />
+                                <img src={logo} className="mx-auto h-36" />
                             </div>
-                            <div className="mt-6 flex flex-col items-center">
+                            <div className="flex flex-col mt-6 items-center">
                                 <div className="w-full flex-1 mt-6">
                                     <div className="flex flex-col items-center">
                                         <button
@@ -338,8 +340,8 @@ const Login = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="flex-1 bg-green-100 text-center flex rounded-r-lg">
-                            <div className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat" style={{ backgroundImage: `url("https://drive.google.com/thumbnail?id=1KZ_Ub_2lZ0dHbKV0fAIhxVhiQA183RCz")` }}></div>
+                        <div className="flex-1 bg-emerald-50 text-center flex rounded-r-lg">
+                            <div className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat" style={{ backgroundImage: `url(${authVector})` }}></div>
                         </div>
                     </div>
 

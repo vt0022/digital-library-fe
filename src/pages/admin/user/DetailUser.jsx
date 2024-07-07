@@ -285,10 +285,10 @@ const DetailUser = () => {
 
     return (
         <div>
-            <PageHead title={`Người dùng ${user && user.lastName} ${user && user.firstName} - Admin`} description={`Người dùng ${user && user.lastName} ${user && user.firstName} - learniverse & shariverse`} url={window.location.href} origin="both" />
+            <PageHead title={`Người dùng ${user && user.lastName} ${user && user.firstName} - Admin - miniverse`} description={`Người dùng ${user && user.lastName} ${user && user.firstName} - Admin - miniverse`} url={window.location.href} />
 
             <div className="row">
-                <div className="flex flex-wrap gap-2 mb-3">
+                <div className="col-12">
                     <Button onClick={() => navigate(-1)}>
                         <HiChevronLeft className="mr-2 h-5 w-5" />
                         Quay lại

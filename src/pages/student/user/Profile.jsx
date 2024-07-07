@@ -290,7 +290,7 @@ const StudentProfile = () => {
 
     return (
         <div>
-            <PageHead title="Trang cá nhân" description="Trang cá nhân - learniverse & shariverse" url={window.location.href} origin="lib" />
+            <PageHead title="Trang cá nhân - miniverse" description="Trang cá nhân - miniverse" url={window.location.href} />
 
             <div className="p-4">
                 <div className="flex">

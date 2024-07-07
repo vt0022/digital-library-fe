@@ -132,7 +132,7 @@ const SavedDocument = () => {
 
     return (
         <>
-            <PageHead title="Danh sách đã lưu" description="Danh sách đã lưu - learniverse & shariverse" url={window.location.href} origin="lib" />
+            <PageHead title="Danh sách đã lưu - miniverse" description="Danh sách đã lưu - miniverse" url={window.location.href} />
 
             <div className="flex-1 p-4 h-full">
                 <div className="rounded-lg bg-white py-8 px-8 ">

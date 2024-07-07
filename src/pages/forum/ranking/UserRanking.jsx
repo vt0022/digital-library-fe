@@ -109,7 +109,7 @@ const UserRanking = () => {
 
     return (
         <>
-            <PageHead title="Bảng xếp hạng người dùng" description="Bảng xếp hạng người dùng - learniverse & shariverse" url={window.location.href} origin="forum" />
+            <PageHead title="Bảng xếp hạng người dùng - miniverse" description="Bảng xếp hạng người dùng - miniverse" url={window.location.href} />
 
             <img src={rankingImage} alt="Xếp hạng" width="20%" height="20%" className="m-auto" />
 

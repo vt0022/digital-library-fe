@@ -196,7 +196,7 @@ const StudentNewDocument = () => {
 
     return (
         <>
-            <PageHead title="Đăng tài liệu" description="Đăng tài liệu - learniverse & shariverse" url={window.location.href} origin="lib" />
+            <PageHead title="Đăng tài liệu - miniverse" description="Đăng tài liệu - miniverse" url={window.location.href} />
 
             <div className="p-4 overflow-auto">
                 <div className=" w-full grid place-items-center ">

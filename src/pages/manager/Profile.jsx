@@ -6,7 +6,7 @@ import profileImage from "@assets/images/default_profile.jpg";
 import ActionButton from "@components/management/action-button/ActionButton";
 import Select from "@components/management/select/Select";
 import Table from "@components/management/table/Table";
-import PageHead from "components/shared/head/PageHead";
+import PageHead from "@components/shared/head/PageHead";
 import { Button, Datepicker, FileInput, Label, Modal, Pagination, Spinner, TextInput } from "flowbite-react";
 import moment from "moment/moment";
 import { useEffect, useState } from "react";
@@ -402,7 +402,7 @@ const ManagerProfile = () => {
 
     return (
         <div>
-            <PageHead title={`${user && user.lastName} ${user && user.firstName} - Trang cá nhân - Quản lý`} description={`Trang cá nhân ${user && user.lastName} ${user && user.firstName} - learniverse & shariverse`} url={window.location.href} imageUrl={user && user.image} origin="both" />
+            <PageHead title={`${user && user.lastName} ${user && user.firstName} - Trang cá nhân - Quản lý - miniverse`} description={`Trang cá nhân ${user && user.lastName} ${user && user.firstName} - Quản lý - miniverse`} url={window.location.href} imageUrl={user && user.image} />
 
             <div className="row">
                 <div className="col-12 flex">

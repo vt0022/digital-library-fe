@@ -33,7 +33,7 @@ const ManagerDetailDocument = () => {
 
     return (
         <div>
-            <PageHead title={`${document && document.docName} - Quản lý`} description={`${document && document.docIntroduction} - learniverse & shariverse`} imageUrl={document && document.thumbnail} url={window.location.href} origin="lib" />
+            <PageHead title={`${document && document.docName} - Quản lý - miniverse`} description={`${document && document.docIntroduction} - Quản lý - miniverse`} imageUrl={document && document.thumbnail} url={window.location.href} />
 
             <div className="flex flex-wrap gap-2 mb-3">
                 <Button onClick={() => navigate(-1)}>

@@ -121,13 +121,13 @@ const ListPosts = () => {
 
     return (
         <>
-            <PageHead title={"Danh sách bài đăng" + (section === "" ? "" : "của chuyên mục " + section)} description={"Danh sách bài đăng" + (section === "" ? "" : "của " + section) + " - learniverse & shariverse"} url={window.location.href} origin="forum" />
+            <PageHead title={"Danh sách bài đăng" + (section === "" ? "" : "của chuyên mục " + section) + " - miniverse"} description={"Danh sách bài đăng" + (section === "" ? "" : "của " + section) + " - miniverse"} url={window.location.href} />
 
             <div className="w-10/12 m-auto p-5">
                 <div className="w-fit flex justify-end ml-auto items-center mb-4 ">
                     <Button className="bg-green-400 enabled:hover:bg-green-500 shadow-lg shadow-gray-300" onClick={() => navigate("/forum/posts/new")}>
                         <HiOutlinePencilAlt className="mr-2 h-5 w-5 " />
-                        Tạo bài viết
+                        Tạo bài đăng
                     </Button>
                 </div>
 

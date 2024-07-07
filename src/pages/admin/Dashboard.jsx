@@ -4,7 +4,7 @@ import { getLatestUsers } from "@api/main/userAPI";
 import usePrivateAxios from "@api/usePrivateAxios";
 import StatusCard from "@components/management/status-card/StatusCard";
 import Table from "@components/management/table/Table";
-import PageHead from "components/shared/head/PageHead";
+import PageHead from "@components/shared/head/PageHead";
 import { Button, Datepicker, Radio, Select, Tooltip } from "flowbite-react";
 import moment from "moment";
 import { useEffect, useState } from "react";
@@ -378,7 +378,7 @@ const Dashboard = () => {
 
     return (
         <>
-            <PageHead title="Tổng quan - Admin" description="Tổng quan - learniverse & shariverse" url={window.location.href} origin="both" />
+            <PageHead title="Tổng quan - Admin - miniverse" description="Tổng quan - Admin - miniverse" url={window.location.href} />
 
             <div className="space-y-5">
                 <div className="row">

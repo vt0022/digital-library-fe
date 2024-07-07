@@ -15,7 +15,7 @@ import "@react-pdf-viewer/toolbar/lib/styles/index.css";
 import { Button, Modal, Tooltip } from "flowbite-react";
 import { gapi } from "gapi-script";
 import moment from "moment";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { BiSolidCalendarCheck } from "react-icons/bi";
 import { FaUserCheck } from "react-icons/fa";
@@ -24,7 +24,7 @@ import { HiHeart, HiOutlineBookmark, HiOutlineColorSwatch, HiOutlineHeart, HiOut
 import { IoEye, IoHeart } from "react-icons/io5";
 import { PiQuestionBold } from "react-icons/pi";
 import { RiAddFill, RiDownloadCloud2Line, RiRobot2Fill, RiSlideshow4Line, RiSlideshowLine } from "react-icons/ri";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { PuffLoader } from "react-spinners";
 import { Bounce, toast } from "react-toastify";
 import "./document.css";
@@ -206,7 +206,6 @@ const DetailDocument = () => {
 
             if (response.status === 200) {
                 toast.success(<p className="pr-2">Đã thêm vào danh sách yêu thích!</p>, toastOptions);
-
                 getDocumentBySlug();
             } else {
                 toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
@@ -314,22 +313,6 @@ const DetailDocument = () => {
         setIsOpenModal(true);
     };
 
-    const onAddToCollectionSuccess = () => {
-        toast.success(<p className="pr-2">Thêm vào bộ sưu tập thành công!</p>, toastOptions);
-    };
-
-    const onAddToCollectionFailure = () => {
-        toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
-    };
-
-    const onAddReviewSuccess = () => {
-        toast.success(<p className="pr-2">Đánh giá của bạn sẽ được duyệt trước khi hiển thị!</p>, toastOptions);
-    };
-
-    const onAddReviewFailure = () => {
-        toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
-    };
-
     const checkRecaptchaValid = (value) => {
         if (value) {
             setIsRecaptchaValid(true);
@@ -340,7 +323,7 @@ const DetailDocument = () => {
 
     return (
         <>
-            <PageHead title={doc && doc.docName} description={doc && doc.docIntroduction} imageUrl={doc && doc.thumbnail} url={window.location.href} origin="lib" />
+            <PageHead title={doc && doc.docName + " - miniverse"} description={doc && doc.docIntroduction + " - miniverse"} imageUrl={doc && doc.thumbnail} url={window.location.href} />
 
             <div className="flex-1 p-4">
                 <div className="flex gap-5 w-full">
@@ -513,7 +496,7 @@ const DetailDocument = () => {
 
                                 {isOpenModal && (
                                     <div ref={collectionRef} className="relative">
-                                        <CollectionListModal docId={doc.docId} onClose={() => setIsOpenModal(false)} onSuccess={onAddToCollectionSuccess} onFailure={onAddToCollectionFailure} />
+                                        <CollectionListModal docId={doc && doc.docId} onClose={() => setIsOpenModal(false)} />
                                     </div>
                                 )}
                             </div>
@@ -532,7 +515,7 @@ const DetailDocument = () => {
                         <ReviewList slug={slug} totalReviews={doc && doc.totalReviews} averageRating={doc && doc.averageRating.toFixed(1)} />
                     </div>
 
-                    <div className="w-1/4">{doc && !doc.reviewed && <Review docId={doc && doc.docId} action={getDocumentBySlug} onSuccess={onAddReviewSuccess} onFailure={onAddReviewFailure} />}</div>
+                    <div className="w-1/4">{doc && !doc.reviewed && <Review docId={doc && doc.docId} refreshDoc={getDocumentBySlug} />}</div>
                 </div>
 
                 {documentList.length > 0 && (

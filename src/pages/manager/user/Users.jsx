@@ -4,7 +4,7 @@ import ActionButton from "@components/management/action-button/ActionButton";
 import UserModal from "@components/management/manager/modal/user/UserModal";
 import SelectFilter from "@components/management/select/SelectFilter";
 import Table from "@components/management/table/Table";
-import PageHead from "components/shared/head/PageHead";
+import PageHead from "@components/shared/head/PageHead";
 import { Avatar, Badge, Button, Modal, Pagination, Spinner, Tooltip } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { HiCheck, HiX } from "react-icons/hi";
@@ -264,7 +264,7 @@ const ManagerUsers = () => {
 
     return (
         <div>
-            <PageHead title="Quản lý người dùng - Quản lý" description="Quản lý người dùng - learniverse & shariverse" url={window.location.href} origin="both" />
+            <PageHead title="Quản lý người dùng - Quản lý - miniverse" description="Quản lý người dùng - Quản lý - miniverse" url={window.location.href} />
 
             <div className="row">
                 <div className="px-[15px]">

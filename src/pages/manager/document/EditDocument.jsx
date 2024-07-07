@@ -215,7 +215,7 @@ const ManagerEditDocument = () => {
 
     return (
         <>
-            <PageHead title={`Chỉnh sửa tài liệu - ${document && document.docName} - Quản lý`} description={`${document && document.docIntroduction} - learniverse & shariverse`} imageUrl={document && document.thumbnail} url={window.location.href} origin="lib" />
+            <PageHead title={`Chỉnh sửa tài liệu - ${document && document.docName} - Quản lý - miniverse`} description={`${document && document.docIntroduction} - Quản lý - miniverse`} imageUrl={document && document.thumbnail} url={window.location.href} />
 
             <div className="grid place-items-center">
                 <h1 className="mb-10 text-3xl font-bold dark:text-white ">Chỉnh sửa tài liệu</h1>

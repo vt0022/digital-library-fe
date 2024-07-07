@@ -59,7 +59,7 @@ const MyCollections = () => {
 
     return (
         <>
-            <PageHead title="Bộ sưu tập của tôi" description="Bộ sưu tập của tôi - learniverse & shariverse" url={window.location.href} origin="lib" />
+            <PageHead title="Bộ sưu tập của tôi - miniverse" description="Bộ sưu tập của tôi - miniverse" url={window.location.href} />
 
             <div className="flex-1 p-4 h-full">
                 <div className="rounded-lg bg-white py-8 px-8 ">
