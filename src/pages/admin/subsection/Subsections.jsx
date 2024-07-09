@@ -43,7 +43,7 @@ const Subsections = () => {
     );
 
     const renderBody = (item, index) => (
-        <tr key={index} className="cursor-pointer" onClick={() => navigate("/admin/subsections/" + item.slug)}>
+        <tr key={index} className="cursor-pointer">
             <td className="w-1/12 min-w-1/12 text-center font-bold">{(currentPage - 1) * 2 + index + 1}</td>
             <td className="w-2/12 min-w-4/12 text-center">{item.subName}</td>
             <td className="w-2/12 text-center">
@@ -214,8 +214,7 @@ const Subsections = () => {
                 if (response.message === "Delete subsection from system successfully") toast.success(<p className="pr-2">Xoá chuyên mục thành công!</p>, toastOptions);
                 else toast.warn(<p className="pr-2">Chuyên mục có bài đăng, đã huỷ kích hoạt!</p>, toastOptions);
 
-                getSubsectionList(1);
-                setCurrentPage(1);
+                refreshSubsectionList();
             } else {
                 toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
             }
@@ -231,8 +230,7 @@ const Subsections = () => {
             if (response.status === 200) {
                 toast.success(<p className="pr-2">Kích hoạt chuyên mục thành công!</p>, toastOptions);
 
-                getSubsectionList(1);
-                setCurrentPage(1);
+                refreshSubsectionList();
             } else {
                 toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
             }

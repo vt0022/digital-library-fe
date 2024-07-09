@@ -6,7 +6,7 @@ import ActionButton from "@components/management/action-button/ActionButton";
 import SelectFilter from "@components/management/select/SelectFilter";
 import Table from "@components/management/table/Table";
 import PageHead from "@components/shared/head/PageHead";
-import DetailAppealModal from "components/management/admin/modal/report/DetailAppealModal";
+import DetailAppealModal from "components/management/admin/modal/appeal/DetailAppealModal";
 import { Button, Modal, Pagination, Spinner } from "flowbite-react";
 import moment from "moment";
 import { useEffect, useState } from "react";
@@ -31,7 +31,7 @@ const Appeals = () => {
     );
 
     const renderBody = (item, index) => (
-        <tr key={index} className={`cursor-pointer ${item.read ? "bg-gray-100" : ""}`} onClick={() => navigate("/admin/labels/" + item.slug)}>
+        <tr key={index} className={`cursor-pointer ${item.read ? "bg-gray-100" : ""}`} >
             <td className="w-1/12 text-center font-bold">{(currentPage - 1) * 2 + index + 1}</td>
 
             <td className="w-2/12 font-medium">{findReportReasonByType(target === "POST" ? item.postReport && item.postReport.type : item.replyReport && item.replyReport.type)}</td>

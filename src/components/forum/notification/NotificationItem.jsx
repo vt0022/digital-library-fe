@@ -80,15 +80,15 @@ const NotificationItem = (props) => {
             case "LIKE_POST":
                 return notification.post && notification.post.title;
             case "WARN_POST":
-                return notification.postReport && notification.postReport.post && notification.postReport.post.postName;
+                return notification.postReport && notification.postReport.post && notification.postReport.post.title;
             case "RESTORE_POST":
             case "REMAIN_POST":
-                return notification.postAppeal && notification.postAppeal.postReport && notification.postAppeal.postReport.post && notification.postAppeal.postReport.post.postName;
+                return notification.postAppeal && notification.postAppeal.postReport && notification.postAppeal.postReport.post && notification.postAppeal.postReport.post.title;
             case "RESTORE_REPLY":
             case "REMAIN_REPLY":
                 return notification.replyAppeal && notification.replyAppeal.replyReport && notification.replyAppeal.replyReport.reply && notification.replyAppeal.replyReport.reply.content.replace(/(<([^>]+)>)/gi, "");
             case "REWARD_BADGE":
-                return notification.reply && notification.reply.title;
+                return notification.badge && notification.badge.badgeName;
             case "ACCEPT_DOCUMENT":
             case "REJECT_DOCUMENT":
                 return notification.document && notification.document.docName;
@@ -357,7 +357,7 @@ const NotificationItem = (props) => {
             {appealInfo.openAppealModal && <AppealModal target={appealInfo.target} reportId={appealInfo.reportId} openReportModal={appealInfo.openAppealModal} triggerModal={triggerModal} />}
 
             {openSentAppealModal && (
-                <Modal show={openSentAppealModal} size="md" onClose={() => setOpenSentAppealModal(false)} className="z-40">
+                <Modal show={openSentAppealModal} size="lg" onClose={() => setOpenSentAppealModal(false)} className="z-40">
                     <Modal.Header>Thông tin khiếu nại của bạn</Modal.Header>
                     <Modal.Body>
                         <div className="mb-5 space-y-2">
@@ -367,27 +367,27 @@ const NotificationItem = (props) => {
 
                         <div className="mb-5 text-sm space-y-3">
                             <div className="rounded-lg bg-gray-100 p-3">
-                                <p className="font-medium">Lỗi vi phạm</p>
-                                <span> {appeal && appeal.postReport && findReportReasonByType(appeal.postReport.type)}</span>
+                                <p className="font-medium mb-2">Lỗi vi phạm</p>
+                                <span> {appeal && appealInfo.target === "POST" ? appeal.postReport && findReportReasonByType(appeal.postReport.type) : appeal.replyReport && findReportReasonByType(appeal.replyReport.type)}</span>
                             </div>
 
                             <div className="rounded-lg bg-gray-100 p-3">
-                                <p className="font-medium">Lý do khiếu nại</p>
+                                <p className="font-medium mb-2">Lý do khiếu nại</p>
                                 <span> {appeal && findAppealReasonByType(appeal.type)}</span>
                             </div>
 
                             <div className="rounded-lg bg-gray-100 p-3">
-                                <p className="font-medium">Mô tả chi tiết</p>
-                                <span> {appeal && appeal?.reason === "" ? "Không có" : findAppealReasonByType(appeal?.reason)}</span>
+                                <p className="font-medium mb-2">Mô tả chi tiết</p>
+                                <span> {appeal && appeal?.reason === "" ? "Không có" : appeal?.reason}</span>
                             </div>
 
                             <div className="rounded-lg bg-gray-100 p-3">
-                                <p className="font-medium">Thời điểm khiếu nại</p>
+                                <p className="font-medium mb-2">Thời điểm khiếu nại</p>
                                 <span> {moment(appeal && appeal.appealedAt).calendar()}</span>
                             </div>
                         </div>
 
-                        <div className="mb-5 space-y-2 text-sm">
+                        <div className="mb-5 space-y-2 font-medium text-green-600">
                             <p>Chúng tôi sẽ xem xét lại quyết định gỡ {appealInfo.target === "POST" ? "bài đăng" : "bình luận"}.</p>
                             <p>Cảm ơn vì sự chờ đợi của bạn.</p>
                         </div>

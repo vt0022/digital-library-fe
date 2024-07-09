@@ -91,11 +91,11 @@ const ReviewList = (props) => {
 
                 <div className="flex w-full justity-around">
                     <div className="w-1/2 space-y-2">
-                        <Rating.Advanced percentFilled={totalReviews === 0 ? 0 : (findCount(5) / totalReviews) * 100}>5 star</Rating.Advanced>
-                        <Rating.Advanced percentFilled={totalReviews === 0 ? 0 : (findCount(4) / totalReviews) * 100}>4 star</Rating.Advanced>
-                        <Rating.Advanced percentFilled={totalReviews === 0 ? 0 : (findCount(3) / totalReviews) * 100}>3 star</Rating.Advanced>
-                        <Rating.Advanced percentFilled={totalReviews === 0 ? 0 : (findCount(2) / totalReviews) * 100}>2 star</Rating.Advanced>
-                        <Rating.Advanced percentFilled={totalReviews === 0 ? 0 : (findCount(1) / totalReviews) * 100}>1 star</Rating.Advanced>
+                        <Rating.Advanced percentFilled={totalReviews === 0 ? 0 : ((findCount(5) / totalReviews) * 100).toFixed(2)}>5 star</Rating.Advanced>
+                        <Rating.Advanced percentFilled={totalReviews === 0 ? 0 : ((findCount(4) / totalReviews) * 100).toFixed(2)}>4 star</Rating.Advanced>
+                        <Rating.Advanced percentFilled={totalReviews === 0 ? 0 : ((findCount(3) / totalReviews) * 100).toFixed(2)}>3 star</Rating.Advanced>
+                        <Rating.Advanced percentFilled={totalReviews === 0 ? 0 : ((findCount(2) / totalReviews) * 100).toFixed(2)}>2 star</Rating.Advanced>
+                        <Rating.Advanced percentFilled={totalReviews === 0 ? 0 : ((findCount(1) / totalReviews) * 100).toFixed(2)}>1 star</Rating.Advanced>
                     </div>
 
                     <div className="w-1/2 grid grid-cols-3 text-black text-sm font-medium text-center gap-5">

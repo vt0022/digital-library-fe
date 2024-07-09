@@ -69,6 +69,7 @@
     "scripts": {
         "start": "react-app-rewired start",
         "build": "react-app-rewired build",
+        "build:docker": "env-cmd -f ./.env.docker react-app-rewired build",
         "test": "react-app-rewired test",
         "eject": "react-scripts eject"
     },
@@ -97,6 +98,7 @@
         "@types/react-dom": "^17",
         "babel-plugin-module-resolver": "^5.0.2",
         "customize-cra": "^1.0.0",
+        "env-cmd": "^10.1.0",
         "react-app-rewired": "^2.2.1",
         "tailwindcss": "^3.3.5",
         "webpack-cli": "^5.1.4"

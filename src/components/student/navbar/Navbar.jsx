@@ -1,4 +1,5 @@
 import logo from "@assets/images/logo.png";
+import NotificationPanel from "@components/forum/notification/NotificationPanel";
 import { Avatar, Button, Dropdown, Navbar } from "flowbite-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
@@ -69,6 +70,7 @@ const CustomNavbar = () => {
                     <Navbar.Link as={Link} to="/forum" className={`text-base active:!text-green-400 hover:!text-green-300 focus:!text-green-400 ${currentPath === "/forum" ? "text-green-400" : ""}`}>
                         Diễn đàn
                     </Navbar.Link>
+                    {user && <NotificationPanel />}
                 </Navbar.Collapse>
             </div>
         </Navbar>

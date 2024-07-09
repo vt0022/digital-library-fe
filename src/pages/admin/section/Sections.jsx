@@ -38,7 +38,7 @@ const Sections = () => {
     );
 
     const renderBody = (item, index) => (
-        <tr key={index} className="cursor-pointer" onClick={() => navigate("/admin/sections/" + item.slug)}>
+        <tr key={index} className="cursor-pointer">
             <td className="w-1/12 min-w-1/12 text-center font-bold">{(currentPage - 1) * 2 + index + 1}</td>
             <td className="w-4/12 min-w-4/12 text-center">{item.sectionName}</td>
             <td className="w-2/12 text-center">

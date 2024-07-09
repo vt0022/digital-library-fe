@@ -365,11 +365,11 @@ const Activity = () => {
                                                     content={
                                                         <div className="w-80 text-sm text-gray-500">
                                                             <div className="border-b border-gray-200 bg-gray-100 px-3 py-2">
-                                                                <h3 className="font-semibold text-gray-900">Bình luận này đã bị ẩn vì (những) lý do sau</h3>
+                                                                <h3 className="font-semibold text-gray-900">Phản hồi này đã bị ẩn vì (những) lý do sau</h3>
                                                             </div>
                                                             <div className="px-3 py-2">
                                                                 <ul className="list-disc pl-5">
-                                                                    {reply.disabled && <li>Bình luận đã bị gỡ</li>}
+                                                                    {reply.disabled && <li>Phản hồi đã bị gỡ</li>}
                                                                     {reply.postDisabled && <li>Bài đăng đã bị ẩn</li>}
                                                                 </ul>
                                                             </div>

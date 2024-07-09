@@ -38,7 +38,7 @@ const Labels = () => {
     );
 
     const renderBody = (item, index) => (
-        <tr key={index} className="cursor-pointer" onClick={() => navigate("/admin/labels/" + item.slug)}>
+        <tr key={index} className="cursor-pointer">
             <td className="w-1/12 min-w-1/12 text-center font-bold">{(currentPage - 1) * 2 + index + 1}</td>
             <td className="w-4/12 min-w-4/12 text-center">
                 <span className="px-3 py-1 rounded-2xl text-white" style={{ backgroundColor: item.color }}>
@@ -176,8 +176,7 @@ const Labels = () => {
                 if (response.message === "Delete label from system successfully") toast.success(<p className="pr-2">Xoá nhãn thành công!</p>, toastOptions);
                 else toast.warn(<p className="pr-2">Nhãn có bài viết, đã huỷ kích hoạt!</p>, toastOptions);
 
-                getLabelList(1);
-                setCurrentPage(1);
+                refreshLabelList();
             } else {
                 toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
             }
@@ -193,8 +192,7 @@ const Labels = () => {
             if (response.status === 200) {
                 toast.success(<p className="pr-2">Kích hoạt nhãn thành công!</p>, toastOptions);
 
-                getLabelList(1);
-                setCurrentPage(1);
+                refreshLabelList();
             } else {
                 toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
             }

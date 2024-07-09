@@ -1,4 +1,4 @@
-import { uploadImageForReply } from "@api/main/imageAPI";
+import { uploadImage, uploadImageForReply } from "@api/main/imageAPI";
 import { deleteAPost, getAPost, getHistoryOfPost, likePost } from "@api/main/postAPI";
 import { addAReply, deleteAReply, editAReply, getAllRepliesOfPost, getHistoryOfReply, likeReply } from "@api/main/replyAPI";
 import usePrivateAxios from "@api/usePrivateAxios";
@@ -222,7 +222,7 @@ const DetailPost = () => {
         setIsLoading(true);
         try {
             const response = await deleteAPost(postId);
-            if (response.status === 200) navigate("/forum");
+            if (response.status === 200) navigate("/admin/posts");
             else {
                 toast.error(<p className="pr-2">Đã xảy ra lỗi khi xoá bài đăng!</p>, toastOptions);
             }
@@ -369,12 +369,12 @@ const DetailPost = () => {
                 },
             };
 
-            const response = await uploadImageForReply(formData, config);
+            const response = await uploadImage(formData, config);
 
             setIsLoadingImage(false);
 
             if (response.status === 200) {
-                const imageUrl = response.message;
+                const imageUrl = response.data;
 
                 const quillEditor = mainQuill.current.getEditor();
 
@@ -444,12 +444,12 @@ const DetailPost = () => {
                 },
             };
 
-            const response = await uploadImageForReply(formData, config);
+            const response = await uploadImage(formData, config);
 
             setIsLoadingImage(false);
 
             if (response.status === 200) {
-                const imageUrl = response.message;
+                const imageUrl = response.data;
 
                 const quillEditor = editQuill.current.getEditor();
 
@@ -584,11 +584,11 @@ const DetailPost = () => {
                         <div className="bg-gray-100 p-5">
                             <Avatar alt="User" img={post && post.userPosted && post.userPosted.image} rounded bordered size="lg" className="mb-4 mt-2" />
 
-                            <div className="text-center text-sm hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/users/${post.userPosted.userId}`)}>
+                            <div className="text-center text-sm hover:text-green-400 cursor-pointer" onClick={() => navigate(`/admin/users/${post.userPosted.userId}`)}>
                                 {post && post.userPosted && post.userPosted.email.split("@")[0]}
                             </div>
 
-                            <div className="text-center font-semibold hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/users/${post.userPosted.userId}`)}>
+                            <div className="text-center font-semibold hover:text-green-400 cursor-pointer" onClick={() => navigate(`/admin/users/${post.userPosted.userId}`)}>
                                 {post && post.userPosted && post.userPosted.lastName} {post && post.userPosted && post.userPosted.firstName}
                             </div>
 
@@ -620,7 +620,7 @@ const DetailPost = () => {
                                     )}
 
                                     <Tooltip content="Chỉnh sửa bài đăng" style="light">
-                                        <button className="bg-transparent" onClick={() => navigate(`/forum/posts/${post.postId}/edit`)}>
+                                        <button className="bg-transparent" onClick={() => navigate(`/admin/posts/${post.postId}/edit`)}>
                                             <HiPencil className="text-base hover:text-yellow-500 active:text-yellow-400 cursor-pointer" />
                                         </button>
                                     </Tooltip>
@@ -667,11 +667,11 @@ const DetailPost = () => {
                                     <div className="bg-gray-100 p-5">
                                         <Avatar alt="User" img={reply.user && reply.user.image} rounded bordered size="lg" className="mb-4 mt-2" />
 
-                                        <div className="text-center text-sm hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/users/${reply.user && reply.user.userId}`)}>
+                                        <div className="text-center text-sm hover:text-green-400 cursor-pointer" onClick={() => navigate(`/admin/users/${reply.user && reply.user.userId}`)}>
                                             {reply.user && reply.user.email.split("@")[0]}
                                         </div>
 
-                                        <div className="text-center font-semibold hover:text-green-400 cursor-pointer" onClick={() => navigate(`/forum/users/${reply?.user?.userId}`)}>
+                                        <div className="text-center font-semibold hover:text-green-400 cursor-pointer" onClick={() => navigate(`/admin/users/${reply?.user?.userId}`)}>
                                             {reply.user && reply.user.lastName} {reply.user && reply.user.firstName}
                                         </div>
 
@@ -843,7 +843,7 @@ const DetailPost = () => {
                 <Modal.Body>
                     <div className="text-center">
                         <HiTrash className="mx-auto mb-4 h-14 w-14 text-red-600 dark:text-gray-200" />
-                        <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có chắc chắn muốn xoá phản hồi này không?</h3>
+                        <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có chắc chắn muốn xoá phản hồi này không? Bạn sẽ mất toàn bộ phản hồi và lượt thích!</h3>
                         <div className="flex justify-center gap-4">
                             <Button color="failure" isProcessing={isLoading} disabled={isLoading} onClick={handleDeleteReply}>
                                 {"Chắc chắn"}

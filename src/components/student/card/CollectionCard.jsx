@@ -3,14 +3,13 @@ import colors from "@assets/json-data/light_colors.json";
 import CollectionModal from "@components/student/modal/CollectionModal";
 import { Button, Modal, Tooltip } from "flowbite-react";
 import { useState } from "react";
-import { BiSolidLock } from "react-icons/bi";
 import { CgExtensionRemove } from "react-icons/cg";
 import { HiHeart, HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
 import { HiClipboardDocumentList } from "react-icons/hi2";
 import { IoHeart } from "react-icons/io5";
+import { RiChatPrivateFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
-import { RiChatPrivateFill } from "react-icons/ri";
 
 const toastOptions = {
     position: "bottom-center",
@@ -64,21 +63,18 @@ const CollectionCard = (props) => {
     };
 
     return (
-        <div
-            className="relative overflow-hidden w-full border rounded-lg h-fit rounded-lg shadow-lg space-y-2 collection-card bg-white cursor-pointer transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-110 duration-150 z-20"
-            style={{ "--hover-color": getRandomColor.hover }}
-            onClick={() => navigate(`/collections/${collection.slug}`)}>
-            <div className="absolute w-3/5 aspect-square rounded-full -top-10 -left-10 z-0" style={{ backgroundColor: getRandomColor.hover }} />
+        <div className="relative overflow-hidden w-full border rounded-lg h-fit rounded-lg shadow-lg space-y-2 collection-card bg-white cursor-pointer transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-110 duration-150 z-0" style={{ "--hover-color": getRandomColor.hover }}>
+            <div className="absolute w-3/5 aspect-square rounded-full -top-10 -left-10 z-0" style={{ backgroundColor: getRandomColor.hover }} onClick={() => navigate(`/collections/${collection.slug}`)} />
 
-            <div className="absolute w-2/5 aspect-square rounded-lg rotate-45 -bottom-10 -right-10 z-0" style={{ backgroundColor: getRandomColor.bg }} />
+            <div className="absolute w-2/5 aspect-square rounded-lg rotate-45 -bottom-10 -right-10 z-0" style={{ backgroundColor: getRandomColor.bg }} onClick={() => navigate(`/collections/${collection.slug}`)} />
 
             {isMine && collection.private && (
-                <div className="absolute top-1 right-1 rounded-full bg-white z-20 p-1 bg-amber-50" title="Bộ sưu tập riêng tư">
+                <div className="absolute top-1 right-1 rounded-full bg-white z-[2] p-1 bg-amber-50" title="Bộ sưu tập riêng tư">
                     <RiChatPrivateFill className="text-2xl text-amber-500" />
                 </div>
             )}
 
-            <div className="relative p-5 z-10">
+            <div className="relative p-5 z-[1]" onClick={() => navigate(`/collections/${collection.slug}`)}>
                 <div className="relative">
                     <div className="flex space-x-2 justify-center">
                         {collection.thumbnails[0] && (
@@ -104,12 +100,12 @@ const CollectionCard = (props) => {
                 <div className="flex w-full items-center justify-center space-x-3 text-xl mt-3 mb-2">
                     <div className="flex items-center justify-center space-x-2">
                         <HiClipboardDocumentList className="text-emerald-500" />
-                        <p className="font-medium text-gray-600">1</p>
+                        <p className="font-medium text-gray-600">{collection.totalDocuments}</p>
                     </div>
 
                     <div className="flex items-center justify-center space-x-2">
                         <IoHeart className="text-rose-500" />
-                        <p className="font-medium text-gray-600">2</p>
+                        <p className="font-medium text-gray-600">{collection.totalLikes}</p>
                     </div>
                 </div>
 
@@ -155,7 +151,7 @@ const CollectionCard = (props) => {
                 )}
             </div>
 
-            <Modal show={openDeleteModal} size="md" onClose={() => setOpenDeleteModal(false)} popup className="z-40">
+            <Modal show={openDeleteModal} size="md" onClose={() => setOpenDeleteModal(false)} popup>
                 <Modal.Header />
                 <Modal.Body>
                     <div className="text-center">

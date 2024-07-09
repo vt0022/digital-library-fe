@@ -130,42 +130,85 @@ const UserModal = (props) => {
     };
 
     const validateLastName = () => {
-        if (lastName === "" || lastName.trim() === "") setIsLastNameValid(false);
-        else setIsLastNameValid(true);
+        if (lastName === "" || lastName.trim() === "") {
+            setIsLastNameValid(false);
+            return false;
+        } else {
+            setIsLastNameValid(true);
+            return true;
+        }
     };
 
     const validateFirstName = () => {
-        if (firstName === "" || firstName.trim() === "") setIsFirstNameValid(false);
-        else setIsFirstNameValid(true);
+        if (firstName === "" || firstName.trim() === "") {
+            setIsFirstNameValid(false);
+            return false;
+        } else {
+            setIsFirstNameValid(true);
+            return true;
+        }
     };
 
     const validateEmail = () => {
-        if (email === "" || email.trim() === "") setIsEmailValid(false);
-        else setIsEmailValid(true);
+        if (email === "" || email.trim() === "") {
+            setIsEmailValid(false);
+            return false;
+        } else {
+            setIsEmailValid(true);
+            return true;
+        }
     };
 
     const validateDateOfBirth = () => {
         const fifteenYearsAgo = new Date();
         fifteenYearsAgo.setFullYear(new Date().getFullYear() - 15);
-        if (dateOfBirth > fifteenYearsAgo) setIsDateOfBirthValid(false);
-        else setIsDateOfBirthValid(true);
+        if (dateOfBirth > fifteenYearsAgo) {
+            setIsDateOfBirthValid(false);
+            return false;
+        } else {
+            setIsDateOfBirthValid(true);
+            return true;
+        }
     };
 
-    const validateOraganization = () => {
+    const validateOrganization = () => {
         if (roleId !== "c0a801b9-8ac0-1a60-818a-c04a8fb50038") {
-            if (orgId === "" || orgId.trim() === "") setIsOrganizationValid(false);
-        } else setIsOrganizationValid(true);
+            if (orgId === "" || orgId.trim() === "") {
+                setIsOrganizationValid(false);
+                return false;
+            } else {
+                setIsOrganizationValid(true);
+                return true;
+            }
+        } else {
+            setIsOrganizationValid(true);
+            return true;
+        }
     };
 
     const validateRole = () => {
-        if (roleId === "" || roleId.trim() === "") setIsRoleValid(false);
-        else setIsRoleValid(true);
+        if (roleId === "" || roleId.trim() === "") {
+            setIsRoleValid(false);
+            return false;
+        } else {
+            setIsRoleValid(true);
+            return true;
+        }
     };
 
     const validatePassword = () => {
         if (isCreatingNew) {
-            if (password === "" || password.trim() === "") setIsPasswordValid(false);
-        } else setIsPasswordValid(true);
+            if (password === "" || password.trim() === "") {
+                setIsPasswordValid(false);
+                return false;
+            } else {
+                setIsPasswordValid(true);
+                return true;
+            }
+        } else {
+            setIsPasswordValid(true);
+            return true;
+        }
     };
 
     const validateConfirmPassword = () => {
@@ -173,11 +216,19 @@ const UserModal = (props) => {
             if (confirmPassword === "" || confirmPassword.trim() === "") {
                 setIsConfirmPasswordValid(false);
                 setConfirmPasswordMessage("Vui lòng mật khẩu xác thực.");
+                return false;
             } else if (confirmPassword !== password) {
                 setIsConfirmPasswordValid(false);
                 setConfirmPasswordMessage("Mật khẩu không khớp.");
-            } else setIsConfirmPasswordValid(true);
-        } else setIsConfirmPasswordValid(true);
+                return false;
+            } else {
+                setIsConfirmPasswordValid(true);
+                return true;
+            }
+        } else {
+            setIsConfirmPasswordValid(true);
+            return true;
+        }
     };
 
     const validateFile = () => {
@@ -196,14 +247,14 @@ const UserModal = (props) => {
     };
 
     const validateInput = () => {
-        validateLastName();
-        validateFirstName();
-        validateEmail();
-        validateDateOfBirth();
-        validateOraganization();
-        validateRole();
-        validatePassword();
-        validateConfirmPassword();
+        const isLastNameValid = validateLastName();
+        const isFirstNameValid = validateFirstName();
+        const isEmailValid = validateEmail();
+        const isDateOfBirthValid = validateDateOfBirth();
+        const isOrganizationValid = validateOrganization();
+        const isRoleValid = validateRole();
+        const isPasswordValid = validatePassword();
+        const isConfirmPasswordValid = validateConfirmPassword();
         setIsFileValid(validateFile());
 
         if (!isLastNameValid || !isFirstNameValid || !isEmailValid || !isDateOfBirthValid || !isOrganizationValid || !isRoleValid || !isPasswordValid || !isConfirmPasswordValid || !validateFile()) {
@@ -264,11 +315,11 @@ const UserModal = (props) => {
                     refreshUserList();
                 } else {
                     if (response.message === "Email already registered") {
-                        toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
+                        toast.error(<p className="pr-2">Email đã được đăng ký trước đó!</p>, toastOptions);
                     } else if (response.message === "User not found") {
-                        toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
+                        toast.error(<p className="pr-2">Không tìm thấy người dùng!</p>, toastOptions);
                     } else if (response.message === "Passwords not match") {
-                        toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
+                        toast.error(<p className="pr-2">Mật khẩu không trùng khớp!</p>, toastOptions);
                     } else {
                         toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
                     }
@@ -276,6 +327,7 @@ const UserModal = (props) => {
             } catch (error) {
                 toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
             }
+        } else {
         }
     };
 

@@ -137,7 +137,8 @@ const ListCollections = () => {
                 </div>
 
                 <div>
-                    <InfiniteScroll loader={<p className="text-center mt-5 font-medium">Đang tải...</p>} fetchMore={() => setCurrentPage((prev) => prev + 1)} hasMore={collectionList.length < totalCollections} endMessage={<p className="text-center mt-5 font-medium">Đã đến cuối trang</p>}>
+                    <InfiniteScroll loader={<p className="text-center mt-5 font-medium">Đang tải...</p>} fetchMore={() => setCurrentPage((prev) => prev + 1)} hasMore={collectionList.length < totalCollections} endMessage={<></>}>
+                    {/* <p className="text-center mt-5 font-medium">Đã đến cuối trang</p> */}
                         <div className="grid grid-cols-4 gap-x-8" id="collection-section" ref={collectionSectionRef}>
                             <div className="flex flex-col space-y-12">
                                 {collectionListCol1.map((collection, index) => (

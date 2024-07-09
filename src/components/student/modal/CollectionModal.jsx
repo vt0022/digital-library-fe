@@ -84,7 +84,7 @@ const CollectionModal = (props) => {
 
     return (
         <>
-            <Modal show={openModal} size="md" onClose={onCloseModal} popup className="z-40">
+            <Modal show={openModal} size="md" onClose={onCloseModal} popup className="z-50">
                 <Modal.Header />
                 <Modal.Body>
                     <div className="space-y-6">

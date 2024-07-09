@@ -1,0 +1,17 @@
+version: '3.9'
+services:
+  app:
+    container_name: miniverse-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 3s
+        max_attempts: 3
+        window: 60s
+
+

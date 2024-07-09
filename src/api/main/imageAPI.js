@@ -1,8 +1,8 @@
-import axios from "../axios";
+import axios, { privateAxios } from "../axios";
 
-export const uploadImageForReply = async (data, config) => {
+export const uploadImage = async (data, config) => {
     try {
-        const response = await axios.post("/replies/image", data, config);
+        const response = await privateAxios.post("/images", data, config);
         return response.data;
     } catch (error) {
         throw error;

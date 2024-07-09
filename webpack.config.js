@@ -22,4 +22,10 @@ module.exports = {
             routers: path.resolve(__dirname, "./src/routers"),
         },
     },
+
+    devServer: {
+        client: {
+            overlay: false,
+        },
+    },
 };

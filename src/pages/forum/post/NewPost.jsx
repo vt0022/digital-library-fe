@@ -1,4 +1,4 @@
-import { uploadImageForReply } from "@api/main/imageAPI";
+import { uploadImage } from "@api/main/imageAPI";
 import { getActiveLabels } from "@api/main/labelAPI";
 import { addAPost, getRelatedPosts } from "@api/main/postAPI";
 import { getEditableSubsections } from "@api/main/sectionAPI";
@@ -164,12 +164,12 @@ const NewPost = () => {
                 },
             };
 
-            const response = await uploadImageForReply(formData, config);
+            const response = await uploadImage(formData, config);
 
             setIsLoadingImage(false);
 
             if (response.status === 200) {
-                const imageUrl = response.message;
+                const imageUrl = response.data;
 
                 const quillEditor = quill.current.getEditor();
 

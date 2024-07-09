@@ -55,8 +55,18 @@ const DetailAppealModal = (props) => {
                     </div>
 
                     <div className="rounded-lg bg-gray-100 p-3 flex flex-col space-y-2">
-                        <p className="text-sm font-medium text-gray-600">Lý do khiếu nại và bị gỡ</p>
+                        <p className="text-sm font-medium text-gray-600">Lý do khiếu nại</p>
                         <p className="font-medium">{findAppealReasonByType(content.type)}</p>
+                    </div>
+
+                    <div className="rounded-lg bg-gray-100 p-3 flex flex-col space-y-2">
+                        <p className="text-sm font-medium text-gray-600">Lý do khiếu nại</p>
+                        <p className="font-medium">{findAppealReasonByType(content.type)}</p>
+                    </div>
+
+                    <div className="rounded-lg bg-gray-100 p-3 flex flex-col space-y-2">
+                        <p className="text-sm font-medium text-gray-600">Chi tiết</p>
+                        <p className="font-medium">{content.reason}</p>
                     </div>
 
                     <div className="rounded-lg bg-gray-100 p-3 flex flex-col space-y-2">

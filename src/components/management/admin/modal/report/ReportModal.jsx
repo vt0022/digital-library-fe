@@ -57,7 +57,7 @@ const ReportModal = (props) => {
 
                 toast.success(
                     <p className="pr-2">
-                        {action === "disable" ? "Gỡ" : "Xoá"} {target === "POST" ? "bài đăng" : "bài viết"} thành công!
+                        {action === "disable" ? "Gỡ" : "Xoá"} {target === "POST" ? "bài đăng" : "phản hồi"} thành công!
                     </p>,
                     toastOptions,
                 );

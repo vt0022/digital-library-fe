@@ -77,7 +77,7 @@ const DetailCollection = () => {
             if (response.status === 200) {
                 getCollection();
 
-                toast.error(<p className="pr-2">Xoá khỏi bộ sưu tập thành công!</p>, toastOptions);
+                toast.success(<p className="pr-2">Xoá khỏi bộ sưu tập thành công!</p>, toastOptions);
             } else {
                 toast.error(<p className="pr-2">Đã xảy ra lỗi! Vui lòng thử lại!</p>, toastOptions);
             }

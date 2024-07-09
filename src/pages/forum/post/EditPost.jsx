@@ -1,4 +1,4 @@
-import { uploadImageForReply } from "@api/main/imageAPI";
+import { uploadImage } from "@api/main/imageAPI";
 import { getActiveLabels } from "@api/main/labelAPI";
 import { editAPost, getAPost, getRelatedPosts } from "@api/main/postAPI";
 import { getEditableSubsections } from "@api/main/sectionAPI";
@@ -77,7 +77,10 @@ const EditPost = () => {
                     query: title,
                 },
             });
-            if (response.status === 200) setPostList(response.data.content);
+            if (response.status === 200) {
+                const filteredPosts = response.data.content.filter((post) => post.postId !== postId);
+                setPostList(filteredPosts);
+            }
         } catch (error) {
             navigate("/error-500");
         }
@@ -201,12 +204,12 @@ const EditPost = () => {
                 },
             };
 
-            const response = await uploadImageForReply(formData, config);
+            const response = await uploadImage(formData, config);
 
             setIsLoadingImage(false);
 
             if (response.status === 200) {
-                const imageUrl = response.message;
+                const imageUrl = response.data;
 
                 const quillEditor = quill.current.getEditor();
 
@@ -262,7 +265,7 @@ const EditPost = () => {
 
     return (
         <>
-            <PageHead title={`Chỉnh sửa bài đăng - ${post && post.title} - miniverse`} description={`${post && post.content.replace(/(<([^>]+)>)/gi, "")} - miniverse`} url={window.location.href}/>
+            <PageHead title={`Chỉnh sửa bài đăng - ${post && post.title} - miniverse`} description={`${post && post.content.replace(/(<([^>]+)>)/gi, "")} - miniverse`} url={window.location.href} />
 
             <div className="w-5/6 m-auto min-h-screen h-max mt-5 p-5">
                 <div className="items-center mb-5 w-full border-b border-black py-2">

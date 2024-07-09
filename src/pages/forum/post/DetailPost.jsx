@@ -1,4 +1,4 @@
-import { uploadImageForReply } from "@api/main/imageAPI";
+import { uploadImage, uploadImageForReply } from "@api/main/imageAPI";
 import { acceptPost, deleteAPost, getAPost, getAPostForGuest, getHistoryOfPost, getRelatedPostsForAPost, likePost, undoAcceptPost } from "@api/main/postAPI";
 import { acceptReply, addAReply, deleteAReply, editAReply, getHistoryOfReply, getRepliesForGuest, getViewableRepliesOfPost, likeReply, undoAcceptReply } from "@api/main/replyAPI";
 import usePrivateAxios from "@api/usePrivateAxios";
@@ -212,6 +212,7 @@ const DetailPost = () => {
             try {
                 const response = await likePost(postId);
                 if (response.status === 200) {
+                    toast.success(<p className="pr-2">{post && post.liked ? "Đã bỏ thích bài đăng!" : "Đã thích bài đăng!"}</p>, toastOptions);
                     getPostDetail();
                 }
             } catch (error) {
@@ -227,6 +228,7 @@ const DetailPost = () => {
             try {
                 const response = await likeReply(reply && reply.replyId);
                 if (response.status === 200) {
+                    toast.success(<p className="pr-2">{reply && reply.liked ? "Đã bỏ thích phản hồi!" : "Đã thích phản hồi!"}</p>, toastOptions);
                     getPostReply();
                 }
             } catch (error) {
@@ -277,6 +279,7 @@ const DetailPost = () => {
                 const response = await acceptReply(reply && reply.replyId);
                 if (response.status === 200) {
                     toast.success(<p className="pr-2">Đã đánh dấu phản hồi là hữu ích!</p>, toastOptions);
+                    getPostDetail();
                     getPostReply();
                 }
             } catch (error) {
@@ -295,6 +298,7 @@ const DetailPost = () => {
                 const response = await undoAcceptReply(reply && reply.replyId);
                 if (response.status === 200) {
                     toast.success(<p className="pr-2">Đã xoá đánh dấu phản hồi!</p>, toastOptions);
+                    getPostDetail();
                     getPostReply();
                 }
             } catch (error) {
@@ -356,7 +360,10 @@ const DetailPost = () => {
         setIsLoading(true);
         try {
             const response = await deleteAPost(postId);
-            if (response.status === 200) navigate("/forum");
+            if (response.status === 200) {
+                toast.success(<p className="pr-2">Xoá bài đăng thành công!</p>, toastOptions);
+                navigate("/forum");
+            }
             else {
                 toast.error(<p className="pr-2">Đã xảy ra lỗi khi xoá bài đăng!</p>, toastOptions);
             }
@@ -371,7 +378,12 @@ const DetailPost = () => {
         setIsLoading(true);
         try {
             const response = await deleteAReply(replyId);
-            if (response.status === 200) getPostReply();
+            if (response.status === 200) {
+                getPostReply();
+                if(replyList.length === 1 && currentPage > 1) {
+                    setCurrentPage(currentPage - 1);
+                }
+            }
             else {
                 toast.error(<p className="pr-2">Đã xảy ra lỗi khi xoá phản hồi!</p>, toastOptions);
             }
@@ -509,12 +521,12 @@ const DetailPost = () => {
                 },
             };
 
-            const response = await uploadImageForReply(formData, config);
+            const response = await uploadImage(formData, config);
 
             setIsLoadingImage(false);
 
             if (response.status === 200) {
-                const imageUrl = response.message;
+                const imageUrl = response.data;
 
                 const quillEditor = mainQuill.current.getEditor();
 
@@ -584,12 +596,12 @@ const DetailPost = () => {
                 },
             };
 
-            const response = await uploadImageForReply(formData, config);
+            const response = await uploadImage(formData, config);
 
             setIsLoadingImage(false);
 
             if (response.status === 200) {
-                const imageUrl = response.message;
+                const imageUrl = response.data;
 
                 const quillEditor = editQuill.current.getEditor();
 
@@ -812,7 +824,7 @@ const DetailPost = () => {
                                                 ) : (
                                                     <Tooltip overlay={<p>Thích bài đăng</p>} placement="bottom">
                                                         <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handlePostLike(postId)}>
-                                                            <IoHeartCircle className="text-red-500 hover:text-red-300 text-4xl active:text-red-200 cursor-pointer" />
+                                                            <IoHeartCircle className="text-4xl text-gray-400 hover:text-red-400 active:text-red-500 cursor-pointer" />
                                                         </button>
                                                     </Tooltip>
                                                 )}
@@ -1107,7 +1119,7 @@ const DetailPost = () => {
                                                             </>
                                                         )}
 
-                                                        {post && post.totalLikes > 0 && <p className="text-lg font-medium">{post.totalLikes}</p>}
+                                                        {reply && reply.totalLikes > 0 && <p className="text-lg font-medium">{reply.totalLikes}</p>}
                                                     </div>
 
                                                     <div className="flex space-x-8">

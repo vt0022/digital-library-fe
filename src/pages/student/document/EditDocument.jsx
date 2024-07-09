@@ -213,7 +213,7 @@ const StudentEditDocument = () => {
                     },
                 };
 
-                const response = await updateDocument(document.slug, formData, config);
+                const response = await updateDocument(document && document.slug, formData, config);
 
                 setIsLoading(false);
 
@@ -231,7 +231,7 @@ const StudentEditDocument = () => {
 
     return (
         <>
-            <PageHead title={"Chỉnh sửa tài liệu - " + document && document.docName + " - miniverse"} description={"Chỉnh sửa tài liệu - " + document && document.docIntroduction + " - miniverse"} imageUrl={document && document.thumbnail} url={window.location.href} />
+            <PageHead title={"Chỉnh sửa tài liệu - " + (document && document.docName) + " - miniverse"} description={"Chỉnh sửa tài liệu - " + (document && document.docIntroduction) + " - miniverse"} imageUrl={document && document.thumbnail} url={window.location.href} />
 
             <div className="p-4 overflow-auto">
                 <div className="w-full grid place-items-center ">

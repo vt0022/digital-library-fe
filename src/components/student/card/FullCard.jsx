@@ -1,9 +1,10 @@
 import moment from "moment";
 import { Link, useNavigate } from "react-router-dom";
-
 import { HiBadgeCheck, HiOutlineCalendar, HiOutlineEye, HiOutlineHeart } from "react-icons/hi";
-
+import { BiSolidCalendarCheck } from "react-icons/bi";
+import { IoEye, IoHeart } from "react-icons/io5";
 import "./card.css";
+
 const FullCard = (props) => {
     const { docName, thumbnail, docIntroduction, totalView, totalFavorite, averageRating, isContributed, updatedAt, slug } = props;
 
@@ -26,17 +27,17 @@ const FullCard = (props) => {
 
                     <div className="flex gap-10 text-base">
                         <div className="flex items-center">
-                            <HiOutlineCalendar className="w-5 h-5 mr-2 text-gray-500 dark:text-white" />
+                            <BiSolidCalendarCheck className="w-5 h-5 mr-2 text-orange-500 dark:text-white" />
                             <span className="block text-base text-red-500 dark:text-white">{moment(updatedAt).format("DD/MM/yyyy")}</span>
                         </div>
 
                         <div className="flex items-center">
-                            <HiOutlineEye className="w-5 h-5 mr-2 text-gray-500 dark:text-white" />
+                            <IoEye className="w-5 h-5 mr-2 text-emerald-500 dark:text-white" />
                             <span className="block text-red-500 dark:text-white">{totalView}</span>
                         </div>
 
                         <div className="flex items-center">
-                            <HiOutlineHeart className="w-5 h-5 mr-2 text-gray-500 dark:text-white" />
+                            <IoHeart className="w-5 h-5 mr-2 text-red-500 dark:text-white" />
                             <span className="block text-base text-red-500 dark:text-white">{totalFavorite}</span>
                         </div>
                     </div>

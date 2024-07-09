@@ -12,7 +12,7 @@ import "@react-pdf-viewer/core/lib/styles/index.css";
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 import "@react-pdf-viewer/toolbar/lib/styles/index.css";
-import { Button, Modal, Tooltip } from "flowbite-react";
+import { Button, Modal, Popover, Tooltip } from "flowbite-react";
 import { gapi } from "gapi-script";
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
@@ -54,6 +54,7 @@ const DetailDocument = () => {
 
     const [doc, setDocument] = useState(null);
     const [documentList, setDocumentList] = useState([]);
+    const [isDocReady, setIsDocReady] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [isopenDownloadModal, setIsOpenDownloadModal] = useState(false);
@@ -110,7 +111,7 @@ const DetailDocument = () => {
         if (doc) {
             gapi.load("client:auth2", downloadPDF);
         }
-    }, [doc]);
+    }, [isDocReady]);
 
     const handlePageChange = (e) => {
         setCurrentPage(e.currentPage);
@@ -166,8 +167,10 @@ const DetailDocument = () => {
 
             if (response.status === 200) {
                 setDocument(response.data);
+                setIsDocReady(true);
                 setCurrentPage(response.data.currentPage);
             } else {
+                setIsDocReady(true);
                 navigate("/error-404");
             }
         } catch (error) {
@@ -206,7 +209,11 @@ const DetailDocument = () => {
 
             if (response.status === 200) {
                 toast.success(<p className="pr-2">Đã thêm vào danh sách yêu thích!</p>, toastOptions);
-                getDocumentBySlug();
+                setDocument((prevDoc) => ({
+                    ...prevDoc,
+                    liked: !prevDoc.liked,
+                    totalFavorite: prevDoc.totalFavorite + 1,
+                }));
             } else {
                 toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
             }
@@ -221,7 +228,11 @@ const DetailDocument = () => {
 
             if (response.status === 200) {
                 toast.success(<p className="pr-2">Đã xoá khỏi danh sách yêu thích!</p>, toastOptions);
-                getDocumentBySlug();
+                setDocument((prevDoc) => ({
+                    ...prevDoc,
+                    liked: !prevDoc.liked,
+                    totalFavorite: prevDoc.totalFavorite - 1,
+                }));
             } else {
                 toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
             }
@@ -236,7 +247,10 @@ const DetailDocument = () => {
 
             if (response.status === 200) {
                 toast.success(<p className="pr-2">Đã thêm vào danh sách đã lưu!</p>, toastOptions);
-                getDocumentBySlug();
+                setDocument((prevDoc) => ({
+                    ...prevDoc,
+                    saved: !prevDoc.saved,
+                }));
             } else {
                 toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
             }
@@ -250,8 +264,11 @@ const DetailDocument = () => {
             const response = await unsaveDocument(slug);
 
             if (response.status === 200) {
-                toast.success(<p className="pr-2">Đã xoá khỏi danh sách yêu thích!</p>, toastOptions);
-                getDocumentBySlug();
+                toast.success(<p className="pr-2">Đã xoá khỏi danh sách đã lưu!</p>, toastOptions);
+                setDocument((prevDoc) => ({
+                    ...prevDoc,
+                    saved: !prevDoc.saved,
+                }));
             } else {
                 toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
             }
@@ -337,7 +354,7 @@ const DetailDocument = () => {
                         </div>
 
                         <div className="flex">
-                            <div className="w-4/5 flex gap-2 items-center justify-evenly">
+                            <div className="w-4/5 flex gap-2 items-center justify-between">
                                 <div className="w-fit px-3 py-2 rounded-lg flex space-x-1 items-center bg-sky-50 cursor-pointer" onClick={() => navigate("/users/" + doc.userUploaded.userId)}>
                                     <FaSquareShareNodes className="text-xl text-sky-500" />
 
@@ -414,7 +431,40 @@ const DetailDocument = () => {
                                 Bạn đang xem ở chế độ <span className="text-emerald-500 font-medium">{mode === "advanced" ? "xem chi tiết" : "đơn giản"}</span>
                             </p>
 
-                            <PiQuestionBold className="w-5 h-5 text-amber-400" />
+                            <Popover
+                                aria-labelledby="mode-popover"
+                                trigger="hover"
+                                content={
+                                    <div className="w-96 text-sm text-gray-500">
+                                        <div className="border-b border-gray-200 bg-gray-100 px-3 py-2">
+                                            <h3 id="default-popover" className="font-semibold text-gray-900 dark:text-white">
+                                                Chế độ xem tài liệu
+                                            </h3>
+                                        </div>
+                                        <div className="px-3 py-2 space-y-4">
+                                            <p className="font-medium">
+                                                Miniverse cung cấp 2 chế độ xem tài liệu: <span className="text-sky-500">chế độ đơn giản</span> và <span className="text-green-500">chế độ chi tiết</span>
+                                            </p>
+
+                                            <div className="pl-4">
+                                                <ul className="list-disc text-sm pl-2 text-justify">
+                                                    <li>
+                                                        <span className="font-medium text-sky-500">Chế độ xem đơn giản:</span> hiển thị trình đọc tài liệu ở mức tối giản nhất. Phù hợp với tốc độ mạng thấp hoặc dự phòng khi chế độ xem chi tiết xảy ra vấn đề. Lưu ý, chế độ này không hỗ trợ lưu vị trí
+                                                        đọc theo thời gian thực.
+                                                    </li>
+                                                    <li>
+                                                        <span className="font-medium text-green-500">Chế độ xem chi tiết:</span> cho phép người dùng xem tài liệu trong trình đọc nâng cao, cung cấp nhiều tính năng hỗ trợ như tìm kiếm trên tài liệu, chuyển chế độ màu sắc, lưu lại vị trí đọc theo thời gian thực,
+                                                        tự động mở ghi chú của trang khi xem đến một trang nhất định (nếu có),...
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }>
+                                <div>
+                                    <PiQuestionBold className="w-5 h-5 text-amber-400 hover:text-amber-600 cursor-pointer" />
+                                </div>
+                            </Popover>
                         </div>
 
                         <div className="flex space-x-2 items-center">
@@ -455,10 +505,14 @@ const DetailDocument = () => {
                                         {pdfData ? (
                                             <Viewer fileUrl={pdfData} initialPage={currentPage} plugins={[defaultLayoutPluginInstance]} onPageChange={handlePageChange} />
                                         ) : (
-                                            <div className="flex flex-col items-center justify-center max-w-2/3 h-fit rounded-lg p-2 text-white bg-red-500 font-medium">
-                                                <p>Đã xảy ra lỗi khi tải tài liệu 😭</p>
-                                                <p> Bạn vui lòng chuyển sang chế độ xem đơn giản</p>
-                                            </div>
+                                            <>
+                                                {isDocReady && (
+                                                    <div className="flex flex-col items-center justify-center max-w-2/3 h-fit rounded-lg p-2 text-white bg-red-500 font-medium">
+                                                        <p>Đã xảy ra lỗi khi tải tài liệu 😭</p>
+                                                        <p> Bạn vui lòng chuyển sang chế độ xem đơn giản</p>
+                                                    </div>
+                                                )}
+                                            </>
                                         )}
                                     </>
                                 )}
@@ -515,7 +569,19 @@ const DetailDocument = () => {
                         <ReviewList slug={slug} totalReviews={doc && doc.totalReviews} averageRating={doc && doc.averageRating.toFixed(1)} />
                     </div>
 
-                    <div className="w-1/4">{doc && !doc.reviewed && <Review docId={doc && doc.docId} refreshDoc={getDocumentBySlug} />}</div>
+                    <div className="w-1/4">
+                        {doc && !doc.reviewed && (
+                            <Review
+                                docId={doc && doc.docId}
+                                refreshDoc={() =>
+                                    setDocument((prevDoc) => ({
+                                        ...prevDoc,
+                                        reviewed: !prevDoc.reviewed,
+                                    }))
+                                }
+                            />
+                        )}
+                    </div>
                 </div>
 
                 {documentList.length > 0 && (
