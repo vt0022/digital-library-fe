@@ -34,7 +34,7 @@ const Appeals = () => {
         <tr key={index} className={`cursor-pointer ${item.read ? "bg-gray-100" : ""}`} >
             <td className="w-1/12 text-center font-bold">{(currentPage - 1) * 2 + index + 1}</td>
 
-            <td className="w-2/12 font-medium">{findReportReasonByType(target === "POST" ? item.postReport && item.postReport.type : item.replyReport && item.replyReport.type)}</td>
+            <td className="w-2/12 font-medium">{findReportReasonByType(item.disableReason)}</td>
 
             <td className="w-2/12 font-medium">{findAppealReasonByType(item.type)}</td>
 
@@ -222,21 +222,21 @@ const Appeals = () => {
         }
     };
 
-    const handleAppeal = async (appealId, type) => {
+    const handleAppeal = async (appealId, action) => {
         try {
-            setIsFetching(true);
+            setIsLoading(true);
 
             let response = null;
             if (target === "POST")
                 response = await handlePostAppeal(appealId, {
                     params: {
-                        type: type,
+                        action: action,
                     },
                 });
             else
                 response = await handleReplyAppeal(appealId, {
                     params: {
-                        type: type,
+                        action: action,
                     },
                 });
 
@@ -253,6 +253,7 @@ const Appeals = () => {
                 toast.error(<p className="pr-2">Đã xảy ra lỗi! Xin vui lòng thử lại!</p>, toastOptions);
             }
         } catch (error) {
+            setIsLoading(false);
             navigate("/error-500");
         }
     };
@@ -293,6 +294,9 @@ const Appeals = () => {
         } catch (error) {}
     };
 
+    const updateType = (newType) => {
+        setType(newType)
+    }
     return (
         <>
             <PageHead title="Quản lý khiếu nại - Admin - miniverse" description="Quản lý khiếu nại - Admin - miniverse" url={window.location.href} />
@@ -418,7 +422,7 @@ const Appeals = () => {
                     </Modal.Body>
                 </Modal>
 
-                <DetailAppealModal target={target} content={content} openViewModal={openViewModal} onCloseViewModal={onCloseViewModal} restore={handleRestoreAction} remain={handleRemainAction} notSolved={notSolved} />
+                <DetailAppealModal target={target} content={content} openViewModal={openViewModal} onCloseViewModal={onCloseViewModal} restore={handleRestoreAction} remain={handleRemainAction} notSolved={notSolved} updateType={updateType}/>
             </div>
         </>
     );

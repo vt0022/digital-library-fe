@@ -1,7 +1,8 @@
-import { uploadImage, uploadImageForReply } from "@api/main/imageAPI";
-import { deleteAPost, getAPost, getHistoryOfPost, likePost } from "@api/main/postAPI";
-import { addAReply, deleteAReply, editAReply, getAllRepliesOfPost, getHistoryOfReply, likeReply } from "@api/main/replyAPI";
+import { uploadImage } from "@api/main/imageAPI";
+import { acceptPost, deleteAPost, getAPost, getHistoryOfPost, likePost, undoAcceptPost } from "@api/main/postAPI";
+import { acceptReply, addAReply, deleteAReply, editAReply, getAllRepliesOfPost, getHistoryOfReply, likeReply, undoAcceptReply } from "@api/main/replyAPI";
 import usePrivateAxios from "@api/usePrivateAxios";
+import reportReasons from "@assets/json-data/report_reasons.json";
 import PostHistoryModal from "@components/forum/modal/PostHistoryModal";
 import ReplyHistoryModal from "@components/forum/modal/ReplyHistoryModal";
 import ReportModal from "@components/forum/modal/ReportModal";
@@ -9,22 +10,24 @@ import Error404 from "@components/management/error/404Error";
 import PageHead from "@components/shared/head/PageHead";
 import Spinner from "@components/shared/spinner/Spinner";
 import DOMPurify from "dompurify";
-import { Avatar, Breadcrumb, Button, Modal, Pagination, Tooltip } from "flowbite-react";
+import { Avatar, Button, Modal, Pagination, Tooltip } from "flowbite-react";
 import moment from "moment";
 import * as Emoji from "quill-emoji";
 import "quill-emoji/dist/quill-emoji.css";
 import "quill/dist/quill.snow.css";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { render } from "react-dom";
-import { HiHome, HiOutlineThumbUp, HiOutlineUser, HiOutlineX, HiPencil, HiReply, HiThumbUp, HiTrash } from "react-icons/hi";
+import { HiOutlineThumbUp, HiOutlineUser, HiOutlineX, HiPencil, HiReply, HiThumbUp, HiTrash } from "react-icons/hi";
 import { IoEyeOff } from "react-icons/io5";
 import { LuEye } from "react-icons/lu";
 import { RiChatHistoryFill, RiChatHistoryLine } from "react-icons/ri";
+import { TiStarFullOutline } from "react-icons/ti";
 import { WiTime4 } from "react-icons/wi";
 import ReactQuill, { Quill } from "react-quill";
 import { useNavigate, useParams } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
 import "./post.css";
+import { PiChatCircleTextFill, PiCheckFatFill, PiPaperPlaneTiltFill } from "react-icons/pi";
 
 Quill.register("modules/emoji", Emoji);
 
@@ -152,20 +155,38 @@ const DetailPost = () => {
     };
 
     const handlePostLike = async () => {
-        try {
-            const response = await likePost(postId);
-            if (response.status === 200) getPostDetail();
-        } catch (error) {
-            navigate("/error-500");
+        if (post && post.my) {
+            toast.error(<p className="pr-2">Bạn không thể thích/bỏ thích bài đăng của mình!</p>, toastOptions);
+        } else {
+            try {
+                const response = await likePost(postId);
+                if (response.status === 200) {
+                    toast.success(<p className="pr-2">{post && post.liked ? "Đã bỏ thích bài đăng!" : "Đã thích bài đăng!"}</p>, toastOptions);
+                    getPostDetail();
+                } else {
+                    toast.error(<p className="pr-2">Đã xảy ra lỗi!</p>, toastOptions);
+                }
+            } catch (error) {
+                navigate("/error-500");
+            }
         }
     };
 
-    const handleReplyLike = async (replyId) => {
-        try {
-            const response = await likeReply(replyId);
-            if (response.status === 200) getPostReply();
-        } catch (error) {
-            navigate("/error-500");
+    const handleReplyLike = async (reply) => {
+        if (reply && reply.my) {
+            toast.error(<p className="pr-2">Bạn không thể thích/bỏ thích phản hồi của mình!</p>, toastOptions);
+        } else {
+            try {
+                const response = await likeReply(reply && reply.replyId);
+                if (response.status === 200) {
+                    toast.success(<p className="pr-2">{reply && reply.liked ? "Đã bỏ thích phản hồi!" : "Đã thích phản hồi!"}</p>, toastOptions);
+                    getPostReply();
+                } else {
+                    toast.error(<p className="pr-2">Đã xảy ra lỗi!</p>, toastOptions);
+                }
+            } catch (error) {
+                navigate("/error-500");
+            }
         }
     };
 
@@ -222,8 +243,10 @@ const DetailPost = () => {
         setIsLoading(true);
         try {
             const response = await deleteAPost(postId);
-            if (response.status === 200) navigate("/admin/posts");
-            else {
+            if (response.status === 200) {
+                toast.success(<p className="pr-2">Xoá bài đăng thành công!</p>, toastOptions);
+                navigate("/admin/posts");
+            } else {
                 toast.error(<p className="pr-2">Đã xảy ra lỗi khi xoá bài đăng!</p>, toastOptions);
             }
             setIsLoading(false);
@@ -248,18 +271,74 @@ const DetailPost = () => {
         }
     };
 
-    const handleReportPost = () => {
-        setTarget("POST");
-        setTargetId(postId);
-        setOpenReportModal(true);
-        setTriggerReportModal(triggerReportModal + 1);
+    const handlePostAccept = async () => {
+        if (post && post.my) {
+            toast.error(<p className="pr-2">Bạn không thể đánh dấu bài đăng của mình là hữu ích!</p>, toastOptions);
+        } else {
+            try {
+                const response = await acceptPost(postId);
+                if (response.status === 200) {
+                    toast.success(<p className="pr-2">Đã đánh dấu bài đăng là hữu ích!</p>, toastOptions);
+                    getPostDetail();
+                }
+            } catch (error) {
+                navigate("/error-500");
+            }
+        }
     };
 
-    const handleReportReply = (replyId) => {
-        setTarget("REPLY");
-        setTargetId(replyId);
-        setOpenReportModal(true);
-        setTriggerReportModal(triggerReportModal + 1);
+    const handlePostUndoAccept = async () => {
+        if (post && post.my) {
+            toast.error(<p className="pr-2">Bạn không thể bỏ đánh dấu bài đăng của mình!</p>, toastOptions);
+        } else {
+            try {
+                const response = await undoAcceptPost(postId);
+                if (response.status === 200) {
+                    toast.success(<p className="pr-2">Đã xoá đánh dấu bài đăng!</p>, toastOptions);
+                    getPostDetail();
+                }
+            } catch (error) {
+                navigate("/error-500");
+            }
+        }
+    };
+
+    const handleReplyAccept = async (reply) => {
+        if (post && !post.my) {
+            toast.error(<p className="pr-2">Chỉ có chủ bài đăng mới có thể xoá đánh dấu phản hồi này!</p>, toastOptions);
+        } else if (reply && reply.my) {
+            toast.error(<p className="pr-2">Bạn không thể đánh dấu phản hồi của mình!</p>, toastOptions);
+        } else {
+            try {
+                const response = await acceptReply(reply && reply.replyId);
+                if (response.status === 200) {
+                    toast.success(<p className="pr-2">Đã đánh dấu phản hồi là hữu ích!</p>, toastOptions);
+                    getPostDetail();
+                    getPostReply();
+                }
+            } catch (error) {
+                navigate("/error-500");
+            }
+        }
+    };
+
+    const handleReplyUndoAccept = async (reply) => {
+        if (post && !post.my) {
+            toast.error(<p className="pr-2">Chỉ có chủ bài đăng mới có thể xoá đánh dấu phản hồi này!</p>, toastOptions);
+        } else if (reply && reply.my) {
+            toast.error(<p className="pr-2">Bạn không thể bỏ đánh dấu phản hồi của mình!</p>, toastOptions);
+        } else {
+            try {
+                const response = await undoAcceptReply(reply && reply.replyId);
+                if (response.status === 200) {
+                    toast.success(<p className="pr-2">Đã xoá đánh dấu phản hồi!</p>, toastOptions);
+                    getPostDetail();
+                    getPostReply();
+                }
+            } catch (error) {
+                navigate("/error-500");
+            }
+        }
     };
 
     const handleReplySection = (parentReply) => {
@@ -502,6 +581,11 @@ const DetailPost = () => {
 
     if (notFound) return <Error404 name="post" />;
 
+    const findReportReasonByType = (name) => {
+        const item = reportReasons.find((item) => item.name === name);
+        return item ? item.value : "Bài đăng đã bị gỡ";
+    };
+
     return (
         <>
             <PageHead title={`${post && post.title} - Admin - miniverse`} description={`${post && post.content.replace(/(<([^>]+)>)/gi, "")} - Admin - miniverse`} url={window.location.href} />
@@ -572,7 +656,7 @@ const DetailPost = () => {
 
                             <div className="px-3 py-2">
                                 <ul className="list-disc pl-5">
-                                    {post.disabled && <li>Bài đăng đã bị gỡ</li>}
+                                    {post.disabled && <li>{findReportReasonByType(post.note)}</li>}
                                     {post.labelDisabled && <li>Nhãn đã bị vô hiệu, bạn có thể chuyển sang nhãn khác</li>}
                                     {post.sectionDisabled && <li>Mục chính chứa chuyên mục đã bị vô hiệu</li>}
                                     {post.subsectionDisabled && <li>Chuyên mục đã bị vô hiệu, bạn có thể chuyển sang chuyên mục khác</li>}
@@ -597,6 +681,24 @@ const DetailPost = () => {
                                     <Tooltip content={post.userPosted.badge.badgeName}>
                                         <Avatar alt="Badge" img={post.userPosted.badge.image} rounded />
                                     </Tooltip>
+                                </div>
+                            )}
+
+                            {post && post.subsection && post.subsection.postAcceptable && (
+                                <div className="mt-10 flex flex-col items-center">
+                                    {post && post.accepted && (
+                                        <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handlePostUndoAccept()}>
+                                            <TiStarFullOutline className="text-7xl text-yellow-300 hover:text-yellow-200 active:text-yellow-200 cursor-pointer" />
+                                        </button>
+                                    )}
+
+                                    {post && !post.accepted && (
+                                        <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handlePostAccept()}>
+                                            <TiStarFullOutline className="text-7xl hover:text-yellow-300 active:text-yellow-400 cursor-pointer" />
+                                        </button>
+                                    )}
+
+                                    <p>{post && post.totalAcceptances}</p>
                                 </div>
                             )}
                         </div>
@@ -636,21 +738,23 @@ const DetailPost = () => {
                             <div className="py-3">{post && <div className="content-format" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }} />}</div>
 
                             <div className="flex justify-between py-3 text-green-500 text-sm">
-                                <div className="flex space-x-2 items-end">
-                                    {post && post.liked && (
-                                        <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handlePostLike(postId)}>
-                                            <HiThumbUp className="text-2xl hover:text-green-300 active:text-green-200 cursor-pointer" />
-                                        </button>
-                                    )}
+                                {post && post.subsection && !post.subsection.postAcceptable && (
+                                    <div className="flex space-x-2 items-end">
+                                        {post && post.liked && (
+                                            <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handlePostLike(postId)}>
+                                                <HiThumbUp className="text-2xl hover:text-green-300 active:text-green-200 cursor-pointer" />
+                                            </button>
+                                        )}
 
-                                    {post && !post.liked && (
-                                        <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handlePostLike(postId)}>
-                                            <HiOutlineThumbUp className="text-2xl hover:fill-green-500 active:fill-green-600 active:text-green-600 cursor-pointer" />
-                                        </button>
-                                    )}
+                                        {post && !post.liked && (
+                                            <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handlePostLike(postId)}>
+                                                <HiOutlineThumbUp className="text-2xl hover:fill-green-500 active:fill-green-600 active:text-green-600 cursor-pointer" />
+                                            </button>
+                                        )}
 
-                                    <p>{post && post.totalLikes} lượt thích</p>
-                                </div>
+                                        <p>{post && post.totalLikes} lượt thích</p>
+                                    </div>
+                                )}
 
                                 <div className="flex space-x-2 items-end cursor-pointer hover:text-orange-500 hover:underline" onClick={() => handleReplySection(null)}>
                                     <HiReply className="text-2xl" />
@@ -682,9 +786,47 @@ const DetailPost = () => {
                                                 </Tooltip>
                                             </div>
                                         )}
+
+                                        {post && post.subsection && post.subsection.replyAcceptable && (
+                                            <div className="mt-10 flex flex-col items-center">
+                                                {post && post.my ? (
+                                                    <>
+                                                        {!reply.my && reply.accepted && (
+                                                            <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handleReplyUndoAccept(reply)}>
+                                                                <PiCheckFatFill className="text-5xl text-green-500 hover:text-green-400 active:text-green-400 cursor-pointer" />
+                                                            </button>
+                                                        )}
+
+                                                        {!reply.my && !reply.accepted && (
+                                                            <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125 duration-150 bg-transparent" onClick={() => handleReplyAccept(reply)}>
+                                                                <PiCheckFatFill className="text-5xl text-gray-400 hover:text-green-300 text-green-300 cursor-pointer" />
+                                                            </button>
+                                                        )}
+                                                    </>
+                                                ) : (
+                                                    <>{reply && post && post.bestReply && reply.replyId === post.bestReply.replyId && <PiCheckFatFill className="text-5xl text-green-500" />}</>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
 
                                     <div className={`col-span-3 p-5 ${reply.disabled && "bg-red-100"}`}>
+                                        {(reply.disabled || reply.postDisabled) && (
+                                            <div className="w-full border rounded-lg bg-red-100 p-3 mb-5 font-bold text-sm text-black">
+                                                <div className="flex items-center space-x-3">
+                                                    <IoEyeOff className="text-xl mb-1" />
+                                                    <p>Phản hồi này đã bị ẩn vì (những) lý do sau: </p>
+                                                </div>
+
+                                                <div className="px-3 py-2">
+                                                    <ul className="list-disc pl-5">
+                                                        {reply.disabled && <li>{findReportReasonByType(reply.note)}</li>}
+                                                        {reply.postDisabled && <li>Bài đăng đã bị gỡ</li>}
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        )}
+
                                         <div className="flex justify-between pb-2 border-b border-gray-200 text-gray-500 text-sm">
                                             {!reply.updatedAt ? <p>{moment(reply?.createdAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })} </p> : <p>{moment(reply.updatedAt).calendar({ sameElse: "DD/MM/YYYY HH:mm:ss" })}</p>}
 
@@ -745,13 +887,13 @@ const DetailPost = () => {
                                         <div className="flex justify-between text-green-500 text-sm">
                                             <div className="flex space-x-2 items-end">
                                                 {reply.liked && (
-                                                    <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125  duration-150 bg-transparent" onClick={() => handleReplyLike(reply.replyId)}>
+                                                    <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125  duration-150 bg-transparent" onClick={() => handleReplyLike(reply)}>
                                                         <HiThumbUp className="text-2xl hover:text-green-300 active:text-green-200 cursor-pointer" />
                                                     </button>
                                                 )}
 
                                                 {!reply.liked && (
-                                                    <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125  duration-150 bg-transparent" onClick={() => handleReplyLike(reply.replyId)}>
+                                                    <button className="transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-125  duration-150 bg-transparent" onClick={() => handleReplyLike(reply)}>
                                                         <HiOutlineThumbUp className="text-2xl hover:fill-green-500 active:fill-green-600 active:text-green-600 cursor-pointer" />
                                                     </button>
                                                 )}

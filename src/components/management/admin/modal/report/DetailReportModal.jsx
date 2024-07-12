@@ -31,7 +31,7 @@ const DetailReportModal = (props) => {
                     </div>
 
                     <div className="rounded-lg bg-gray-100 p-3 flex flex-col space-y-2">
-                        <p className="text-sm font-medium text-gray-600">Nội dung {target === "POST" ? "tài liệu" : "bình luận"} bị báo cáo</p>
+                        <p className="text-sm font-medium text-gray-600">Nội dung {target === "POST" ? "tài liệu" : "phản hồi"} bị báo cáo</p>
                         <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(target === "POST" ? content.post && content.post.content : content.reply && content.reply.content) }} />
                     </div>
 
@@ -76,7 +76,7 @@ const DetailReportModal = (props) => {
 
                     {notSolved && (
                         <Button color="warning" onClick={action}>
-                            Gỡ {target === "POST" ? "bài đăng" : "bình luận"}
+                            Gỡ {target === "POST" ? "bài đăng" : "phản hồi"}
                         </Button>
                     )}
                 </div>

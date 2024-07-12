@@ -1,4 +1,4 @@
-import { uploadImage, uploadImageForReply } from "@api/main/imageAPI";
+import { uploadImage } from "@api/main/imageAPI";
 import { acceptPost, deleteAPost, getAPost, getAPostForGuest, getHistoryOfPost, getRelatedPostsForAPost, likePost, undoAcceptPost } from "@api/main/postAPI";
 import { acceptReply, addAReply, deleteAReply, editAReply, getHistoryOfReply, getRepliesForGuest, getViewableRepliesOfPost, likeReply, undoAcceptReply } from "@api/main/replyAPI";
 import usePrivateAxios from "@api/usePrivateAxios";
@@ -214,6 +214,8 @@ const DetailPost = () => {
                 if (response.status === 200) {
                     toast.success(<p className="pr-2">{post && post.liked ? "Đã bỏ thích bài đăng!" : "Đã thích bài đăng!"}</p>, toastOptions);
                     getPostDetail();
+                } else {
+                    toast.error(<p className="pr-2">Đã xảy ra lỗi!</p>, toastOptions);
                 }
             } catch (error) {
                 navigate("/error-500");
@@ -230,6 +232,8 @@ const DetailPost = () => {
                 if (response.status === 200) {
                     toast.success(<p className="pr-2">{reply && reply.liked ? "Đã bỏ thích phản hồi!" : "Đã thích phản hồi!"}</p>, toastOptions);
                     getPostReply();
+                } else {
+                    toast.error(<p className="pr-2">Đã xảy ra lỗi!</p>, toastOptions);
                 }
             } catch (error) {
                 navigate("/error-500");
@@ -363,8 +367,7 @@ const DetailPost = () => {
             if (response.status === 200) {
                 toast.success(<p className="pr-2">Xoá bài đăng thành công!</p>, toastOptions);
                 navigate("/forum");
-            }
-            else {
+            } else {
                 toast.error(<p className="pr-2">Đã xảy ra lỗi khi xoá bài đăng!</p>, toastOptions);
             }
             setIsLoading(false);
@@ -380,11 +383,10 @@ const DetailPost = () => {
             const response = await deleteAReply(replyId);
             if (response.status === 200) {
                 getPostReply();
-                if(replyList.length === 1 && currentPage > 1) {
+                if (replyList.length === 1 && currentPage > 1) {
                     setCurrentPage(currentPage - 1);
                 }
-            }
-            else {
+            } else {
                 toast.error(<p className="pr-2">Đã xảy ra lỗi khi xoá phản hồi!</p>, toastOptions);
             }
             setIsLoading(false);
@@ -863,7 +865,7 @@ const DetailPost = () => {
                     </div>
                 </div>
 
-                {post && post.bestReply && (
+                {post && post.bestReply && !post.bestReply.disabled && (
                     <div className="w-full flex justify-center -mt-10 z-0">
                         <div
                             className="w-11/12 flex pt-20 pb-5 px-5 shadow-xl shadow-amber-100 hover:shadow-amber-200 bg-white rounded-lg cursor-pointer"
@@ -1007,7 +1009,7 @@ const DetailPost = () => {
                                                                         </>
                                                                     ) : (
                                                                         <>
-                                                                            {reply && reply.accepted && (
+                                                                            {reply && post && post.bestReply && reply.replyId === post.bestReply.replyId && (
                                                                                 <FlowbiteTooltip content="Tác giả bài đăng đã đánh dấu phản hồi này là hữu ích" style="light" placement="bottom">
                                                                                     <button>
                                                                                         <PiCheckFatFill className="text-5xl" />

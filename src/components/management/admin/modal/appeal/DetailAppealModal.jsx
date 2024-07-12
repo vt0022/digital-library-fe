@@ -6,7 +6,7 @@ import moment from "moment";
 import { useRef } from "react";
 
 const DetailAppealModal = (props) => {
-    const { target, openViewModal, onCloseViewModal, content, restore, remain, notSolved} = props;
+    const { target, openViewModal, onCloseViewModal, content, restore, remain, notSolved, updateType } = props;
 
     const topModal = useRef(null);
 
@@ -41,7 +41,7 @@ const DetailAppealModal = (props) => {
                     </div>
 
                     <div className="rounded-lg bg-gray-100 p-3 flex flex-col space-y-2">
-                        <p className="text-sm font-medium text-gray-600">Nội dung {target === "POST" ? "tài liệu" : "bình luận"} bị báo cáo</p>
+                        <p className="text-sm font-medium text-gray-600">Nội dung {target === "POST" ? "tài liệu" : "phản hồi"} bị báo cáo</p>
                         <div
                             dangerouslySetInnerHTML={{
                                 __html: DOMPurify.sanitize(target === "POST" ? content.postReport && content.postReport.post && content.postReport.post.content : content.replyReport && content.replyReport.reply && content.replyReport.reply.post && content.replyReport.reply.content),
@@ -51,12 +51,7 @@ const DetailAppealModal = (props) => {
 
                     <div className="rounded-lg bg-gray-100 p-3 flex flex-col space-y-2">
                         <p className="text-sm font-medium text-gray-600">Lý do vi phạm</p>
-                        <p className="font-medium">{target === "POST" ? content.postReport && findReportReasonByType(content.postReport.type) : content.replyReport && findReportReasonByType(content.replyReport.type)}</p>
-                    </div>
-
-                    <div className="rounded-lg bg-gray-100 p-3 flex flex-col space-y-2">
-                        <p className="text-sm font-medium text-gray-600">Lý do khiếu nại</p>
-                        <p className="font-medium">{findAppealReasonByType(content.type)}</p>
+                        <p className="font-medium">{findReportReasonByType(content.disableReason)}</p>
                     </div>
 
                     <div className="rounded-lg bg-gray-100 p-3 flex flex-col space-y-2">
@@ -76,11 +71,21 @@ const DetailAppealModal = (props) => {
 
                     {notSolved && (
                         <div className="flex justify-between">
-                            <Button color="success" onClick={restore}>
-                                Khôi phục {target === "POST" ? "bài đăng" : "bình luận"}
+                            <Button
+                                color="success"
+                                onClick={() => {
+                                    updateType("restore");
+                                    restore();
+                                }}>
+                                Khôi phục {target === "POST" ? "bài đăng" : "phản hồi"}
                             </Button>
 
-                            <Button color="warning" onClick={remain}>
+                            <Button
+                                color="warning"
+                                onClick={() => {
+                                    updateType("remain");
+                                    remain();
+                                }}>
                                 Giữ nguyên quyết định
                             </Button>
                         </div>

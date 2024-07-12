@@ -43,7 +43,8 @@ const ReportModal = (props) => {
         setIsLoading(true);
         try {
             let params = {
-                type: action,
+                action: action,
+                type: type
             };
             let response = null;
             if (target === "POST") response = await handlePostReport(reportId, {params});

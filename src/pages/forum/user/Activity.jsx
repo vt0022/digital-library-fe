@@ -2,6 +2,7 @@ import { getBadgesOfUser } from "@api/main/badgeAPI";
 import { getAllPostsOfUser, getPostLikes } from "@api/main/postAPI";
 import { getAllRepliesOfUser, getReplyLikes } from "@api/main/replyAPI";
 import { getAUser } from "@api/main/userAPI";
+import reportReasons from "@assets/json-data/report_reasons.json";
 import PageHead from "@components/shared/head/PageHead";
 import usePrivateAxios from "api/usePrivateAxios";
 import { initFlowbite } from "flowbite";
@@ -218,6 +219,11 @@ const Activity = () => {
         }
     };
 
+    const findReportReasonByType = (name) => {
+        const item = reportReasons.find((item) => item.name === name);
+        return item ? item.value : "Bài đăng đã bị gỡ";
+    };
+
     return (
         <>
             <PageHead title="Hoạt động của tôi - miniverse" description="Hoạt động của tôi - miniverse" url={window.location.href} />
@@ -298,7 +304,7 @@ const Activity = () => {
                                                             </div>
                                                             <div className="px-3 py-2">
                                                                 <ul className="list-disc pl-5">
-                                                                    {post.disabled && <li>Bài đăng đã bị gỡ</li>}
+                                                                    {post.disabled && <li>{findReportReasonByType(post.note)}</li>}
                                                                     {post.labelDisabled && <li>Nhãn đã bị vô hiệu, bạn có thể chuyển sang nhãn khác</li>}
                                                                     {post.subsectionDisabled && <li>Mục chính chứa chuyên mục đã bị vô hiệu</li>}
                                                                     {post.subsectionDisabled && <li>Chuyên mục đã bị vô hiệu, bạn có thể chuyển sang chuyên mục khác</li>}
@@ -369,7 +375,7 @@ const Activity = () => {
                                                             </div>
                                                             <div className="px-3 py-2">
                                                                 <ul className="list-disc pl-5">
-                                                                    {reply.disabled && <li>Phản hồi đã bị gỡ</li>}
+                                                                    {reply.disabled && <li>{findReportReasonByType(reply.note)}</li>}
                                                                     {reply.postDisabled && <li>Bài đăng đã bị ẩn</li>}
                                                                 </ul>
                                                             </div>

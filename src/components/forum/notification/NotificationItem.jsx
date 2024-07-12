@@ -25,13 +25,15 @@ const NotificationItem = (props) => {
             case "WARN_POST":
                 return (
                     <>
-                        {notification.message} <span className="font-medium text-black">{findReportReasonByType(notification.postReport && notification.postReport.type)}</span>
+                        {notification.message} 
+                        {/* <span className="font-medium text-black">{findReportReasonByType(notification.postReport && notification.postReport.type)}</span> */}
                     </>
                 );
             case "WARN_REPLY":
                 return (
                     <>
-                        {notification.message} <span className="font-medium text-black">{findReportReasonByType(notification.replyReport && notification.replyReport.type)}</span>
+                        {notification.message} 
+                        {/* <span className="font-medium text-black">{findReportReasonByType(notification.replyReport && notification.replyReport.type)}</span> */}
                     </>
                 );
             case "REJECT_DOCUMENT":
@@ -368,7 +370,7 @@ const NotificationItem = (props) => {
                         <div className="mb-5 text-sm space-y-3">
                             <div className="rounded-lg bg-gray-100 p-3">
                                 <p className="font-medium mb-2">Lỗi vi phạm</p>
-                                <span> {appeal && appealInfo.target === "POST" ? appeal.postReport && findReportReasonByType(appeal.postReport.type) : appeal.replyReport && findReportReasonByType(appeal.replyReport.type)}</span>
+                                <span> {appeal && findReportReasonByType(appeal.disableReason)}</span>
                             </div>
 
                             <div className="rounded-lg bg-gray-100 p-3">
