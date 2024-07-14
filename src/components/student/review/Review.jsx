@@ -99,7 +99,7 @@ const Review = (props) => {
                     )}
 
                     {isEditted && (
-                        <Button pill className="bg-red-500 text-white enabled:hover:bg-red-400 enabled:active:bg-red-450 focus:border focus:ring-0 focus:bg-red-450 border border-solid px-3" onClick={cancelEdit} disabled={isLoading} isProcessing={isLoading}>
+                        <Button pill className="bg-red-500 text-white enabled:hover:bg-red-400 enabled:active:bg-red-450 focus:border focus:ring-0 focus:bg-red-450 border border-solid px-3" onClick={cancelEdit} disabled={isLoading}>
                             <span className="text-base">Huỷ bỏ</span>
                         </Button>
                     )}

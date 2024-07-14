@@ -848,7 +848,7 @@ const Dashboard = () => {
                                         options={{
                                             ...pieOptions,
                                             theme: { mode: themeReducer === "theme-mode-dark" ? "dark" : "light" },
-                                            labels: Object.keys(repliesByLabel),
+                                            labels: Object.keys(replyReportsByReason),
                                             title: {
                                                 ...pieOptions.title,
                                                 text: "Báo cáo phản hồi theo lý do",

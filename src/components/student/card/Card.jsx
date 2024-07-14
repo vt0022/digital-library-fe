@@ -4,8 +4,10 @@ import { CgExtensionRemove } from "react-icons/cg";
 import { HiBookmark, HiEye, HiHeart, HiOutlineLightBulb, HiOutlinePencilAlt, HiOutlineTrash } from "react-icons/hi";
 import { Link, useNavigate } from "react-router-dom";
 import { IoHeart } from "react-icons/io5";
-
 import "./card.css";
+import { initFlowbite } from "flowbite";
+
+initFlowbite();
 
 const DocumentCard = (props) => {
     const { document, type, action } = props;

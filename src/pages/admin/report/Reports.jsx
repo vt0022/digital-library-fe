@@ -44,7 +44,7 @@ const Reports = () => {
 
     const renderBody = (item, index) => (
         <tr key={index} className="cursor-pointer text-sm">
-            <td className="w-1/12 text-center font-bold">{(currentPage - 1) * 2 + index + 1}</td>
+            <td className="w-1/12 text-center font-bold">{(currentPage - 1) * 10 + index + 1}</td>
 
             <td className="w-3/12">
                 <p className="w-full truncate whitespace-normal line-clamp-3">{target === "POST" ? item.post && item.post.title : item.reply && item.reply.content.replace(/(<([^>]+)>)/gi, "")}</p>

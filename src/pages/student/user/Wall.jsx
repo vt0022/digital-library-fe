@@ -117,7 +117,7 @@ const UserWall = () => {
 
                             <div className="mt-2 w-full">
                                 <div className="flex text-center font-bold">
-                                    <span className="block text-base font-normal text-green-400 dark:text-white cursor-pointer" onClick={() => navigate("/institutions/" + user.organization.slug)}>
+                                    <span className="block text-base font-normal text-green-400 dark:text-white cursor-pointer" onClick={() => navigate("/institutions/" + (user && user.organization && user.organization.slug))}>
                                         {user && user.organization && user.organization.orgName}
                                     </span>
                                 </div>

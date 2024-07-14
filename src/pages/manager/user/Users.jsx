@@ -160,7 +160,7 @@ const ManagerUsers = () => {
     const getUserList = async (page) => {
         try {
             setIsFetching(true);
-            const response = await getAllUsersByOrganization(user.organization.slug, {
+            const response = await getAllUsersByOrganization(user && user.organization && user.organization.slug, {
                 params: {
                     page: page - 1,
                     size: 10,
@@ -184,7 +184,7 @@ const ManagerUsers = () => {
     const getLatestUserList = async (page) => {
         try {
             setIsFetching(true);
-            const response = await getLatestUsersByOrganization(user.organization.slug, {
+            const response = await getLatestUsersByOrganization(user && user.organization && user.organization.slug, {
                 params: {
                     page: page - 1,
                     size: 15,

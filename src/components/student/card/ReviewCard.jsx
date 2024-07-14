@@ -77,7 +77,7 @@ const ReviewCard = (props) => {
             </div>
 
             <div className="w-1/12 text-center flex flex-col items-center space-y-5">
-                {(review.timesLeft !== 0 || review.verifiedStatus !== 1) && (
+                {(review.timesLeft !== 0) && (
                     <Tooltip content="Chỉnh sửa" style="light" placement="right">
                         <HiOutlinePencilAlt
                             className="w-7 h-7 text-yellow-500 hover:text-yellow-300 active:text-yellow-200 cursor-pointer"

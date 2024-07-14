@@ -22,7 +22,7 @@ const Appeals = () => {
         { name: "Giữ nguyên", value: "REMAIN" },
     ];
 
-    const tableHead = ["", "Vi phạm", "Lý do khiếu nại", "Người báo báo", "Thời gian", "Trạng thái", ""];
+    const tableHead = ["", "Vi phạm", "Lý do khiếu nại", "Người khiếu nại", "Thời gian", "Trạng thái", ""];
 
     const renderHead = (item, index) => (
         <th className="text-center" key={index}>
@@ -32,7 +32,7 @@ const Appeals = () => {
 
     const renderBody = (item, index) => (
         <tr key={index} className={`cursor-pointer ${item.read ? "bg-gray-100" : ""}`} >
-            <td className="w-1/12 text-center font-bold">{(currentPage - 1) * 2 + index + 1}</td>
+            <td className="w-1/12 text-center font-bold">{(currentPage - 1) * 10 + index + 1}</td>
 
             <td className="w-2/12 font-medium">{findReportReasonByType(item.disableReason)}</td>
 
@@ -242,7 +242,7 @@ const Appeals = () => {
 
             setIsLoading(false);
 
-            if (type === "restore") setOpenRestoreModal(false);
+            if (action === "restore") setOpenRestoreModal(false);
             else setOpenRemainModal(false);
 
             if (response.status === 200) {

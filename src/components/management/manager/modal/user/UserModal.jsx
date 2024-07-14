@@ -4,6 +4,7 @@ import profileImage from "@assets/images/default_profile.jpg";
 import Select from "@components/management/select/Select";
 import { Button, Datepicker, FileInput, Label, Modal, TextInput } from "flowbite-react";
 import moment from "moment";
+import { validate } from "numeral";
 import { useEffect, useState } from "react";
 import { HiChevronLeft, HiChevronUp } from "react-icons/hi";
 import { Bounce, toast } from "react-toastify";
@@ -109,31 +110,65 @@ const UserModal = (props) => {
     };
 
     const validateLastName = () => {
-        if (lastName === "" || lastName.trim() === "") setIsLastNameValid(false);
-        else setIsLastNameValid(true);
+        if (lastName === "" || lastName.trim() === "") {
+            setIsLastNameValid(false);
+            return false;
+        }
+        else {
+            setIsLastNameValid(true);
+            return true;
+        }
     };
 
     const validateFirstName = () => {
-        if (firstName === "" || firstName.trim() === "") setIsFirstNameValid(false);
-        else setIsFirstNameValid(true);
+        if (firstName === "" || firstName.trim() === "") {
+            setIsFirstNameValid(false);
+            return false;
+        }
+        else {
+            setIsFirstNameValid(true);
+            return true;
+        }
     };
 
     const validateEmail = () => {
-        if (email === "" || email.trim() === "") setIsEmailValid(false);
-        else setIsEmailValid(true);
+        if (email === "" || email.trim() === "") {
+            setIsEmailValid(false);
+            return false;
+        }
+        else {
+            setIsEmailValid(true);
+            return true;
+        }
     };
 
     const validateDateOfBirth = () => {
         const fifteenYearsAgo = new Date();
         fifteenYearsAgo.setFullYear(new Date().getFullYear() - 15);
-        if (dateOfBirth > fifteenYearsAgo) setIsDateOfBirthValid(false);
-        else setIsDateOfBirthValid(true);
+
+        if (dateOfBirth > fifteenYearsAgo) {
+            setIsDateOfBirthValid(false);
+            return false;
+        }
+        else {
+            setIsDateOfBirthValid(true);
+            return true;
+        }
     };
 
     const validatePassword = () => {
         if (isCreatingNew) {
-            if (password === "" || password.trim() === "") setIsPasswordValid(false);
-        } else setIsPasswordValid(true);
+            if (password === "" || password.trim() === "") {
+                setIsPasswordValid(false);
+                return false;
+            } else {
+                setIsPasswordValid(true);
+                return true;
+            }
+        } else {
+            setIsPasswordValid(true);
+            return true;
+        }
     };
 
     const validateConfirmPassword = () => {
@@ -141,11 +176,19 @@ const UserModal = (props) => {
             if (confirmPassword === "" || confirmPassword.trim() === "") {
                 setIsConfirmPasswordValid(false);
                 setConfirmPasswordMessage("Vui lòng mật khẩu xác thực.");
+                return false;
             } else if (confirmPassword !== password) {
                 setIsConfirmPasswordValid(false);
                 setConfirmPasswordMessage("Mật khẩu không khớp.");
-            } else setIsConfirmPasswordValid(true);
-        } else setIsConfirmPasswordValid(true);
+                return false;
+            } else {
+                setIsConfirmPasswordValid(true);
+                return true;
+            }
+        } else {
+            setIsConfirmPasswordValid(true);
+            return true;
+        }
     };
 
     const validateFile = () => {
@@ -164,15 +207,15 @@ const UserModal = (props) => {
     };
 
     const validateInput = () => {
-        validateLastName();
-        validateFirstName();
-        validateEmail();
-        validateDateOfBirth();
-        validatePassword();
-        validateConfirmPassword();
-        setIsFileValid(validateFile());
+        const isLastNameValid = validateLastName();
+        const isFirstNameValid = validateFirstName();
+        const isEmailValid = validateEmail();
+        const isDateOfBirthValid = validateDateOfBirth();
+        const isPasswordValid = validatePassword();
+        const isConfirmPasswordValid = validateConfirmPassword();
+        const isFileValid = validateFile();
 
-        if (!isLastNameValid || !isFirstNameValid || !isEmailValid || !isDateOfBirthValid || !isPasswordValid || !isConfirmPasswordValid || !validateFile()) {
+        if (!isLastNameValid || !isFirstNameValid || !isEmailValid || !isDateOfBirthValid || !isPasswordValid || !isConfirmPasswordValid || !isFileValid) {
             return false;
         } else return true;
     };
@@ -180,7 +223,9 @@ const UserModal = (props) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (validateInput()) {
+        const isInputValid = validateInput();
+
+        if (isInputValid) {
             setIsLoading(true);
 
             try {

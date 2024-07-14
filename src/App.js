@@ -3,6 +3,7 @@ import "moment/locale/vi";
 import { BrowserRouter } from "react-router-dom";
 import ScrollToTop from "./ScrollToTop";
 import RootRouters from "./routers/RootRouters";
+import { initFlowbite } from "flowbite";
 
 moment.locale("vi");
 
@@ -11,6 +12,8 @@ moment.updateLocale("vi", {
         dow: 1,
     },
 });
+
+initFlowbite();
 
 function App() {
     return (

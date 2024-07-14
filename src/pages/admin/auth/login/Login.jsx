@@ -124,7 +124,7 @@ const Login = () => {
                 localStorage.setItem("accessToken", response.data.accessToken);
                 localStorage.setItem("refreshToken", response.data.refreshToken);
                 sessionStorage.setItem("profile", JSON.stringify(response.data.profile));
-                dispatch(loginAction.setUserProfile(response.data.profile));
+                // dispatch(loginAction.setUserProfile(response.data.profile));
 
                 navigate("/admin/home");
             }
@@ -156,7 +156,7 @@ const Login = () => {
                 localStorage.setItem("accessToken", response.data.accessToken);
                 localStorage.setItem("refreshToken", response.data.refreshToken);
                 sessionStorage.setItem("profile", JSON.stringify(response.data.profile));
-                dispatch(loginAction.setUser(response.data.profile));
+                // dispatch(loginAction.setUser(response.data.profile));
 
                 navigate("/admin/home");
             } else {

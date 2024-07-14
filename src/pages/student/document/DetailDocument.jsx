@@ -564,7 +564,7 @@ const DetailDocument = () => {
                     </div>
                 )}
 
-                <div className="flex gap-5 w-full">
+                <div className="flex gap-5 w-full mb-5">
                     <div className="w-3/4">
                         <ReviewList slug={slug} totalReviews={doc && doc.totalReviews} averageRating={doc && doc.averageRating.toFixed(1)} />
                     </div>

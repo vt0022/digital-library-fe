@@ -246,7 +246,7 @@ const Wall = () => {
                                         <HiMiniChatBubbleLeftRight className="w-12 h-12 text-sky-500" />
                                         <div>
                                             <p className="text-2xl font-semibold">{user && user.totalPosts}</p>
-                                            <p className="text-xs">bài viết</p>
+                                            <p className="text-xs">bài đăng</p>
                                         </div>
                                     </div>
 

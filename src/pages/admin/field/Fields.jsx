@@ -176,7 +176,7 @@ const Fields = () => {
                 if (response.message === "Delete field from system successfully") {
                     toast.success(<p className="pr-2">Xoá lĩnh vực thành công!</p>, toastOptions);
                 } else {
-                    toast.success(<p className="pr-2">Không thể xoá lĩnh vực do đã tồn tại tài liệu, đã huỷ kích hoạt!</p>, toastOptions);
+                    toast.warn(<p className="pr-2">Không thể xoá lĩnh vực do đã tồn tại tài liệu, đã huỷ kích hoạt!</p>, toastOptions);
                 }
 
                 getFieldList(1);

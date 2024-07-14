@@ -332,7 +332,7 @@ const NewPost = () => {
                         <div className="py-3 text-green-500 text-sm">
                             <Button className="ml-auto bg-green-400 enabled:hover:bg-green-500" onClick={handleAddPost} isProcessing={isLoading} disabled={isLoading}>
                                 <HiOutlinePencilAlt className="mr-2 h-5 w-5 " />
-                                Đăng bài viết
+                                Đăng bài
                             </Button>
                         </div>
                     </div>

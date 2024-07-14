@@ -10,8 +10,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
 import "./document.css";
 
-initFlowbite();
-
 const toastOptions = {
     position: "bottom-center",
     autoClose: 4000,
@@ -25,6 +23,8 @@ const toastOptions = {
 };
 
 const UploadedDocument = () => {
+    initFlowbite();
+
     usePrivateAxios();
 
     const navigate = useNavigate();

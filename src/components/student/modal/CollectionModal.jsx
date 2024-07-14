@@ -72,6 +72,8 @@ const CollectionModal = (props) => {
                 } else {
                     if (response.message === "Collection not found") {
                         toast.error(<p className="pr-2">Bộ sưu tập không tồn tại!</p>, toastOptions);
+                    } else if (response.message === "Collection already exists") {
+                        toast.error(<p className="pr-2">Bộ sưu tập đã tồn tại!</p>, toastOptions);
                     } else {
                         toast.error(<p className="pr-2">Đã xảy ra lỗi. Vui lòng thử lại!</p>, toastOptions);
                     }

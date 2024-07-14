@@ -186,7 +186,7 @@ const ManagerDocuments = () => {
     const getDocumentList = async (page) => {
         try {
             setIsFetching(true);
-            const response = await getDocumentsByOrganizations(user.organization.slug, {
+            const response = await getDocumentsByOrganizations(user && user.organization && user.organization.slug, {
                 params: {
                     page: page - 1,
                     size: 15,
@@ -211,7 +211,7 @@ const ManagerDocuments = () => {
     const getLatestDocumentList = async (page) => {
         try {
             setIsFetching(true);
-            const response = await getLatestDocumentsByOrganization(user.organization.slug, {
+            const response = await getLatestDocumentsByOrganization(user && user.organization && user.organization.slug, {
                 params: {
                     page: page - 1,
                     size: 15,

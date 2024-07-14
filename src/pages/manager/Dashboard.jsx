@@ -113,36 +113,38 @@ const Dashboard = () => {
     const [dateRange, setDateRange] = useState("all"); // ["all", "1month", "3months", "6months", "1year"]
     const [isGeneral, setIsGeneral] = useState(true);
 
+    const user = JSON.parse(sessionStorage.getItem("profile"));
+
     const statusCardsForLibrary = [
         {
             icon: "bx bx-file",
             count: totalDocuments,
             title: "Tài liệu",
-            link: "/admin/documents",
+            link: "/manager/documents",
         },
         {
             icon: "bx bx-time-five",
             count: totalPendingDocuments,
             title: "Tài liệu đang chờ",
-            link: "/admin/documents/pending",
+            link: "/manager/documents/pending",
         },
         {
             icon: "bx bxs-star-half",
             count: totalReviews,
             title: "Đánh giá",
-            link: "/admin/reviews",
+            link: "/manager/reviews",
         },
         {
             icon: "bx bx-time",
             count: totalPendingReviews,
             title: "Đánh giá đang chờ",
-            link: "/admin/reviews",
+            link: "/manager/reviews",
         },
         {
             icon: "bx bx-user",
             count: totalUsers,
             title: "Người dùng",
-            link: "/admin/users",
+            link: "/manager/users",
         },
     ];
 
@@ -220,7 +222,7 @@ const Dashboard = () => {
 
     const getLatestUserList = async () => {
         try {
-            const response = await getLatestUsersByOrganization();
+            const response = await getLatestUsersByOrganization(user && user.organization && user.organization.slug);
 
             if (response.status === 200) {
                 setLatestUsers(response.data.content);
@@ -232,7 +234,7 @@ const Dashboard = () => {
 
     const getLatestDocumentList = async () => {
         try {
-            const response = await getLatestDocumentsByOrganization();
+            const response = await getLatestDocumentsByOrganization(user && user.organization && user.organization.slug);
 
             if (response.status === 200) {
                 setLatestDocuments(response.data.content);
@@ -471,7 +473,7 @@ const Dashboard = () => {
                                             <Table headData={latestUserHead} renderHead={(item, index) => renderLatestUserHead(item, index)} bodyData={latestUsers} renderBody={(item, index) => renderLatestUserBody(item, index)} />
                                         </div>
                                         <div className="card__footer">
-                                            <Link to="/admin/users/latest" className="font-bold">
+                                            <Link to="/manager/users/latest" className="font-bold">
                                                 Xem tất cả
                                             </Link>
                                         </div>
@@ -493,7 +495,7 @@ const Dashboard = () => {
                                             <Table headData={latestDocumentHead} renderHead={(item, index) => renderLatestDocumentHead(item, index)} bodyData={latestDocuments} renderBody={(item, index) => renderLatestDocumentBody(item, index)} />
                                         </div>
                                         <div className="card__footer">
-                                            <Link to="/admin/documents/latest" className="font-bold">
+                                            <Link to="/manager/documents/latest" className="font-bold">
                                                 Xem tất cả
                                             </Link>
                                         </div>

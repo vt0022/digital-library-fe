@@ -176,7 +176,7 @@ const Organizations = () => {
                 if (response.message === "Delete organization from system successfully") {
                     toast.success(<p className="pr-2">Xoá trường thành công!</p>, toastOptions);
                 } else {
-                    toast.success(<p className="pr-2">Không thể xoá trường do đã tồn tại tài liệu và người dùng, đã huỷ kích hoạt!</p>, toastOptions);
+                    toast.warn(<p className="pr-2">Đã vô hiệu hoá trường do tồn tại tài liệu và người dùng liên quan!</p>, toastOptions);
                 }
 
                 getOrganizationList(1);

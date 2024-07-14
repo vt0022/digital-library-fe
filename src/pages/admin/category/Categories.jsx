@@ -178,7 +178,7 @@ const Categories = () => {
                 if (response.message === "Delete category from system successfully") {
                     toast.success(<p className="pr-2">Xoá danh mục thành công!</p>, toastOptions);
                 } else {
-                    toast.success(<p className="pr-2">Không thể xoá danh mục do đã tồn tại tài liệu, đã huỷ kích hoạt!</p>, toastOptions);
+                    toast.warn(<p className="pr-2">Không thể xoá danh mục do đã tồn tại tài liệu, đã huỷ kích hoạt!</p>, toastOptions);
                 }
 
                 getCategoryList(1);

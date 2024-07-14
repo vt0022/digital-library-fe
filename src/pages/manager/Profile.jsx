@@ -206,45 +206,81 @@ const ManagerProfile = () => {
     };
 
     const validateLastName = () => {
-        if (lastName === "" || lastName.trim() === "") setIsLastNameValid(false);
-        else setIsLastNameValid(true);
+        if (lastName === "" || lastName.trim() === "") {
+            setIsLastNameValid(false);
+            return false;
+        } else {
+            setIsLastNameValid(true);
+            return true;
+        }
     };
 
     const validateFirstName = () => {
-        if (firstName === "" || firstName.trim() === "") setIsFirstNameValid(false);
-        else setIsFirstNameValid(true);
+        if (firstName === "" || firstName.trim() === "") {
+            setIsFirstNameValid(false);
+            return false;
+        } else {
+            setIsFirstNameValid(true);
+            return true;
+        }
     };
 
     const validateEmail = () => {
-        if (email === "" || email.trim() === "") setIsEmailValid(false);
-        else setIsEmailValid(true);
+        if (email === "" || email.trim() === "") {
+            setIsEmailValid(false);
+            return false;
+        } else {
+            setIsEmailValid(true);
+            return true;
+        }
     };
 
     const validateDateOfBirth = () => {
         const fifteenYearsAgo = new Date();
         fifteenYearsAgo.setFullYear(new Date().getFullYear() - 15);
-        if (dateOfBirth > fifteenYearsAgo) setIsDateOfBirthValid(false);
-        else setIsDateOfBirthValid(true);
+
+        if (dateOfBirth > fifteenYearsAgo) {
+            setIsDateOfBirthValid(false);
+            return false;
+        } else {
+            setIsDateOfBirthValid(true);
+            return true;
+        }
     };
 
     const validateOldPassword = () => {
-        if (oldPassword === "" || oldPassword.trim() === "") setIsOldPasswordValid(false);
-        else setIsOldPasswordValid(true);
+        if (oldPassword === "" || oldPassword.trim() === "") {
+            setIsOldPasswordValid(false);
+            return false;
+        } else {
+            setIsOldPasswordValid(true);
+            return true;
+        }
     };
 
     const validateNewPassword = () => {
-        if (newPassword === "" || newPassword.trim() === "") setIsNewPasswordValid(false);
-        else setIsNewPasswordValid(true);
+        if (newPassword === "" || newPassword.trim() === "") {
+            setIsNewPasswordValid(false);
+            return false;
+        } else {
+            setIsNewPasswordValid(true);
+            return true;
+        }
     };
 
     const validateConfirmPassword = () => {
         if (confirmPassword === "" || confirmPassword.trim() === "") {
             setIsConfirmPasswordValid(false);
             setConfirmPasswordMessage("Vui lòng nhập mật khẩu.");
+            return false;
         } else if (confirmPassword !== newPassword) {
             setIsConfirmPasswordValid(false);
             setConfirmPasswordMessage("Mật khẩu không khớp.");
-        } else setIsConfirmPasswordValid(true);
+            return false;
+        } else {
+            setIsConfirmPasswordValid(true);
+            return true;
+        }
     };
 
     const validateFile = () => {
@@ -265,11 +301,11 @@ const ManagerProfile = () => {
         }
     };
 
-    const validateInput = () => {
-        validateLastName();
-        validateFirstName();
-        validateEmail();
-        validateDateOfBirth();
+    const validateInfo = () => {
+        const isLastNameValid = validateLastName();
+        const isFirstNameValid = validateFirstName();
+        const isEmailValid = validateEmail();
+        const isDateOfBirthValid = validateDateOfBirth();
 
         if (!isLastNameValid || !isFirstNameValid || !isEmailValid || !isDateOfBirthValid) {
             return false;
@@ -279,7 +315,9 @@ const ManagerProfile = () => {
     const handleSubmitInfo = async (e) => {
         e.preventDefault();
 
-        if (validateInput()) {
+        const isInfoValid = validateInfo();
+
+        if (isInfoValid) {
             setIsLoadingInfo(true);
 
             try {
@@ -325,7 +363,9 @@ const ManagerProfile = () => {
     const handleSubmitAvatar = async (e) => {
         e.preventDefault();
 
-        if (validateFile()) {
+        const isFileValid = validateFile();
+
+        if (isFileValid) {
             setIsLoadingAvatar(true);
 
             try {
@@ -357,14 +397,24 @@ const ManagerProfile = () => {
         }
     };
 
+    const validatePassword = () => {
+        const isOldPasswordValid = validateOldPassword();
+        const isNewPasswordValid = validateNewPassword();
+        const isConfirmPasswordValid = validateConfirmPassword();
+
+        if (isOldPasswordValid && isNewPasswordValid && isConfirmPasswordValid) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
     const handleSubmitPassword = async (e) => {
         e.preventDefault();
 
-        validateOldPassword();
-        validateNewPassword();
-        validateConfirmPassword();
+        const isPasswordValid = validatePassword();
 
-        if (isOldPasswordValid && isNewPasswordValid && isConfirmPasswordValid) {
+        if (isPasswordValid) {
             setIsLoadingPassword(true);
 
             try {

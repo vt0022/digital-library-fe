@@ -29,7 +29,7 @@ const Labels = () => {
         { name: "Đã vô hiệu", value: "true" },
     ];
 
-    const tableHead = ["", "Tên", "Trạng thái", "Số bài viết", ""];
+    const tableHead = ["", "Tên", "Trạng thái", "Số bài đăng", ""];
 
     const renderHead = (item, index) => (
         <th className="text-center" key={index}>
@@ -174,7 +174,7 @@ const Labels = () => {
             setOpenDeleteModal(false);
             if (response.status === 200) {
                 if (response.message === "Delete label from system successfully") toast.success(<p className="pr-2">Xoá nhãn thành công!</p>, toastOptions);
-                else toast.warn(<p className="pr-2">Nhãn có bài viết, đã huỷ kích hoạt!</p>, toastOptions);
+                else toast.warn(<p className="pr-2">Nhãn có bài đăng, đã huỷ kích hoạt!</p>, toastOptions);
 
                 refreshLabelList();
             } else {
