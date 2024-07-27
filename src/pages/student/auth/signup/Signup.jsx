@@ -159,7 +159,7 @@ const Signup = () => {
                 localStorage.setItem("accessToken", response.data.accessToken);
                 localStorage.setItem("refreshToken", response.data.refreshToken);
                 sessionStorage.setItem("profile", JSON.stringify(response.data.profile));
-                dispatch(loginAction.setUserProfile(response.data.profile));
+                // dispatch(loginAction.setUserProfile(response.data.profile));
 
                 navigate("/home");
             } else {
@@ -197,7 +197,7 @@ const Signup = () => {
                 localStorage.setItem("accessToken", response.data.accessToken);
                 localStorage.setItem("refreshToken", response.data.refreshToken);
                 sessionStorage.setItem("profile", JSON.stringify(response.data.profile));
-                dispatch(loginAction.setUserProfile(response.data.profile));
+                // dispatch(loginAction.setUserProfile(response.data.profile));
 
                 navigate("/home");
             } else {

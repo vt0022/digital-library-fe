@@ -150,12 +150,12 @@ const Login = () => {
                 localStorage.setItem("accessToken", response.data.accessToken);
                 localStorage.setItem("refreshToken", response.data.refreshToken);
                 sessionStorage.setItem("profile", JSON.stringify(response.data.profile));
-                dispatch(loginAction.setUserProfile(response.data.profile));
+                // dispatch(loginAction.setUserProfile(response.data.profile));
 
                 navigate("/home");
             }
         } catch (error) {
-            console.log(error);
+            setIsLoading(false);
             navigate("/error-500");
         }
     };
@@ -201,6 +201,7 @@ const Login = () => {
                 }
             }
         } catch (error) {
+            setIsLoading(false);
             toast.error(<p className="pr-2">Đã xảy ra lỗi, vui lòng thử lại!</p>, toastOptions);
         }
     };
@@ -223,13 +224,14 @@ const Login = () => {
                 localStorage.setItem("accessToken", response.data.accessToken);
                 localStorage.setItem("refreshToken", response.data.refreshToken);
                 sessionStorage.setItem("profile", JSON.stringify(response.data.profile));
-                dispatch(loginAction.setUserProfile(response.data.profile));
+                // dispatch(loginAction.setUserProfile(response.data.profile));
 
                 navigate("/home");
             } else {
                 toast.error(<p className="pr-2">Đã xảy ra lỗi khi đăng nhập với Google!</p>, toastOptions);
             }
         } catch (error) {
+            setIsLoading(false);
             toast.error(<p className="pr-2">Đã xảy ra lỗi, vui lòng thử lại!</p>, toastOptions);
         }
     };

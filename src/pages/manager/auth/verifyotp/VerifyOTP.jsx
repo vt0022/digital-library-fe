@@ -111,7 +111,7 @@ const VerifyOTP = () => {
                     localStorage.setItem("accessToken", response.data.accessToken);
                     localStorage.setItem("refreshToken", response.data.refreshToken);
                     sessionStorage.setItem("profile", JSON.stringify(response.data.profile));
-                    dispatch(loginAction.setUser(response.data.profile));
+                    // dispatch(loginAction.setUser(response.data.profile));
                     navigate("/manager/home");
                 } else {
                     toast.success(<p className="pr-2">Bạn có thể tạo mật khẩu mới!</p>, toastOptions);

@@ -169,6 +169,7 @@ const Login = () => {
                 }
             }
         } catch (error) {
+            setIsLoading(false);
             toast.error(<p className="pr-2">Đã xảy ra lỗi, vui lòng thử lại!</p>, toastOptions);
         }
     };

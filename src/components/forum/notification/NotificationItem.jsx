@@ -39,13 +39,15 @@ const NotificationItem = (props) => {
             case "REJECT_DOCUMENT":
                 return (
                     <>
-                        {notification.message} vì <span className="font-medium text-black">{notification.document && notification.document.note}</span>
+                        {notification.message}
+                         {/* vì <span className="font-medium text-black">{notification.document && notification.document.note}</span> */}
                     </>
                 );
             case "REJECT_REVIEW":
                 return (
                     <>
-                        {notification.message} vì <span className="font-medium text-black">{notification.review && notification.review.note}</span>
+                        {notification.message}
+                         {/* vì <span className="font-medium text-black">{notification.review && notification.review.note}</span> */}
                     </>
                 );
             case "RESTORE_POST":

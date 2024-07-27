@@ -86,7 +86,7 @@ const ManagerPendingDocuments = () => {
     usePrivateAxios();
 
     const handleDetail = (slug) => {
-        window.open(`/admin/documents/${slug}`, "_blank");
+        window.open(`/manager/documents/${slug}`, "_blank");
     };
 
     const handleApprove = (doc) => {
