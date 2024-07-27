@@ -1,7 +1,0 @@
-{
-    "editor.inlineSuggest.showToolbar": "onHover",
-    "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": {
-        "source.organizeImports": "explicit"
-    }
-}
